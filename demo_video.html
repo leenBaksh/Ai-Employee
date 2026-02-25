@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Employee — Demo</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0d0d0d;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ── SLIDE SYSTEM ── */
+  .slide {
+    display: none;
+    position: absolute;
+    inset: 0;
+    padding: 48px 64px;
+    flex-direction: column;
+    justify-content: center;
+    animation: fadeIn 0.6s ease;
+  }
+  .slide.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+  /* ── PROGRESS BAR ── */
+  #progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #7c3aed, #06b6d4);
+    transition: width 0.4s ease;
+    z-index: 100;
+  }
+
+  /* ── SLIDE COUNTER ── */
+  #counter {
+    position: fixed;
+    bottom: 20px; right: 28px;
+    font-size: 12px;
+    color: #555;
+    letter-spacing: 1px;
+  }
+
+  /* ── NAV BUTTONS ── */
+  .nav-btn {
+    position: fixed;
+    bottom: 20px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: #aaa;
+    padding: 8px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { background: #252525; color: #fff; }
+  #prev-btn { left: 28px; }
+  #next-btn { right: 80px; }
+  #auto-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #7c3aed22;
+    border: 1px solid #7c3aed55;
+    color: #a78bfa;
+    padding: 8px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  /* ── TYPOGRAPHY ── */
+  .tag {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #7c3aed;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  h1 { font-size: 52px; font-weight: 800; line-height: 1.1; margin-bottom: 16px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 24px; }
+  h3 { font-size: 22px; font-weight: 600; margin-bottom: 12px; color: #c4b5fd; }
+  .subtitle { font-size: 20px; color: #888; line-height: 1.5; max-width: 700px; }
+  .highlight { color: #a78bfa; }
+  .cyan { color: #06b6d4; }
+  .green { color: #10b981; }
+  .yellow { color: #f59e0b; }
+  .red { color: #ef4444; }
+
+  /* ── GRADIENT TEXT ── */
+  .grad {
+    background: linear-gradient(135deg, #a78bfa, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── TERMINAL ── */
+  .terminal {
+    background: #0a0a0a;
+    border: 1px solid #222;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .terminal-bar {
+    background: #1a1a1a;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #222;
+  }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot-r { background: #ef4444; }
+  .dot-y { background: #f59e0b; }
+  .dot-g { background: #10b981; }
+  .terminal-title { color: #555; font-size: 12px; margin-left: 8px; }
+  .terminal-body { padding: 16px 20px; min-height: 140px; }
+  .prompt { color: #7c3aed; }
+  .cmd { color: #e0e0e0; }
+  .output { color: #555; }
+  .output.success { color: #10b981; }
+  .output.info { color: #06b6d4; }
+  .output.warn { color: #f59e0b; }
+  .cursor { display: inline-block; width: 8px; height: 14px; background: #7c3aed; animation: blink 1s step-end infinite; vertical-align: middle; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ── VAULT PANEL ── */
+  .vault {
+    background: #0f0f0f;
+    border: 1px solid #222;
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: 'Cascadia Code', monospace;
+    font-size: 12px;
+  }
+  .vault-bar {
+    background: #1a1a1a;
+    padding: 10px 16px;
+    border-bottom: 1px solid #222;
+    color: #555;
+    font-size: 12px;
+  }
+  .vault-body { padding: 12px 16px; }
+  .folder { color: #a78bfa; padding: 3px 0; }
+  .file { color: #888; padding: 3px 0 3px 16px; }
+  .file.new { color: #10b981; animation: slideIn 0.5s ease; }
+  .file.moving { animation: moveOut 0.6s ease forwards; }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+  @keyframes moveOut { to { opacity: 0; transform: translateX(20px); } }
+  .file.approved { color: #f59e0b; }
+
+  /* ── LAYOUT ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  .three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 10px;
+    padding: 20px;
+    transition: border-color 0.3s;
+  }
+  .card:hover { border-color: #7c3aed44; }
+  .card-icon { font-size: 28px; margin-bottom: 10px; }
+  .card h3 { font-size: 16px; margin-bottom: 6px; color: #e0e0e0; }
+  .card p { font-size: 13px; color: #666; line-height: 1.5; }
+
+  /* ── TABLE ── */
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; padding: 10px 16px; background: #111; color: #7c3aed; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; border-bottom: 1px solid #222; }
+  td { padding: 10px 16px; border-bottom: 1px solid #1a1a1a; color: #ccc; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #111; }
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge-green { background: #10b98122; color: #10b981; }
+  .badge-purple { background: #7c3aed22; color: #a78bfa; }
+  .badge-blue { background: #06b6d422; color: #06b6d4; }
+  .badge-yellow { background: #f59e0b22; color: #f59e0b; }
+
+  /* ── DIAGRAM ── */
+  .arch-box {
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 12px 16px;
+    text-align: center;
+    font-size: 13px;
+    color: #ccc;
+  }
+  .arch-box.brain { border-color: #7c3aed55; }
+  .arch-box.sense { border-color: #06b6d455; }
+  .arch-box.memory { border-color: #10b98155; }
+  .arch-box.hands { border-color: #f59e0b55; }
+  .arch-label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+  .arch-arrow {
+    text-align: center;
+    font-size: 20px;
+    color: #333;
+    padding: 4px 0;
+  }
+  .stat-big { font-size: 48px; font-weight: 800; }
+  .stat-label { font-size: 14px; color: #666; margin-top: 4px; }
+
+  /* ── HITL FLOW ── */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: nowrap;
+    margin: 24px 0;
+  }
+  .flow-step {
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 14px 18px;
+    text-align: center;
+    flex: 1;
+  }
+  .flow-step .icon { font-size: 24px; margin-bottom: 6px; }
+  .flow-step .label { font-size: 12px; color: #888; }
+  .flow-step.active-step { border-color: #7c3aed; background: #7c3aed11; }
+  .flow-arrow { color: #444; font-size: 20px; padding: 0 8px; flex-shrink: 0; }
+
+  /* ── TIER TIMELINE ── */
+  .tier-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  .tier-badge {
+    width: 80px;
+    text-align: center;
+    padding: 4px 0;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .tier-bronze { background: #92400e22; color: #d97706; border: 1px solid #92400e55; }
+  .tier-silver { background: #37415122; color: #9ca3af; border: 1px solid #37415155; }
+  .tier-gold { background: #854d0e22; color: #fbbf24; border: 1px solid #854d0e55; }
+  .tier-platinum { background: #1e1b4b22; color: #a78bfa; border: 1px solid #4c1d9555; }
+  .tier-items { font-size: 13px; color: #888; flex: 1; }
+  .tier-check { color: #10b981; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<!-- ════════════════════════════════════════════
+     SLIDE 1 — TITLE
+════════════════════════════════════════════ -->
+<div class="slide active" id="s1">
+  <div class="tag">Personal AI Employee Hackathon — 2026</div>
+  <h1>Your Business.<br><span class="grad">On Autopilot.</span></h1>
+  <p class="subtitle" style="margin-top:20px;">
+    A fully autonomous Digital FTE powered by <span class="highlight">Claude Code</span> —
+    reading emails, posting to LinkedIn, creating invoices, and briefing you every Monday.
+    <br><br>
+    <span class="green">24/7 · Human-in-the-Loop · Local-First · v0.4.0 Platinum</span>
+  </p>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SLIDE 2 — THE VALUE PROPOSITION
+════════════════════════════════════════════ -->
+<div class="slide" id="s2">
+  <div class="tag">The Business Case</div>
+  <h2>Human FTE vs <span class="grad">Digital FTE</span></h2>
+  <table>
+    <tr>
+      <th>Feature</th>
+      <th>Human FTE</th>
+      <th>AI Employee</th>
+    </tr>
+    <tr>
+      <td>Availability</td>
+      <td>40 hrs / week</td>
+      <td class="green"><strong>168 hrs / week (24/7)</strong></td>
+    </tr>
+    <tr>
+      <td>Monthly Cost</td>
+      <td>$4,000 – $8,000+</td>
+      <td class="green"><strong>$500 – $2,000</strong></td>
+    </tr>
+    <tr>
+      <td>Ramp-up Time</td>
+      <td>3 – 6 months</td>
+      <td class="green"><strong>Instant (via SKILL.md)</strong></td>
+    </tr>
+    <tr>
+      <td>Cost per Task</td>
+      <td>$3.00 – $6.00</td>
+      <td class="green"><strong>$0.25 – $0.50</strong></td>
+    </tr>
+    <tr>
+      <td>Annual Hours</td>
+      <td>~2,000 hours</td>
+      <td class="green"><strong>~8,760 hours</strong></td>
+    </tr>
+  </table>
+  <p style="margin-top:20px; color:#666; font-size:13px;">
+    ⚡ 85–90% cost reduction per task — the threshold where a CEO approves without debate.
+  </p>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SLIDE 3 — ARCHITECTURE
+════════════════════════════════════════════ -->
+<div class="slide" id="s3">
+  <div class="tag">System Architecture</div>
+  <h2>Four Layers Working Together</h2>
+  <div class="three-col" style="grid-template-columns: 1fr 40px 1fr 40px 1fr 40px 1fr; align-items:center; margin-top: 8px;">
+    <div class="arch-box sense">
+      <div class="arch-label" style="color:#06b6d4;">Senses</div>
+      <div>📡 Watchers</div>
+      <div style="font-size:11px; color:#555; margin-top:6px;">Gmail · WhatsApp<br>Filesystem · LinkedIn</div>
+    </div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-box memory">
+      <div class="arch-label" style="color:#10b981;">Memory</div>
+      <div>🗂️ Vault</div>
+      <div style="font-size:11px; color:#555; margin-top:6px;">Obsidian Markdown<br>Task Files · Logs</div>
+    </div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-box brain">
+      <div class="arch-label" style="color:#a78bfa;">Brain</div>
+      <div>🧠 Claude Code</div>
+      <div style="font-size:11px; color:#555; margin-top:6px;">Reasons · Plans<br>Decides · Approves</div>
+    </div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-box hands">
+      <div class="arch-label" style="color:#f59e0b;">Hands</div>
+      <div>🤝 MCP Servers</div>
+      <div style="font-size:11px; color:#555; margin-top:6px;">Email · Odoo · Social<br>Playwright Browser</div>
+    </div>
+  </div>
+
+  <div style="margin-top:28px;">
+    <div class="three-col">
+      <div class="card">
+        <div class="card-icon">📋</div>
+        <h3>Human-in-the-Loop Gate</h3>
+        <p>Every external action requires human approval. No auto-send, ever.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔁</div>
+        <h3>Ralph Wiggum Hook</h3>
+        <p>Stop Hook keeps Claude looping autonomously until a batch task is fully done.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">☁️</div>
+        <h3>Cloud + Local</h3>
+        <p>Cloud Agent drafts 24/7. Local Agent executes. Synced via git vault.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SLIDE 4 — PROCESS INBOX
+════════════════════════════════════════════ -->
+<div class="slide" id="s4">
+  <div class="tag">Scene 1 — Process Inbox</div>
+  <div class="two-col">
+    <div>
+      <h2>Gmail → Task Files<br><span class="grad">→ Action</span></h2>
+      <p style="color:#888; font-size:14px; margin: 16px 0 24px;">The Gmail watcher polls every 120 seconds. New emails become markdown task files. Claude decides what to do with each one.</p>
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+          <span class="terminal-title">Claude Code — AI Employee</span>
+        </div>
+        <div class="terminal-body" id="inbox-terminal">
+          <div><span class="prompt">❯</span> <span class="cmd">/process-inbox</span></div>
+          <div class="output" id="t1-l1" style="display:none">📖 Reading Company_Handbook.md...</div>
+          <div class="output info" id="t1-l2" style="display:none">📥 Found 3 items in Needs_Action/</div>
+          <div class="output" id="t1-l3" style="display:none">  → EMAIL_demo_newsletter — newsletter, low priority</div>
+          <div class="output success" id="t1-l4" style="display:none">  ✅ Archived to Done/</div>
+          <div class="output" id="t1-l5" style="display:none">  → EMAIL_demo_client_inquiry — client with 3 questions</div>
+          <div class="output warn" id="t1-l6" style="display:none">  📝 Drafting reply... requires approval (§3)</div>
+          <div class="output info" id="t1-l7" style="display:none">  → Pending_Approval/APPROVAL_client_reply.md</div>
+          <div class="output" id="t1-l8" style="display:none">  → EMAIL_demo_invoice_request — invoice for 12 hrs</div>
+          <div class="output warn" id="t1-l9" style="display:none">  💰 Amount > $100 — approval required (§5)</div>
+          <div class="output info" id="t1-l10" style="display:none">  → Pending_Approval/INVOICE_GlobalCorp.md</div>
+          <div class="output success" id="t1-l11" style="display:none" style="margin-top:8px;">✅ Processed 3 tasks · 2 pending approval · 1 done</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="vault">
+        <div class="vault-bar">📁 AI_Employee_Vault</div>
+        <div class="vault-body">
+          <div class="folder">📂 Needs_Action/</div>
+          <div class="file" id="v-n1">EMAIL_demo_newsletter.md</div>
+          <div class="file" id="v-n2">EMAIL_demo_client_inquiry.md</div>
+          <div class="file" id="v-n3">EMAIL_demo_invoice_request.md</div>
+          <div class="folder" style="margin-top:8px;">📂 Done/</div>
+          <div class="file new" id="v-d1" style="display:none">✓ EMAIL_demo_newsletter.md</div>
+          <div class="folder" style="margin-top:8px;">📂 Pending_Approval/</div>
+          <div class="file new" id="v-p1" style="display:none">⏳ APPROVAL_client_reply.md</div>
+          <div class="file new" id="v-p2" style="display:none">⏳ INVOICE_GlobalCorp.md</div>
+          <div class="folder" style="margin-top:8px;">📂 Drafts/</div>
+          <div class="file new" id="v-dr1" style="display:none">📝 DRAFT_client_reply.md</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SLIDE 5 — HITL GATE
+════════════════════════════════════════════ -->
+<div class="slide" id="s5">
+  <div class="tag">Scene 2 — Human-in-the-Loop Gate</div>
+  <h2>No Action Without <span class="grad">Human Approval</span></h2>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="icon">🧠</div>
+      <div style="font-weight:600; font-size:14px;">Claude Drafts</div>
+      <div class="label">Writes reply to<br>Pending_Approval/</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step active-step">
+      <div class="icon">👤</div>
+      <div style="font-weight:600; font-size:14px;">Human Reviews</div>
+      <div class="label">Reads draft · Moves<br>file to Approved/</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="icon">⚙️</div>
+      <div style="font-weight:600; font-size:14px;">Orchestrator Acts</div>
+      <div class="label">Detects Approved/ ·<br>Calls Email MCP</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="icon">📧</div>
+      <div style="font-weight:600; font-size:14px;">Email Sent</div>
+      <div class="label">Via SMTP · Logged ·<br>Archived to Done/</div>
+    </div>
+  </div>
+
+  <div class="two-col" style="margin-top: 8px;">
+    <div class="card" style="border-color:#7c3aed33;">
+      <h3 style="color:#a78bfa;">📄 Approval File Preview</h3>
+      <div style="background:#0a0a0a; border-radius:6px; padding:12px; font-family:monospace; font-size:12px; color:#888; margin-top:8px; line-height:1.8;">
+        <div style="color:#7c3aed;">---</div>
+        <div>type: <span style="color:#06b6d4;">email_reply</span></div>
+        <div>to: <span style="color:#10b981;">sarah.johnson@techstartup.io</span></div>
+        <div>subject: <span style="color:#f59e0b;">Re: Q2 Automation Proposal</span></div>
+        <div>expires: <span style="color:#888;">+24 hours</span></div>
+        <div style="color:#7c3aed;">---</div>
+        <div style="margin-top:6px; color:#666;">Hi Sarah, thank you for the questions...</div>
+        <div style="color:#555; margin-top:8px;"># Move to /Approved/ to send</div>
+      </div>
+    </div>
+    <div class="card" style="border-color:#10b98133;">
+      <h3 style="color:#10b981;">✅ Safety Guarantees</h3>
+      <div style="font-size:13px; color:#666; line-height:2; margin-top:8px;">
+        <div>🚫 No auto-send — ever</div>
+        <div>🚫 No payment execution</div>
+        <div>🚫 No social post without approval</div>
+        <div>🚫 No invoice &gt;$100 without sign-off</div>
+        <div style="margin-top:8px; color:#10b981;">✅ Rejected actions preserved in /Rejected/</div>
+        <div style="color:#10b981;">✅ Every action logged to /Logs/</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SLIDE 6 — LINKEDIN
+════════════════════════════════════════════ -->
+<div class="slide" id="s6">
+  <div class="tag">Scene 3 — LinkedIn Automation</div>
+  <div class="two-col">
+    <div>
+      <h2>Draft → Approve →<br><span class="grad">Playwright Posts</span></h2>
+      <p style="color:#888; font-size:14px; margin: 16px 0 20px;">Claude drafts a business post. After approval, Playwright MCP opens a real Chrome browser and publishes it — no copy-paste needed.</p>
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+          <span class="terminal-title">Claude Code — LinkedIn Skill</span>
+        </div>
+        <div class="terminal-body">
+          <div><span class="prompt">❯</span> <span class="cmd">/post-linkedin</span></div>
+          <div class="output">📖 Reading handbook + Business_Goals.md...</div>
+          <div class="output info">📊 Posts today: 0/2 — OK to proceed</div>
+          <div class="output">✍️  Drafting post about AI Employee launch...</div>
+          <div class="output success">📝 Saved: To_Post/LinkedIn/POST_2026-02-26.md</div>
+          <div class="output warn">⏳ Approval required → Pending_Approval/</div>
+          <div style="margin-top:8px; color:#555;">--- [ Human approves ] ---</div>
+          <div class="output info">🌐 Playwright MCP: navigating to LinkedIn...</div>
+          <div class="output info">🖱️  Clicked "Start a post"</div>
+          <div class="output info">⌨️  Typing post content...</div>
+          <div class="output success">✅ Post published · "Post successful" confirmed</div>
+          <div class="output">📊 Posts today: 1/2 · Logged + archived</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:16px;">
+      <div class="card" style="border-color:#0077b555;">
+        <h3 style="color:#60a5fa;">LinkedIn Post Preview</h3>
+        <div style="font-size:13px; color:#888; line-height:1.7; margin-top:8px;">
+          We just built a fully autonomous AI Employee in 48 hours. Here's what surprised us most.<br><br>
+          The hardest part wasn't the AI — it was the architecture. How do you make an agent that works 24/7 without constantly asking for help?<br><br>
+          Our answer: a vault-centric design where every task is a markdown file...
+          <br><br>
+          <span style="color:#7c3aed;">#AIEmployee #BusinessAutomation #FutureOfWork</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Supported Platforms</h3>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;">
+          <span class="badge badge-blue">LinkedIn</span>
+          <span class="badge badge-blue">Facebook</span>
+          <span class="badge badge-purple">Instagram</span>
+          <span class="badge badge-blue">Twitter/X</span>
+        </div>
+        <p style="margin-top:10px;">All via Playwright MCP browser automation. Max 2–5 posts/day per platform enforced by handbook.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SLIDE 7 — RALPH WIGGUM
+════════════════════════════════════════════ -->
+<div class="slide" id="s7">
+  <div class="tag">Scene 4 — The Ralph Wiggum Loop</div>
+  <div class="two-col">
+    <div>
+      <h2>Autonomous Batch<br><span class="grad">Processing</span></h2>
+      <p style="color:#888; font-size:14px; margin: 16px 0 20px;">
+        Claude normally stops after each response. The Stop Hook intercepts every stop event. If a Ralph task is active, it re-injects the continuation prompt — Claude keeps working.
+      </p>
+      <div class="card" style="border-color:#7c3aed44; margin-bottom:16px;">
+        <h3 style="color:#a78bfa;">How It Works</h3>
+        <div style="font-size:13px; color:#888; line-height:2; margin-top:8px;">
+          <div>1. User creates <span style="color:#06b6d4;">Approved/RALPH_task.md</span></div>
+          <div>2. Orchestrator writes <span style="color:#06b6d4;">Ralph_State/ralph_current.json</span></div>
+          <div>3. Claude works on task...</div>
+          <div>4. Claude tries to stop ↓</div>
+          <div>5. <span style="color:#a78bfa;">stop_hook.py runs</span> → exit code 2</div>
+          <div>6. Claude Code re-injects prompt</div>
+          <div>7. Claude continues ✅</div>
+          <div style="color:#10b981; margin-top:4px;">8. Done → active=false → natural stop</div>
+        </div>
+      </div>
+    </div>
+    <div class="terminal" style="height: 340px; overflow: hidden;">
+      <div class="terminal-bar">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        <span class="terminal-title">stop_hook.py · Ralph Wiggum</span>
+      </div>
+      <div class="terminal-body">
+        <div class="output info">── Iteration 1/10 ──</div>
+        <div class="output">📧 Processing EMAIL_client_001.md...</div>
+        <div class="output success">✅ Draft reply created</div>
+        <div class="output warn">→ Hook: active=true, iter=1 → exit 2</div>
+        <div style="margin-top:8px;" class="output info">── Iteration 2/10 ──</div>
+        <div class="output">📧 Processing EMAIL_client_002.md...</div>
+        <div class="output success">✅ Archived (newsletter)</div>
+        <div class="output warn">→ Hook: active=true, iter=2 → exit 2</div>
+        <div style="margin-top:8px;" class="output info">── Iteration 3/10 ──</div>
+        <div class="output">💰 Processing INVOICE_acme.md...</div>
+        <div class="output success">✅ Invoice draft created in Odoo</div>
+        <div class="output warn">→ Hook: active=true, iter=3 → exit 2</div>
+        <div style="margin-top:8px;" class="output info">── Iteration 4/10 ──</div>
+        <div class="output success">🏁 All tasks complete</div>
+        <div class="output">→ Hook: active=false → exit 0</div>
+        <div class="output success">✅ Ralph loop complete naturally</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SLIDE 8 — CEO BRIEFING
+════════════════════════════════════════════ -->
+<div class="slide" id="s8">
+  <div class="tag">Scene 5 — Monday Morning CEO Briefing</div>
+  <div class="two-col">
+    <div>
+      <h2>Weekly Autonomous<br><span class="grad">Business Report</span></h2>
+      <p style="color:#888; font-size:14px; margin: 16px 0 20px;">Every Monday at 08:00 the scheduler fires a trigger. Claude reads a week of logs, accounting data, and task history — then generates this.</p>
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+          <span class="terminal-title">weekly-briefing skill</span>
+        </div>
+        <div class="terminal-body">
+          <div><span class="prompt">❯</span> <span class="cmd">/weekly-briefing</span></div>
+          <div class="output">📖 Reading Business_Goals.md...</div>
+          <div class="output">💰 Reading Accounting/Current_Month.md...</div>
+          <div class="output">📋 Scanning Done/ — 55 items this week</div>
+          <div class="output">📊 Parsing 7 days of Logs/...</div>
+          <div class="output info">🔍 Checking for bottlenecks + SLA breaches...</div>
+          <div class="output success">✅ Briefings/2026-02-25_Monday_Briefing.md</div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="border-color:#f59e0b33;">
+      <h3 style="color:#fbbf24;">📊 Briefing Snapshot</h3>
+      <div style="font-size:13px; color:#888; line-height:1.9; margin-top:12px;">
+        <div><span style="color:#10b981;">Revenue MTD:</span> $4,000 of $10,000 target (40%)</div>
+        <div><span style="color:#10b981;">Trend:</span> On track — Q2 pipeline looks strong</div>
+        <div style="margin-top:8px; border-top:1px solid #222; padding-top:8px;">
+          <div><span style="color:#a78bfa;">Emails processed:</span> 35</div>
+          <div><span style="color:#a78bfa;">LinkedIn posts:</span> 1 / 2 daily limit</div>
+          <div><span style="color:#a78bfa;">Invoices created:</span> 2</div>
+          <div><span style="color:#a78bfa;">Approvals granted:</span> 4 / rejected: 0</div>
+        </div>
+        <div style="margin-top:8px; border-top:1px solid #222; padding-top:8px;">
+          <div><span style="color:#f59e0b;">⚠️ Bottleneck:</span> 1 email pending &gt;24hrs</div>
+          <div><span style="color:#f59e0b;">⚠️ Subscription audit:</span> Udemy (unused)</div>
+        </div>
+        <div style="margin-top:8px; border-top:1px solid #222; padding-top:8px; color:#555;">
+          Next week: Invoice ABC Corp · Post 2 LI posts
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SLIDE 9 — PLATINUM / CLOUD
+════════════════════════════════════════════ -->
+<div class="slide" id="s9">
+  <div class="tag">Platinum Tier — Distributed Architecture</div>
+  <h2>Cloud + Local <span class="grad">Agents</span></h2>
+  <div class="two-col" style="margin-top: 20px; align-items: stretch;">
+    <div class="card" style="border-color:#06b6d433;">
+      <h3 style="color:#06b6d4;">☁️ Cloud Agent (24/7 VM)</h3>
+      <div style="font-size:13px; color:#888; line-height:2; margin-top:10px;">
+        <div class="green">✅ Email triage around the clock</div>
+        <div class="green">✅ Draft replies + social posts</div>
+        <div class="green">✅ Task claiming via atomic file-move</div>
+        <div class="green">✅ Health heartbeat every 60s</div>
+        <div style="margin-top:8px; color:#444;">─────────────────</div>
+        <div class="red">❌ Never reads .env secrets</div>
+        <div class="red">❌ Never executes sends</div>
+        <div class="red">❌ Never writes Dashboard.md</div>
+      </div>
+    </div>
+    <div class="card" style="border-color:#a78bfa33;">
+      <h3 style="color:#a78bfa;">💻 Local Agent (your machine)</h3>
+      <div style="font-size:13px; color:#888; line-height:2; margin-top:10px;">
+        <div class="green">✅ Final email send via SMTP</div>
+        <div class="green">✅ Playwright social posting</div>
+        <div class="green">✅ Odoo invoice creation</div>
+        <div class="green">✅ HITL approval execution</div>
+        <div class="green">✅ Sole writer of Dashboard.md</div>
+        <div style="margin-top:8px; color:#444;">─────────────────</div>
+        <div style="color:#555;">Vault syncs via git · secrets stay local</div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px; border-color:#10b98133; padding: 14px 20px;">
+    <div style="display:flex; gap:40px; align-items:center;">
+      <div>
+        <div style="font-size:11px; color:#555; text-transform:uppercase; letter-spacing:1px;">Claim-by-Move Pattern</div>
+        <div style="font-size:13px; color:#888; margin-top:6px;">
+          File rename = atomic mutex. Two agents cannot both rename the same file — <br>
+          the second gets FileNotFoundError. No database. No locks. Just the filesystem.
+        </div>
+      </div>
+      <div style="font-family:monospace; font-size:12px; color:#555; flex-shrink:0; white-space:nowrap;">
+        <div><span style="color:#a78bfa;">Needs_Action/task.md</span></div>
+        <div>→ <span style="color:#06b6d4;">In_Progress/cloud/task.md</span> ← atomic</div>
+        <div>→ <span style="color:#10b981;">Done/task.md</span> ← on success</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SLIDE 10 — TIER SUMMARY
+════════════════════════════════════════════ -->
+<div class="slide" id="s10">
+  <div class="tag">What We Built</div>
+  <h2>Four Tiers. <span class="grad">One Agent.</span></h2>
+  <div style="margin-top: 20px;">
+    <div class="tier-row">
+      <div class="tier-badge tier-bronze">Bronze</div>
+      <div class="tier-items">Vault structure · Company Handbook · Filesystem Watcher · /process-inbox · /update-dashboard</div>
+      <div class="tier-check">✅</div>
+    </div>
+    <div class="tier-row">
+      <div class="tier-badge tier-silver">Silver</div>
+      <div class="tier-items">Gmail · LinkedIn · WhatsApp · Email MCP · Scheduler · Orchestrator · 5 skills</div>
+      <div class="tier-check">✅</div>
+    </div>
+    <div class="tier-row">
+      <div class="tier-badge tier-gold">Gold</div>
+      <div class="tier-items">Odoo ERP · Social MCP · Audit MCP · FB/IG/Twitter · Ralph Wiggum Hook · 9 skills + exponential backoff</div>
+      <div class="tier-check">✅</div>
+    </div>
+    <div class="tier-row" style="border:none;">
+      <div class="tier-badge tier-platinum">Platinum</div>
+      <div class="tier-items">Cloud Agent · Vault Sync · Health Monitor · Distributed Architecture · 3 skills</div>
+      <div class="tier-check">✅</div>
+    </div>
+  </div>
+  <div class="three-col" style="margin-top:24px;">
+    <div style="text-align:center;">
+      <div class="stat-big grad">20</div>
+      <div class="stat-label">Agent Skills</div>
+    </div>
+    <div style="text-align:center;">
+      <div class="stat-big grad">6</div>
+      <div class="stat-label">MCP Servers</div>
+    </div>
+    <div style="text-align:center;">
+      <div class="stat-big grad">5</div>
+      <div class="stat-label">Watchers</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SLIDE 11 — CLOSING
+════════════════════════════════════════════ -->
+<div class="slide" id="s11">
+  <div style="text-align:center;">
+    <div class="tag" style="text-align:center;">Personal AI Employee Hackathon 2026</div>
+    <h1 style="font-size:60px; margin-top:16px;">8,760 hours.<br><span class="grad">One agent.</span></h1>
+    <p class="subtitle" style="margin: 24px auto; text-align:center; max-width:600px;">
+      A human FTE works 2,000 hours a year.<br>
+      This agent works 8,760 — at <span class="green">$0.25 per task</span> instead of $5.00.
+    </p>
+    <div style="display:flex; gap:16px; justify-content:center; margin-top:32px;">
+      <div style="text-align:left; background:#111; border:1px solid #222; border-radius:10px; padding:20px 28px;">
+        <div style="font-size:11px; color:#555; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">GitHub</div>
+        <div style="color:#a78bfa; font-family:monospace;">github.com/leenBaksh/Ai-Employee</div>
+      </div>
+      <div style="text-align:left; background:#111; border:1px solid #222; border-radius:10px; padding:20px 28px;">
+        <div style="font-size:11px; color:#555; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Built With</div>
+        <div style="color:#06b6d4; font-family:monospace;">Claude Code · Obsidian · Python · MCP</div>
+      </div>
+    </div>
+    <p style="color:#333; font-size:12px; margin-top:40px;">v0.4.0 Platinum · leenBaksh · 2026-02-26</p>
+  </div>
+</div>
+
+<!-- ── CONTROLS ── -->
+<button class="nav-btn" id="prev-btn" onclick="changeSlide(-1)">← Prev</button>
+<button class="nav-btn" id="auto-btn" onclick="toggleAuto()">▶ Auto Play</button>
+<button class="nav-btn" id="next-btn" onclick="changeSlide(1)">Next →</button>
+<div id="counter">1 / 11</div>
+
+<script>
+const TOTAL = 11;
+let current = 1;
+let autoPlay = null;
+const AUTO_DELAY = 7000;
+
+// Inbox terminal animation
+const inboxLines = ['t1-l1','t1-l2','t1-l3','t1-l4','t1-l5','t1-l6','t1-l7','t1-l8','t1-l9','t1-l10','t1-l11'];
+const vaultChanges = [
+  { at: 3, hide: 'v-n1', show: 'v-d1' },
+  { at: 6, show: 'v-p1' },
+  { at: 6, show: 'v-dr1' },
+  { at: 9, show: 'v-p2' },
+];
+let inboxAnimated = false;
+
+function animateInbox() {
+  if (inboxAnimated) return;
+  inboxAnimated = true;
+  inboxLines.forEach((id, i) => {
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'block';
+    }, i * 500);
+  });
+  vaultChanges.forEach(change => {
+    setTimeout(() => {
+      if (change.hide) {
+        const el = document.getElementById(change.hide);
+        if (el) el.style.display = 'none';
+      }
+      if (change.show) {
+        const el = document.getElementById(change.show);
+        if (el) { el.style.display = 'block'; }
+      }
+    }, change.at * 500);
+  });
+}
+
+function showSlide(n) {
+  document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+  document.getElementById('s' + n).classList.add('active');
+  document.getElementById('counter').textContent = n + ' / ' + TOTAL;
+  document.getElementById('progress').style.width = (n / TOTAL * 100) + '%';
+  if (n === 4) animateInbox();
+}
+
+function changeSlide(dir) {
+  current = Math.max(1, Math.min(TOTAL, current + dir));
+  showSlide(current);
+}
+
+function toggleAuto() {
+  const btn = document.getElementById('auto-btn');
+  if (autoPlay) {
+    clearInterval(autoPlay);
+    autoPlay = null;
+    btn.textContent = '▶ Auto Play';
+    btn.style.background = '#7c3aed22';
+  } else {
+    btn.textContent = '⏸ Pause';
+    btn.style.background = '#7c3aed44';
+    autoPlay = setInterval(() => {
+      if (current < TOTAL) {
+        current++;
+        showSlide(current);
+      } else {
+        clearInterval(autoPlay);
+        autoPlay = null;
+        btn.textContent = '▶ Auto Play';
+        btn.style.background = '#7c3aed22';
+      }
+    }, AUTO_DELAY);
+  }
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+  if (e.key === 'ArrowLeft') changeSlide(-1);
+  if (e.key === 'p' || e.key === 'P') toggleAuto();
+});
+
+showSlide(1);
+</script>
+</body>
+</html>

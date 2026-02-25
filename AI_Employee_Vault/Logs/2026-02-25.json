@@ -186,5 +186,139 @@
       "posts_today": 1,
       "method": "playwright_mcp"
     }
+  },
+  {
+    "timestamp": "2026-02-25T20:31:48.195200+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "filesystem_watcher",
+    "parameters": {
+      "pid": 47986
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-25T20:31:48.216913+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "scheduler",
+    "parameters": {
+      "pid": 47987
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-25T20:31:48.319501+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_linkedin_post_20260225T190140Z.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-25T20:31:48.329972+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_linkedin_post_20260225T190143Z.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-25T20:31:48.626776+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-25T20:31:54.604910+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_demo_client_inquiry_20260226.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-25T20:31:57.070026+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_demo_client_inquiry_20260226.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-25T20:31:57.078973+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_demo_invoice_request_20260226.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-25T20:31:58.459522+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_demo_client_inquiry_20260226.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-25T20:31:58.492573+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_demo_invoice_request_20260226.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-25T20:31:59.647501+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_demo_invoice_request_20260226.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-25T20:32:03.537285+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_demo_newsletter_20260226.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-25T20:32:04.760498+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_demo_newsletter_20260226.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-25T20:32:07.109875+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_demo_newsletter_20260226.md",
+    "parameters": {},
+    "result": "notified"
   }
 ]
