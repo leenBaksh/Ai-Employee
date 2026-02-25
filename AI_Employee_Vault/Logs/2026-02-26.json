@@ -1,0 +1,15 @@
+[
+  {
+    "timestamp": "2026-02-26T12:30:00Z",
+    "action_type": "linkedin_post",
+    "actor": "user_manual",
+    "target": "LinkedIn",
+    "result": "success",
+    "parameters": {
+      "post_file": "POST_2026-02-26_ai-employee-demo-caption.md",
+      "topic": "AI Employee demo video caption",
+      "posts_today": 2,
+      "method": "manual"
+    }
+  }
+]

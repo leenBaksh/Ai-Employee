@@ -1,10 +1,15 @@
 {
   "date": "2026-02-26",
-  "count": 1,
+  "count": 2,
   "posts": [
     {
       "file": "POST_2026-02-26_ai-employee-launch.md",
       "time": "2026-02-26T00:10:00Z"
+    },
+    {
+      "file": "POST_2026-02-26_ai-employee-demo-caption.md",
+      "time": "2026-02-26T12:30:00Z",
+      "note": "Posted manually by user"
     }
   ]
 }
