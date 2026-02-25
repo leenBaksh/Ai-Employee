@@ -781,6 +781,7 @@
 <button class="nav-btn" id="prev-btn" onclick="changeSlide(-1)">← Prev</button>
 <button class="nav-btn" id="auto-btn" onclick="toggleAuto()">▶ Auto Play</button>
 <button class="nav-btn" id="next-btn" onclick="changeSlide(1)">Next →</button>
+<button class="nav-btn" id="fs-btn" onclick="toggleFullscreen()" style="right:220px;">⛶ Fullscreen</button>
 <div id="counter">1 / 11</div>
 
 <script>
@@ -859,11 +860,35 @@ function toggleAuto() {
   }
 }
 
+// Fullscreen
+function toggleFullscreen() {
+  const btn = document.getElementById('fs-btn');
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+    btn.textContent = '⛶ Exit Full';
+  } else {
+    document.exitFullscreen();
+    btn.textContent = '⛶ Fullscreen';
+  }
+}
+
+document.addEventListener('fullscreenchange', () => {
+  const btn = document.getElementById('fs-btn');
+  if (!document.fullscreenElement) btn.textContent = '⛶ Fullscreen';
+});
+
+// Auto fullscreen on load
+window.addEventListener('load', () => {
+  document.documentElement.requestFullscreen().catch(() => {});
+});
+
 // Keyboard navigation
 document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
   if (e.key === 'ArrowLeft') changeSlide(-1);
   if (e.key === 'p' || e.key === 'P') toggleAuto();
+  if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+  if (e.key === 'Escape' && document.fullscreenElement) document.exitFullscreen();
 });
 
 showSlide(1);
