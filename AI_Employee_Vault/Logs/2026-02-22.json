@@ -1,0 +1,58 @@
+[
+  {
+    "timestamp": "2026-02-22T21:16:07.930952+00:00",
+    "action_type": "inbox_file_detected",
+    "actor": "FilesystemWatcher",
+    "target": "hello_world.txt",
+    "parameters": {
+      "task_file": "TASK_20260222T211607Z_hello_world.md",
+      "dest_file": "FILE_20260222T211607Z_hello_world.txt"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-22T23:17:31.289821+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "filesystem_watcher",
+    "parameters": {
+      "pid": 4627
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-22T23:17:31.344596+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "ALERT_invoice_approval_expired.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-22T23:17:31.357215+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "ALERT_sla_breach_client_email.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-22T23:17:31.384520+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_invoice_client.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-22T23:41:33.397697+00:00",
+    "action_type": "email_draft_saved",
+    "actor": "email_mcp_server",
+    "target": "test@example.com",
+    "parameters": {
+      "subject": "Test Subject",
+      "draft_file": "DRAFT_20260222T234133Z_Test_Subject.md"
+    },
+    "result": "success"
+  }
+]

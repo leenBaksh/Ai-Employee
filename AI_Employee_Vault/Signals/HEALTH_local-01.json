@@ -1,0 +1,8 @@
+{
+  "agent_id": "local-01",
+  "role": "local",
+  "timestamp": "2026-02-25T19:57:49.701334+00:00",
+  "status": "online",
+  "vault_path": "./AI_Employee_Vault",
+  "tier": "Platinum"
+}

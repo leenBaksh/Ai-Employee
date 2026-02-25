@@ -1,0 +1,29 @@
+# Secrets — NEVER commit these
+.env
+secrets/
+*.pid
+*.token
+*.json.secret
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+.venv-wsl/
+venv/
+dist/
+build/
+*.egg-info/
+.pytest_cache/
+
+# UV
+.uv/
+
+# Obsidian internals
+AI_Employee_Vault/.obsidian/
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp

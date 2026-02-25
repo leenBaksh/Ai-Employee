@@ -1,0 +1,466 @@
+[
+  {
+    "timestamp": "2026-02-24T15:29:38.479296+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T152937Z_Confirm_your_business_email_address.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T15:29:38.526413+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T152937Z_Welcome_to_ngrok_.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T15:29:38.771932+00:00",
+    "action_type": "email_task_created",
+    "actor": "GmailWatcher",
+    "target": "Google <no-reply@accounts.google.com>",
+    "parameters": {
+      "message_id": "19c8e2b0a23e47b7",
+      "subject": "Security alert",
+      "priority": "normal",
+      "task_file": "EMAIL_20260224T152938Z_Security_alert.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-24T15:29:38.810859+00:00",
+    "action_type": "file_created",
+    "actor": "GmailWatcher",
+    "target": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault/Needs_Action/EMAIL_20260224T152938Z_Security_alert.md",
+    "parameters": {},
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-24T15:29:38.961778+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T152935Z_Re__Send_January_Invoice___Invoice_INV-2.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T15:29:39.008862+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T152935Z_Security_alert.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T15:29:39.064429+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T152936Z_Security_alert.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T15:29:39.124632+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T152937Z_Ausbildung_KI-Manager_in_inkl__Zertifika.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T15:29:39.183423+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T152937Z_Confirm_your_business_email_address.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T15:29:39.249473+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T152937Z_Welcome_to_ngrok_.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T15:29:39.305091+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T152938Z_Security_alert.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T15:29:42.964453+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T152938Z_Security_alert.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T15:29:43.573302+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T152938Z_Security_alert.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T15:30:29.053061+00:00",
+    "action_type": "email_send",
+    "actor": "user_manual",
+    "target": "client@example.com",
+    "parameters": {
+      "subject": "Re: Send January Invoice \u2014 Invoice INV-2026-01-001",
+      "method": "gmail_web"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-24T15:32:40.048447+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "The read operation timed out"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-02-24T15:34:50.230718+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-02-24T15:37:00.287244+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-02-24T15:39:10.344280+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-02-24T15:41:20.400200+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-02-24T15:43:30.456396+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-02-24T15:45:40.514821+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-02-24T17:36:40.283265+00:00",
+    "action_type": "email_task_created",
+    "actor": "GmailWatcher",
+    "target": "Feedcoyote <noreply-feedcoyote-t5rnle1@no-reply.feedcoyote.com>",
+    "parameters": {
+      "message_id": "19c908d4b87a2bc8",
+      "subject": "World Digital, you've got a new match on Feedcoyote",
+      "priority": "normal",
+      "task_file": "EMAIL_20260224T173640Z_World_Digital__you_ve_got_a_new_match_on.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-24T17:36:40.324476+00:00",
+    "action_type": "file_created",
+    "actor": "GmailWatcher",
+    "target": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault/Needs_Action/EMAIL_20260224T173640Z_World_Digital__you_ve_got_a_new_match_on.md",
+    "parameters": {},
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-24T17:36:42.384830+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T173640Z_World_Digital__you_ve_got_a_new_match_on.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T17:36:42.693706+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T173640Z_World_Digital__you_ve_got_a_new_match_on.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T17:36:43.048092+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T173640Z_World_Digital__you_ve_got_a_new_match_on.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T20:33:39.725706+00:00",
+    "action_type": "email_task_created",
+    "actor": "GmailWatcher",
+    "target": "Leen Baksh <leenbaksh1529@gmail.com>",
+    "parameters": {
+      "message_id": "19c915a538187300",
+      "subject": "Re: Send January Invoice \u2014 Invoice INV-2026-01-001",
+      "priority": "high",
+      "task_file": "EMAIL_20260224T203339Z_Re__Send_January_Invoice___Invoice_INV-2.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-24T20:33:39.740074+00:00",
+    "action_type": "file_created",
+    "actor": "GmailWatcher",
+    "target": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault/Needs_Action/EMAIL_20260224T203339Z_Re__Send_January_Invoice___Invoice_INV-2.md",
+    "parameters": {},
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-24T20:33:40.301049+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T203339Z_Re__Send_January_Invoice___Invoice_INV-2.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T20:33:40.204382+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T203339Z_Re__Send_January_Invoice___Invoice_INV-2.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T20:33:42.079645+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T203339Z_Re__Send_January_Invoice___Invoice_INV-2.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T20:37:00.158084+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "filesystem_watcher",
+    "parameters": {
+      "pid": 36721
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-24T20:37:00.185666+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "gmail_watcher",
+    "parameters": {
+      "pid": 36722
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-24T20:37:00.230291+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "linkedin_watcher",
+    "parameters": {
+      "pid": 36723
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-24T20:37:00.264958+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "whatsapp_watcher",
+    "parameters": {
+      "pid": 36724
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-24T20:37:00.324790+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "social_watcher",
+    "parameters": {
+      "pid": 36725
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-24T20:37:00.364076+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "scheduler",
+    "parameters": {
+      "pid": 36726
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-24T20:37:00.471579+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T152935Z_Re__Send_January_Invoice___Invoice_INV-2.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T20:37:00.494161+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T152935Z_Security_alert.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T20:37:00.550667+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T152936Z_Security_alert.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T20:37:00.597856+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T152937Z_Ausbildung_KI-Manager_in_inkl__Zertifika.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T20:37:00.634522+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T152937Z_Confirm_your_business_email_address.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T20:37:00.668299+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T152937Z_Welcome_to_ngrok_.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T20:37:00.705055+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T152938Z_Security_alert.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T20:37:00.738550+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T173640Z_World_Digital__you_ve_got_a_new_match_on.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T20:37:00.772694+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T203339Z_Re__Send_January_Invoice___Invoice_INV-2.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-24T20:37:00.939699+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-24T20:37:49.170450+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  }
+]

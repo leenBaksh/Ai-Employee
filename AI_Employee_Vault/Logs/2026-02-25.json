@@ -1,0 +1,190 @@
+[
+  {
+    "timestamp": "2026-02-25T18:27:14.387227+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260224T203339Z_Re__Send_January_Invoice___Invoice_INV-2.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-25T18:27:14.412998+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "WHATSAPP_20260225T182502Z_World_Digital.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-25T18:27:14.429107+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260225T164236Z_daily_briefing.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-25T18:28:05.362280+00:00",
+    "action_type": "sla_monitor",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "overdue_count": 8,
+      "items": [
+        {
+          "file": "EMAIL_20260224T152935Z_Re__Send_January_Invoice___Invoice_INV-2.md",
+          "age_hours": 27.0
+        },
+        {
+          "file": "EMAIL_20260224T152935Z_Security_alert.md",
+          "age_hours": 27.0
+        },
+        {
+          "file": "EMAIL_20260224T152936Z_Security_alert.md",
+          "age_hours": 27.0
+        },
+        {
+          "file": "EMAIL_20260224T152937Z_Ausbildung_KI-Manager_in_inkl__Zertifika.md",
+          "age_hours": 27.0
+        },
+        {
+          "file": "EMAIL_20260224T152937Z_Confirm_your_business_email_address.md",
+          "age_hours": 27.0
+        },
+        {
+          "file": "EMAIL_20260224T152937Z_Welcome_to_ngrok_.md",
+          "age_hours": 27.0
+        },
+        {
+          "file": "EMAIL_20260224T152938Z_Security_alert.md",
+          "age_hours": 27.0
+        },
+        {
+          "file": "EMAIL_20260224T173640Z_World_Digital__you_ve_got_a_new_match_on.md",
+          "age_hours": 24.9
+        }
+      ]
+    },
+    "result": "breach_detected"
+  },
+  {
+    "timestamp": "2026-02-25T18:28:05.378238+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-25T18:45:00Z",
+    "action_type": "process_inbox",
+    "actor": "claude_ai_employee",
+    "target": "Needs_Action/",
+    "parameters": {
+      "items_processed": 18,
+      "archived_to_done": 18,
+      "approval_requests_created": 2
+    },
+    "result": "success",
+    "details": {
+      "archived": [
+        "EMAIL: Invoice INV-2026-01-001 confirmation thread (x2) \u2014 already sent",
+        "EMAIL: Google Security Alerts (x3) \u2014 password changes/new sign-in, automated",
+        "EMAIL: Udemy KI-Manager promo \u2014 no action",
+        "EMAIL: Facebook confirm business email \u2014 approval created",
+        "EMAIL: ngrok welcome \u2014 informational",
+        "EMAIL: Feedcoyote match notification \u2014 informational",
+        "WHATSAPP: World Digital 'Hi' \u2014 reply draft approval created",
+        "SLA ALERTS: All 8 ALERT_ files cleared"
+      ],
+      "pending_approval": [
+        "APPROVAL_facebook_email_confirm_20260225.md \u2014 human must click confirmation link",
+        "APPROVAL_whatsapp_reply_WorldDigital_20260225.md \u2014 reply draft awaiting approval"
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-02-25T19:01:40.900167+00:00",
+    "action_type": "linkedin_trigger_created",
+    "actor": "orchestrator",
+    "target": "LINKEDIN_POST_20260226T000000Z.md",
+    "parameters": {
+      "trigger": "TRIGGER_linkedin_post_20260225T190140Z.md",
+      "post_file": "To_Post/LinkedIn/POST_2026-02-26_ai-employee-launch.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-25T19:01:40.970062+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_linkedin_post_20260225T190140Z.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-25T19:01:43.818639+00:00",
+    "action_type": "linkedin_trigger_created",
+    "actor": "orchestrator",
+    "target": "LINKEDIN_POST_20260226T000000Z.md",
+    "parameters": {
+      "trigger": "TRIGGER_linkedin_post_20260225T190143Z.md",
+      "post_file": "To_Post/LinkedIn/POST_2026-02-26_ai-employee-launch.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-25T19:01:43.833572+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_linkedin_post_20260225T190140Z.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-25T19:01:43.865718+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_linkedin_post_20260225T190143Z.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-25T19:01:46.068619+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_linkedin_post_20260225T190143Z.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-26T00:10:00Z",
+    "action_type": "linkedin_post",
+    "actor": "claude_ai_employee",
+    "target": "LinkedIn",
+    "result": "success",
+    "parameters": {
+      "post_file": "POST_2026-02-26_ai-employee-launch.md",
+      "posts_today": 1,
+      "method": "playwright_mcp"
+    }
+  }
+]

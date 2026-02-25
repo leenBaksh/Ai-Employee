@@ -1,0 +1,61 @@
+{
+  "mcpServers": {
+    "email": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        ".",
+        "email-mcp"
+      ],
+      "env": {
+        "VAULT_PATH": "./AI_Employee_Vault",
+        "DRY_RUN": "false"
+      }
+    },
+    "odoo": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        ".",
+        "odoo-mcp"
+      ],
+      "env": {
+        "VAULT_PATH": "./AI_Employee_Vault"
+      }
+    },
+    "social": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        ".",
+        "social-mcp"
+      ],
+      "env": {
+        "VAULT_PATH": "./AI_Employee_Vault"
+      }
+    },
+    "audit": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        ".",
+        "audit-mcp"
+      ],
+      "env": {
+        "VAULT_PATH": "./AI_Employee_Vault"
+      }
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["@upstash/context7-mcp"]
+    }
+  }
+}

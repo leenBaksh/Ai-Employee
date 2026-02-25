@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /mnt/d/Hackathon-00/Ai-Employee/.claude/hooks/stop_hook.py"
+          }
+        ]
+      }
+    ]
+  }
+}
