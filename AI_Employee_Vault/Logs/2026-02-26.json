@@ -37,5 +37,162 @@
       }
     },
     "result": "success"
+  },
+  {
+    "timestamp": "2026-02-26T10:13:25.292533+00:00",
+    "action_type": "scheduled_trigger_created",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "job": "daily_briefing",
+      "file": "TRIGGER_20260226T101325Z_daily_briefing.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-26T10:13:25.341144+00:00",
+    "action_type": "daily_briefing_triggered",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {},
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-26T10:13:28.377949+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260226T101325Z_daily_briefing.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-26T10:13:49.969570+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-26T11:33:52.956745+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-26T15:13:51.072143+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-26T17:59:23.388924+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-26T21:55:43.951504+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
   }
 ]
