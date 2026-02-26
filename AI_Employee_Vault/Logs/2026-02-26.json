@@ -11,5 +11,31 @@
       "posts_today": 2,
       "method": "manual"
     }
+  },
+  {
+    "timestamp": "2026-02-26T00:54:22.562353+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
   }
 ]
