@@ -1,17 +1,16 @@
 # AI Employee Dashboard
 ---
-last_updated: 2026-02-25 23:18 UTC
+last_updated: 2026-02-26 00:54 UTC
 status: active
-version: 0.2.0
-tier: Silver
+version: 0.3.0
+tier: Gold
 ---
 
 ## System Status
 
 | Component | Status | Last Check |
 |-----------|--------|------------|
-| Filesystem Watcher | Running | 2026-02-25 23:18 UTC |
-| Scheduler | Running | 2026-02-25 23:18 UTC |
+| Filesystem Watcher | Running | 2026-02-26 00:54 UTC |
 
 ---
 
@@ -43,4 +42,17 @@ _Check `/Logs/` for detailed action history._
 
 ---
 
-_Updated automatically by AI Employee v0.2 · [Company Handbook](Company_Handbook.md) · [Business Goals](Business_Goals.md)_
+## Gold Tier
+
+| Feature | Status |
+|---------|--------|
+| Ralph Wiggum Loop | Idle |
+| Facebook drafts queued | 0 |
+| Instagram drafts queued | 0 |
+| Twitter drafts queued | 0 |
+| Odoo MCP | Available |
+| Audit MCP | Available |
+
+---
+
+_Updated automatically by AI Employee v0.3 · [Company Handbook](Company_Handbook.md) · [Business Goals](Business_Goals.md)_
