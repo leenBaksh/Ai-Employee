@@ -1,0 +1,36 @@
+# ──────────────────────────────────────────────
+# AI Employee Vault — Sync Security Policy
+# Platinum Tier: secrets NEVER sync to cloud
+# ──────────────────────────────────────────────
+
+# Credentials and secrets
+.env
+secrets/
+*.json.bak
+credentials.json
+token.json
+*.key
+*.pem
+*.p12
+
+# LinkedIn session storage (contains auth tokens)
+linkedin_session/
+*.session
+
+# WhatsApp local session data
+whatsapp_session/
+
+# Large binary files
+*.mp4
+*.mp3
+*.zip
+*.tar.gz
+
+# OS/editor artifacts
+.DS_Store
+Thumbs.db
+*.swp
+.obsidian/workspace.json
+
+# Playwright browser data (large, local only)
+playwright-browsers/
