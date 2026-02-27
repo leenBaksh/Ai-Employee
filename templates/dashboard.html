@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Employee — Live Dashboard</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0d0d0d;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: #111;
+    border-bottom: 1px solid #222;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .header-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #e0e0e0;
+  }
+  .badge-platinum {
+    background: #1e1b4b22;
+    color: #a78bfa;
+    border: 1px solid #4c1d9555;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #555;
+    letter-spacing: 1px;
+  }
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    animation: pulse 2s infinite;
+  }
+  .live-dot.disconnected {
+    background: #ef4444;
+    animation: none;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 #10b98155; }
+    50% { opacity: 0.8; box-shadow: 0 0 0 5px #10b98100; }
+  }
+
+  /* ── HEALTH BAR ── */
+  .health-bar {
+    background: #0f0f0f;
+    border-bottom: 1px solid #1a1a1a;
+    padding: 10px 28px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .health-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #444;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .agent-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    transition: border-color 0.3s;
+  }
+  .agent-badge.online  { border-color: #10b98133; }
+  .agent-badge.offline { border-color: #ef444433; }
+  .agent-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .agent-dot.online     { background: #10b981; animation: pulse 2s infinite; }
+  .agent-dot.offline    { background: #ef4444; }
+  .agent-dot.never_seen { background: #444; }
+  .agent-dot.error      { background: #f59e0b; }
+  .agent-name   { font-weight: 600; color: #ccc; }
+  .agent-status         { font-size: 11px; }
+  .agent-status.online  { color: #10b981; }
+  .agent-status.offline { color: #ef4444; }
+  .agent-status.never_seen { color: #555; }
+  .agent-status.error   { color: #f59e0b; }
+  .agent-meta { color: #444; font-size: 11px; margin-left: 2px; }
+
+  /* ── MAIN LAYOUT ── */
+  .container {
+    padding: 20px 28px 32px;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 1100px) { .stats-row { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 600px)  { .stats-row { grid-template-columns: repeat(2, 1fr); } }
+
+  .stat-card {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 10px;
+    padding: 16px 18px;
+    transition: border-color 0.3s;
+  }
+  .stat-card:hover { border-color: #333; }
+  .stat-card.alert   { border-color: #ef444433; }
+  .stat-card.warning { border-color: #f59e0b33; }
+  .stat-card.purple  { border-color: #7c3aed33; }
+
+  .stat-icon   { font-size: 20px; margin-bottom: 8px; }
+  .stat-number {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-number.green   { color: #10b981; }
+  .stat-number.amber   { color: #f59e0b; }
+  .stat-number.red     { color: #ef4444; }
+  .stat-number.purple  { color: #a78bfa; }
+  .stat-number.cyan    { color: #06b6d4; }
+  .stat-number.default { color: #e0e0e0; }
+  .stat-label {
+    font-size: 10px;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ── TWO-COL GRID ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* ── PANEL ── */
+  .panel {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .panel-header {
+    background: #151515;
+    border-bottom: 1px solid #1e1e1e;
+    padding: 11px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .panel-title {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #7c3aed;
+    font-weight: 600;
+  }
+  .panel-count {
+    font-size: 11px;
+    color: #444;
+  }
+  .panel-body {
+    max-height: 320px;
+    overflow-y: auto;
+  }
+  .panel-body::-webkit-scrollbar { width: 4px; }
+  .panel-body::-webkit-scrollbar-track { background: #111; }
+  .panel-body::-webkit-scrollbar-thumb { background: #252525; border-radius: 2px; }
+
+  /* ── TASK ITEMS ── */
+  .task-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid #1a1a1a;
+    transition: background 0.15s;
+  }
+  .task-item:last-child { border-bottom: none; }
+  .task-item:hover { background: #141414; }
+  .task-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  .task-type-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .type-email      { background: #06b6d4; }
+  .type-sla_breach { background: #ef4444; }
+  .type-invoice    { background: #f59e0b; }
+  .type-whatsapp   { background: #10b981; }
+  .type-scheduled  { background: #7c3aed; }
+  .type-approval   { background: #a78bfa; }
+  .type-social     { background: #3b82f6; }
+  .type-task       { background: #555; }
+
+  .task-name {
+    font-size: 12px;
+    color: #bbb;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+  }
+  .task-age { font-size: 11px; color: #444; flex-shrink: 0; }
+  .task-age.old   { color: #f59e0b; }
+  .task-age.stale { color: #ef4444; }
+
+  /* ── LOG ENTRIES ── */
+  .log-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    border-bottom: 1px solid #1a1a1a;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 12px;
+  }
+  .log-item:last-child { border-bottom: none; }
+  .log-time   { color: #444; flex-shrink: 0; min-width: 46px; }
+  .log-action { flex: 1; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .log-result { flex-shrink: 0; font-size: 11px; padding: 1px 6px; border-radius: 3px; }
+  .result-success         { color: #10b981; }
+  .result-error           { color: #ef4444; }
+  .result-warning         { color: #f59e0b; }
+  .result-breach_detected { color: #ef4444; }
+  .result-notified        { color: #06b6d4; }
+  .result-in_progress     { color: #a78bfa; }
+  .result-other           { color: #555; }
+
+  /* ── APPROVAL ITEMS ── */
+  .approval-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 16px;
+    border-bottom: 1px solid #1a1a1a;
+    transition: background 0.15s;
+  }
+  .approval-item:last-child { border-bottom: none; }
+  .approval-item:hover { background: #141414; }
+  .approval-name {
+    font-size: 13px;
+    color: #a78bfa;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 600px;
+  }
+  .approval-age { font-size: 11px; color: #444; flex-shrink: 0; }
+  .approval-age.old   { color: #f59e0b; }
+  .approval-age.stale { color: #ef4444; }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    padding: 28px;
+    text-align: center;
+    color: #2a2a2a;
+    font-size: 13px;
+  }
+
+  /* ── FOOTER META ── */
+  .footer-meta {
+    text-align: right;
+    font-size: 11px;
+    color: #2a2a2a;
+    padding: 10px 0 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="header">
+  <div class="header-left">
+    <span class="header-title">&#129302; AI Employee Dashboard</span>
+    <span class="badge-platinum">Platinum</span>
+  </div>
+  <div class="live-indicator">
+    <div class="live-dot" id="live-dot"></div>
+    <span id="live-text">CONNECTING</span>
+  </div>
+</header>
+
+<!-- ── AGENT HEALTH BAR ── -->
+<div class="health-bar">
+  <span class="health-label">Agent Health</span>
+  <div id="health-agents" style="display:flex; gap:10px; flex-wrap:wrap;">
+    <div class="agent-badge">
+      <div class="agent-dot never_seen"></div>
+      <span class="agent-name">local-01</span>
+      <span class="agent-status never_seen">&#8213;</span>
+    </div>
+    <div class="agent-badge">
+      <div class="agent-dot never_seen"></div>
+      <span class="agent-name">cloud-01</span>
+      <span class="agent-status never_seen">&#8213;</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN CONTENT ── -->
+<main class="container">
+
+  <!-- Stats cards -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-icon">&#128229;</div>
+      <div class="stat-number default" id="stat-needs_action">&#8213;</div>
+      <div class="stat-label">Needs Action</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="stat-icon">&#9203;</div>
+      <div class="stat-number purple" id="stat-pending_approval">&#8213;</div>
+      <div class="stat-label">Pending Approval</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">&#9989;</div>
+      <div class="stat-number green" id="stat-done">&#8213;</div>
+      <div class="stat-label">Done</div>
+    </div>
+    <div class="stat-card alert" id="sla-card">
+      <div class="stat-icon">&#128680;</div>
+      <div class="stat-number red" id="stat-sla_breaches">&#8213;</div>
+      <div class="stat-label">SLA Breaches</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">&#128221;</div>
+      <div class="stat-number cyan" id="stat-drafts">&#8213;</div>
+      <div class="stat-label">Drafts</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">&#9881;&#65039;</div>
+      <div class="stat-number amber" id="stat-in_progress">&#8213;</div>
+      <div class="stat-label">In Progress</div>
+    </div>
+  </div>
+
+  <!-- Task queue + Recent log -->
+  <div class="two-col">
+
+    <!-- Task Queue -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Task Queue &#8212; Needs Action</span>
+        <span class="panel-count" id="tasks-count">&#8213;</span>
+      </div>
+      <div class="panel-body" id="tasks-list">
+        <div class="empty-state">Loading&#8230;</div>
+      </div>
+    </div>
+
+    <!-- Recent Activity Log -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Recent Activity Log</span>
+        <span class="panel-count" id="logs-count">&#8213;</span>
+      </div>
+      <div class="panel-body" id="logs-list">
+        <div class="empty-state">Loading&#8230;</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Pending Approvals -->
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title">Pending Approvals &#8212; Action Required</span>
+      <span class="panel-count" id="approvals-count">&#8213;</span>
+    </div>
+    <div class="panel-body" id="approvals-list">
+      <div class="empty-state">Loading&#8230;</div>
+    </div>
+  </div>
+
+  <div class="footer-meta">Last updated: <span id="last-updated">&#8213;</span></div>
+
+</main>
+
+<script>
+// ── Type → CSS class map ────────────────────────────────────────────────────
+const TYPE_CLASS = {
+  email:      'type-email',
+  sla_breach: 'type-sla_breach',
+  invoice:    'type-invoice',
+  whatsapp:   'type-whatsapp',
+  scheduled:  'type-scheduled',
+  approval:   'type-approval',
+  social:     'type-social',
+  task:       'type-task',
+};
+
+// ── Utilities ────────────────────────────────────────────────────────────────
+function esc(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = String(val);
+}
+
+function formatTime(isoStr) {
+  try {
+    return new Date(isoStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  } catch { return '--:--'; }
+}
+
+function formatAgo(isoStr) {
+  try {
+    const diff = (Date.now() - new Date(isoStr).getTime()) / 1000;
+    if (diff < 60)    return `${Math.round(diff)}s ago`;
+    if (diff < 3600)  return `${Math.round(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.round(diff / 3600)}h ago`;
+    return `${Math.round(diff / 86400)}d ago`;
+  } catch { return '?'; }
+}
+
+// ── Render: agent health ─────────────────────────────────────────────────────
+function renderHealth(agents) {
+  if (!agents || !agents.length) return;
+  const container = document.getElementById('health-agents');
+  container.innerHTML = agents.map(a => {
+    const st = a.status || 'never_seen';
+    const meta = a.timestamp ? `&bull; ${esc(formatAgo(a.timestamp))}` : '&bull; never seen';
+    return `
+      <div class="agent-badge ${esc(st)}">
+        <div class="agent-dot ${esc(st)}"></div>
+        <span class="agent-name">${esc(a.agent_id)}</span>
+        <span class="agent-status ${esc(st)}">${esc(st.toUpperCase())}</span>
+        <span class="agent-meta">${meta}</span>
+      </div>`;
+  }).join('');
+}
+
+// ── Render: stats cards ──────────────────────────────────────────────────────
+function renderStats(stats) {
+  if (!stats) return;
+  setText('stat-needs_action',    stats.needs_action     ?? 0);
+  setText('stat-pending_approval', stats.pending_approval ?? 0);
+  setText('stat-done',            stats.done             ?? 0);
+  setText('stat-sla_breaches',    stats.sla_breaches     ?? 0);
+  setText('stat-drafts',          stats.drafts           ?? 0);
+  setText('stat-in_progress',     (stats.in_progress_local || 0) + (stats.in_progress_cloud || 0));
+
+  const slaCard = document.getElementById('sla-card');
+  if ((stats.sla_breaches || 0) > 0) {
+    slaCard.classList.add('alert');
+  } else {
+    slaCard.classList.remove('alert');
+  }
+}
+
+// ── Render: task / approval lists ───────────────────────────────────────────
+function renderTaskList(items, listId, countId) {
+  const list  = document.getElementById(listId);
+  const count = document.getElementById(countId);
+  if (!items || !items.length) {
+    list.innerHTML = '<div class="empty-state">No items</div>';
+    if (count) count.textContent = '0 items';
+    return;
+  }
+  if (count) count.textContent = `${items.length} item${items.length === 1 ? '' : 's'}`;
+  list.innerHTML = items.map(t => {
+    const cc = TYPE_CLASS[t.type] || 'type-task';
+    const ac = t.age_seconds > 86400 ? 'stale' : (t.age_seconds > 3600 ? 'old' : '');
+    return `
+      <div class="task-item">
+        <div class="task-left">
+          <div class="task-type-dot ${cc}"></div>
+          <span class="task-name" title="${esc(t.filename)}">${esc(t.filename)}</span>
+        </div>
+        <span class="task-age ${ac}">${esc(t.age_human)}</span>
+      </div>`;
+  }).join('');
+}
+
+function renderApprovals(items) {
+  const list  = document.getElementById('approvals-list');
+  const count = document.getElementById('approvals-count');
+  if (!items || !items.length) {
+    list.innerHTML = '<div class="empty-state">No items pending approval</div>';
+    if (count) count.textContent = '0 items';
+    return;
+  }
+  if (count) count.textContent = `${items.length} item${items.length === 1 ? '' : 's'}`;
+  list.innerHTML = items.map(a => {
+    const ac = a.age_seconds > 86400 ? 'stale' : (a.age_seconds > 3600 ? 'old' : '');
+    return `
+      <div class="approval-item">
+        <span class="approval-name" title="${esc(a.filename)}">&#9203; ${esc(a.filename)}</span>
+        <span class="approval-age ${ac}">${esc(a.age_human)}</span>
+      </div>`;
+  }).join('');
+}
+
+// ── Render: logs ─────────────────────────────────────────────────────────────
+function renderLogs(logs) {
+  const list  = document.getElementById('logs-list');
+  const count = document.getElementById('logs-count');
+  if (!logs || !logs.length) {
+    list.innerHTML = '<div class="empty-state">No log entries</div>';
+    if (count) count.textContent = '0 entries';
+    return;
+  }
+  if (count) count.textContent = `${logs.length} entries`;
+  list.innerHTML = logs.map(e => {
+    const ts     = e.timestamp ? formatTime(e.timestamp) : '--:--';
+    const action = e.action_type || 'unknown';
+    const result = (e.result || 'unknown').toString();
+    const rc     = 'result-' + result.toLowerCase().replace(/[^a-z_]/g, '') || 'other';
+    return `
+      <div class="log-item">
+        <span class="log-time">${esc(ts)}</span>
+        <span class="log-action">${esc(action)}</span>
+        <span class="log-result ${rc}">${esc(result)}</span>
+      </div>`;
+  }).join('');
+}
+
+// ── Apply full dashboard payload ─────────────────────────────────────────────
+function applyDashboard(data) {
+  renderHealth(data.health);
+  renderStats(data.stats);
+  renderTaskList(data.tasks,     'tasks-list',     'tasks-count');
+  renderApprovals(data.approvals);
+  renderLogs(data.logs);
+  if (data.generated_at) {
+    setText('last-updated', new Date(data.generated_at).toLocaleTimeString());
+  }
+}
+
+// ── Live status indicator ────────────────────────────────────────────────────
+function setLiveStatus(live) {
+  const dot  = document.getElementById('live-dot');
+  const text = document.getElementById('live-text');
+  if (live) {
+    dot.className    = 'live-dot';
+    text.textContent = 'LIVE';
+  } else {
+    dot.className    = 'live-dot disconnected';
+    text.textContent = 'POLLING';
+  }
+}
+
+// ── SSE stream ───────────────────────────────────────────────────────────────
+let sse          = null;
+let pollTimer    = null;
+let sseRetryTime = null;
+
+function startSSE() {
+  if (!window.EventSource) { startPolling(); return; }
+
+  sse = new EventSource('/api/stream');
+
+  sse.onopen = () => {
+    setLiveStatus(true);
+    if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+  };
+
+  sse.onmessage = (event) => {
+    try { applyDashboard(JSON.parse(event.data)); }
+    catch (e) { console.warn('SSE parse error', e); }
+  };
+
+  sse.onerror = () => {
+    setLiveStatus(false);
+    sse.close();
+    startPolling();
+    // Retry SSE after 30s (avoid hammering on server restart)
+    if (!sseRetryTime) {
+      sseRetryTime = setTimeout(() => {
+        sseRetryTime = null;
+        if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+        startSSE();
+      }, 30000);
+    }
+  };
+}
+
+// ── Polling fallback ─────────────────────────────────────────────────────────
+async function fetchAll() {
+  try {
+    const [stats, health, tasks, approvals, logs] = await Promise.all([
+      fetch('/api/stats').then(r => r.json()),
+      fetch('/api/health').then(r => r.json()),
+      fetch('/api/tasks').then(r => r.json()),
+      fetch('/api/approvals').then(r => r.json()),
+      fetch('/api/logs').then(r => r.json()),
+    ]);
+    applyDashboard({ stats, health, tasks, approvals, logs, generated_at: new Date().toISOString() });
+  } catch (e) {
+    console.warn('Poll error', e);
+  }
+}
+
+function startPolling() {
+  if (pollTimer) return;
+  setLiveStatus(false);
+  fetchAll();
+  pollTimer = setInterval(fetchAll, 5000);
+}
+
+// ── Boot ─────────────────────────────────────────────────────────────────────
+fetchAll();   // immediate first load so the page is never blank
+startSSE();   // then connect SSE for live updates
+</script>
+</body>
+</html>

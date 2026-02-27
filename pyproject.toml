@@ -41,6 +41,7 @@ audit-mcp        = "mcp_servers.audit_mcp_server:main"
 # Platinum Tier
 cloud-agent      = "cloud_agent:main"
 health-monitor   = "cloud.health_monitor:run"
+dashboard        = "dashboard_server:main"
 
 [build-system]
 requires = ["hatchling"]

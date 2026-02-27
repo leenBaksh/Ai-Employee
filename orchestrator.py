@@ -274,7 +274,8 @@ class Orchestrator:
 
                 logger.info(f"Approved action detected: {approved_file.name} (type={file_type})")
 
-                if file_type == "approval_request" and action_type == "send_whatsapp_reply":
+                if file_type in ("approval_request", "whatsapp_reply_approval") and \
+                        action_type in ("send_whatsapp_reply", "send_whatsapp_message"):
                     self._execute_whatsapp_reply(approved_file, content)
                 elif file_type == "approval_request" and action_type == "send_email":
                     self._execute_email_action(approved_file, content)
@@ -309,6 +310,22 @@ class Orchestrator:
         """Send an approved WhatsApp reply via Meta Cloud API."""
         to      = self._extract_frontmatter_field(content, "to_number")
         message = self._extract_frontmatter_field(content, "reply_text")
+
+        # Fallback: read reply text from the linked draft file
+        if not message:
+            draft_rel = self._extract_frontmatter_field(content, "draft_file")
+            if draft_rel:
+                draft_path = self.vault_path / draft_rel
+                if draft_path.exists():
+                    draft_content = draft_path.read_text(encoding="utf-8")
+                    # Extract the body between the --- markers (after frontmatter)
+                    parts = draft_content.split("---")
+                    if len(parts) >= 3:
+                        body = parts[2].strip()
+                        # Grab lines that look like the actual message (skip headers)
+                        lines = [l for l in body.splitlines()
+                                 if l.strip() and not l.startswith("#") and not l.startswith("**")]
+                        message = " ".join(lines[:3]).strip()
 
         if not to or not message:
             logger.error(f"Missing to_number/reply_text in {approved_file.name}")

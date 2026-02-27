@@ -1,0 +1,223 @@
+[
+  {
+    "timestamp": "2026-02-27T14:55:52.214639+00:00",
+    "action_type": "unknown_approval",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260227.md",
+    "parameters": {},
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-02-27T14:55:52.621274+00:00",
+    "action_type": "unknown_approval",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260227.md",
+    "parameters": {},
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-02-27T15:00:00+00:00",
+    "action_type": "approval_granted",
+    "actor": "human",
+    "target": "APPROVAL_whatsapp_World_Digital_20260227",
+    "result": "approved",
+    "parameters": {
+      "to": "World Digital +923103871019",
+      "channel": "whatsapp"
+    }
+  },
+  {
+    "timestamp": "2026-02-27T14:57:53.202856+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "filesystem_watcher",
+    "parameters": {
+      "pid": 61472
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-27T14:57:53.223142+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "whatsapp_watcher",
+    "parameters": {
+      "pid": 61473
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-27T14:57:53.250598+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "scheduler",
+    "parameters": {
+      "pid": 61474
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-27T14:57:53.357266+00:00",
+    "action_type": "unknown_approval",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260227.md",
+    "parameters": {},
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-02-27T14:57:53.385416+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260226T101325Z_daily_briefing.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-27T14:57:53.401853+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260227T102020Z_daily_briefing.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-27T14:57:53.427063+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_linkedin_post_20260225T190140Z.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-27T14:57:53.459999+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_linkedin_post_20260225T190143Z.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-27T14:57:54.107168+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-27T15:00:11.311414+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "filesystem_watcher",
+    "parameters": {
+      "pid": 61831
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-27T15:00:11.330626+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "whatsapp_watcher",
+    "parameters": {
+      "pid": 61832
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-27T15:00:11.355927+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "scheduler",
+    "parameters": {
+      "pid": 61833
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-27T15:00:11.877053+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-02-27T15:00:20.633538+00:00",
+    "action_type": "whatsapp_reply_error",
+    "actor": "orchestrator",
+    "target": "923103871019",
+    "parameters": {
+      "error": "Client error '401 Unauthorized' for url 'https://graph.facebook.com/v18.0/1032540726603479/messages'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-02-27T15:00:20.665384+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260226T101325Z_daily_briefing.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-27T15:00:20.686389+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260227T102020Z_daily_briefing.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-27T15:00:20.715038+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_linkedin_post_20260225T190140Z.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-02-27T15:00:20.746198+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_linkedin_post_20260225T190143Z.md",
+    "parameters": {},
+    "result": "notified"
+  }
+]

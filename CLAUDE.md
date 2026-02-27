@@ -70,6 +70,7 @@ AI_Employee_Vault/
 | Sync Vault | `/sync-vault` | Push/pull vault between Cloud and Local agents |
 | Cloud Status | `/cloud-status` | Check Cloud Agent health and activity |
 | Deploy Cloud | `/deploy-cloud` | Guide Cloud Agent deployment to a VM |
+| Web Dashboard | `uv run dashboard` | Live browser dashboard at http://localhost:8888 |
 
 ## MCP Servers Available
 
