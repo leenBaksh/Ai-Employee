@@ -5,13 +5,16 @@ Serves a real-time browser dashboard at http://localhost:8888/
 with vault stats, agent health, task queue, and recent activity logs.
 
 Endpoints:
-  GET /               → Renders templates/dashboard.html
-  GET /api/stats      → Vault folder counts
-  GET /api/health     → Agent health signals
-  GET /api/tasks      → Needs_Action/ task list
-  GET /api/approvals  → Pending_Approval/ list
-  GET /api/logs       → Last 20 log entries
-  GET /api/stream     → SSE stream (full dashboard JSON every 5s)
+  GET /                        → Renders templates/dashboard.html
+  GET /api/stats               → Vault folder counts
+  GET /api/health              → Agent health signals
+  GET /api/tasks               → Needs_Action/ task list
+  GET /api/approvals           → Pending_Approval/ list
+  GET /api/done                → Done/ archive (newest-first, limit 100)
+  GET /api/logs                → Log entries (?search=&result=&limit=)
+  GET /api/stream              → SSE stream (full dashboard JSON every 5s)
+  POST /api/approve/<filename> → Move Pending_Approval → Approved
+  POST /api/reject/<filename>  → Move Pending_Approval → Rejected
 
 Run:
   uv run dashboard
@@ -25,7 +28,9 @@ import logging
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
 
-from flask import Flask, render_template, jsonify, Response, stream_with_context
+import shutil
+from flask import Flask, render_template, jsonify, Response, stream_with_context, request, abort
+from flask_cors import CORS
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -37,6 +42,7 @@ DASHBOARD_PORT = int(os.getenv("DASHBOARD_PORT", "8888"))
 HEALTH_OFFLINE_THRESHOLD = int(os.getenv("HEALTH_OFFLINE_THRESHOLD", "300"))  # 5 minutes
 
 app = Flask(__name__)
+CORS(app, origins=["http://localhost:3000", "http://172.16.0.1:3000"])
 
 
 # ── Data helpers ───────────────────────────────────────────────────────────────
@@ -71,7 +77,7 @@ def get_agent_health() -> list:
     """Read health signal files from Signals/."""
     signals_dir = VAULT_PATH / "Signals"
     results = []
-    for agent_id in ["local-01", "cloud-01"]:
+    for agent_id in ["local-01"]:
         signal_file = signals_dir / f"HEALTH_{agent_id}.json"
         entry = {"agent_id": agent_id, "status": "never_seen", "timestamp": None}
         if signal_file.exists():
@@ -99,14 +105,14 @@ def get_agent_health() -> list:
     return results
 
 
-def get_task_list(folder: str = "Needs_Action", limit: int = 20) -> list:
-    """List .md files in a vault folder with age metadata."""
+def get_task_list(folder: str = "Needs_Action", pattern: str = "*.md", limit: int = 20, newest_first: bool = False) -> list:
+    """List files in a vault folder with age metadata."""
     d = VAULT_PATH / folder
     if not d.exists():
         return []
     now = time.time()
     files = []
-    for f in sorted(d.glob("*.md"), key=lambda p: p.stat().st_mtime):
+    for f in sorted(d.glob(pattern), key=lambda p: p.stat().st_mtime, reverse=newest_first):
         age_seconds = now - f.stat().st_mtime
         files.append({
             "filename": f.name,
@@ -146,8 +152,14 @@ def _infer_type(filename: str) -> str:
     return "task"
 
 
-def get_recent_logs(limit: int = 20) -> list:
-    """Load the most recent log entries from today's and yesterday's log files."""
+def get_recent_logs(limit: int = 50, search: str = "", result_filter: str = "") -> list:
+    """Load recent log entries from today's and yesterday's log files.
+
+    Args:
+        limit: Maximum entries to return (default 50).
+        search: Case-insensitive keyword filter on action_type, target, result.
+        result_filter: Exact-match filter on the result field.
+    """
     logs_dir = VAULT_PATH / "Logs"
     if not logs_dir.exists():
         return []
@@ -155,6 +167,7 @@ def get_recent_logs(limit: int = 20) -> list:
     dates_to_check = [
         today.strftime("%Y-%m-%d"),
         (today - timedelta(days=1)).strftime("%Y-%m-%d"),
+        (today - timedelta(days=2)).strftime("%Y-%m-%d"),
     ]
     entries = []
     for date_str in dates_to_check:
@@ -167,7 +180,45 @@ def get_recent_logs(limit: int = 20) -> list:
             except Exception:
                 pass
     entries.sort(key=lambda e: e.get("timestamp", ""), reverse=True)
+
+    # Apply filters
+    if search:
+        kw = search.lower()
+        entries = [
+            e for e in entries
+            if kw in (e.get("action_type") or "").lower()
+            or kw in (e.get("target") or "").lower()
+            or kw in str(e.get("result") or "").lower()
+        ]
+    if result_filter:
+        entries = [e for e in entries if str(e.get("result") or "") == result_filter]
+
     return entries[:limit]
+
+
+def _append_log(action_type: str, target: str, result: str, actor: str = "dashboard") -> None:
+    """Append a single log entry to today's log file."""
+    logs_dir = VAULT_PATH / "Logs"
+    logs_dir.mkdir(parents=True, exist_ok=True)
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    log_file = logs_dir / f"{today}.json"
+    entry = {
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "action_type": action_type,
+        "actor": actor,
+        "target": target,
+        "result": result,
+    }
+    existing = []
+    if log_file.exists():
+        try:
+            existing = json.loads(log_file.read_text(encoding="utf-8"))
+            if not isinstance(existing, list):
+                existing = []
+        except Exception:
+            existing = []
+    existing.append(entry)
+    log_file.write_text(json.dumps(existing, indent=2), encoding="utf-8")
 
 
 def get_full_dashboard() -> dict:
@@ -178,6 +229,7 @@ def get_full_dashboard() -> dict:
         "tasks":        get_task_list("Needs_Action"),
         "approvals":    get_task_list("Pending_Approval"),
         "logs":         get_recent_logs(20),
+        "done_recent":  get_task_list("Done", pattern="*", limit=10, newest_first=True),
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }
 
@@ -211,7 +263,39 @@ def api_approvals():
 
 @app.route("/api/logs")
 def api_logs():
-    return jsonify(get_recent_logs(20))
+    search = request.args.get("search", "").strip()
+    result_filter = request.args.get("result", "").strip()
+    limit = int(request.args.get("limit", "50"))
+    return jsonify(get_recent_logs(limit=limit, search=search, result_filter=result_filter))
+
+
+@app.route("/api/done")
+def api_done():
+    return jsonify(get_task_list("Done", pattern="*", limit=100, newest_first=True))
+
+
+@app.route("/api/approve/<path:filename>", methods=["POST"])
+def api_approve(filename):
+    src = VAULT_PATH / "Pending_Approval" / filename
+    dst = VAULT_PATH / "Approved" / filename
+    if not src.exists():
+        return jsonify({"error": "not found", "filename": filename}), 404
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    shutil.move(str(src), str(dst))
+    _append_log("approval_granted", filename, "approved", actor="dashboard")
+    return jsonify({"status": "ok", "filename": filename})
+
+
+@app.route("/api/reject/<path:filename>", methods=["POST"])
+def api_reject(filename):
+    src = VAULT_PATH / "Pending_Approval" / filename
+    dst = VAULT_PATH / "Rejected" / filename
+    if not src.exists():
+        return jsonify({"error": "not found", "filename": filename}), 404
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    shutil.move(str(src), str(dst))
+    _append_log("approval_rejected", filename, "rejected", actor="dashboard")
+    return jsonify({"status": "ok", "filename": filename})
 
 
 @app.route("/api/stream")

@@ -24,6 +24,8 @@ dependencies = [
     "structlog>=24.0.0",
     # Silver — WhatsApp Business webhook server
     "flask>=3.0.0",
+    # Dashboard — CORS for Next.js frontend on :3000
+    "flask-cors>=4.0.0",
 ]
 
 [project.scripts]

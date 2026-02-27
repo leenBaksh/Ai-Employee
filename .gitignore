@@ -23,6 +23,11 @@ build/
 # Obsidian internals
 AI_Employee_Vault/.obsidian/
 
+# Next.js
+dashboard-ui/node_modules/
+dashboard-ui/.next/
+dashboard-ui/.env*.local
+
 # OS
 .DS_Store
 Thumbs.db
