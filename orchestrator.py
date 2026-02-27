@@ -349,7 +349,7 @@ class Orchestrator:
             import httpx, asyncio
 
             async def _send():
-                url = f"https://graph.facebook.com/v18.0/{phone_number_id}/messages"
+                url = f"https://graph.facebook.com/v25.0/{phone_number_id}/messages"
                 headers = {"Authorization": f"Bearer {access_token}",
                            "Content-Type": "application/json"}
                 payload = {
