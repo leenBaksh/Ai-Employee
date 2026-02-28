@@ -92,7 +92,8 @@ def _build_gmail_service(credentials_path: str, token_path: str):
     except ImportError:
         raise ImportError("Gmail dependencies not installed. Run: uv sync")
 
-    SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
+    SCOPES = ["https://www.googleapis.com/auth/gmail.readonly",
+              "https://www.googleapis.com/auth/gmail.send"]
     creds = None
     token = Path(token_path)
 

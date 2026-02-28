@@ -32,8 +32,8 @@ Configure in Claude Code (~/.claude.json or project .claude/mcp.json):
 
 import os
 import json
+import base64
 import asyncio
-import aiosmtplib
 from pathlib import Path
 from datetime import datetime, timezone
 from email.mime.text import MIMEText
@@ -43,15 +43,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ── Config ────────────────────────────────────────────────────────────────────
-VAULT_PATH  = Path(os.getenv("VAULT_PATH", "./AI_Employee_Vault")).resolve()
-DRY_RUN     = os.getenv("DRY_RUN", "false").lower() == "true"
-SMTP_HOST   = os.getenv("SMTP_HOST", "smtp.gmail.com")
-SMTP_PORT   = int(os.getenv("SMTP_PORT", "587"))
-SMTP_USER   = os.getenv("SMTP_USER", "")
-SMTP_PASS   = os.getenv("SMTP_PASSWORD", "")
-FROM_NAME   = os.getenv("SMTP_FROM_NAME", "AI Employee")
-LOGS_DIR    = VAULT_PATH / "Logs"
-DRAFTS_DIR  = VAULT_PATH / "Drafts"
+VAULT_PATH   = Path(os.getenv("VAULT_PATH", "./AI_Employee_Vault")).resolve()
+DRY_RUN      = os.getenv("DRY_RUN", "false").lower() == "true"
+SMTP_USER    = os.getenv("SMTP_USER", "")
+FROM_NAME    = os.getenv("SMTP_FROM_NAME", "AI Employee")
+GMAIL_CREDS  = os.getenv("GMAIL_CREDENTIALS_PATH", "./secrets/gmail_credentials.json")
+GMAIL_TOKEN  = os.getenv("GMAIL_TOKEN_PATH", "./secrets/gmail_token.json")
+LOGS_DIR     = VAULT_PATH / "Logs"
+DRAFTS_DIR   = VAULT_PATH / "Drafts"
 
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
 DRAFTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -77,16 +76,20 @@ def _log(action_type: str, target: str, result: str, details: dict = None):
     log_file.write_text(json.dumps(entries, indent=2), encoding='utf-8')
 
 
-async def _send_smtp(to: str, subject: str, body: str, cc: str = None) -> dict:
-    """Send an email via SMTP. Returns dict with success/error."""
+async def _send_gmail_api(to: str, subject: str, body: str, cc: str = None) -> dict:
+    """Send an email via Gmail API (OAuth2). Returns dict with success/error."""
     if DRY_RUN:
         _log("email_send", to, "dry_run", {"subject": subject, "cc": cc})
         return {"success": True, "dry_run": True, "message": f"[DRY RUN] Would send to {to}: {subject}"}
 
-    if not SMTP_USER or not SMTP_PASS:
-        return {"success": False, "error": "SMTP credentials not configured. Set SMTP_USER and SMTP_PASSWORD in .env"}
-
     try:
+        from google.oauth2.credentials import Credentials
+        from googleapiclient.discovery import build
+
+        token_data = json.loads(Path(GMAIL_TOKEN).read_text(encoding="utf-8"))
+        creds = Credentials.from_authorized_user_info(token_data)
+        service = build("gmail", "v1", credentials=creds)
+
         msg = MIMEMultipart("alternative")
         msg["From"]    = f"{FROM_NAME} <{SMTP_USER}>"
         msg["To"]      = to
@@ -94,19 +97,11 @@ async def _send_smtp(to: str, subject: str, body: str, cc: str = None) -> dict:
         if cc:
             msg["Cc"] = cc
 
-        # Add AI assistance footer (Handbook §3)
         full_body = f"{body}\n\n---\n*This email was drafted with AI assistance.*"
         msg.attach(MIMEText(full_body, "plain"))
 
-        recipients = [to] + ([cc] if cc else [])
-        await aiosmtplib.send(
-            msg,
-            hostname=SMTP_HOST,
-            port=SMTP_PORT,
-            username=SMTP_USER,
-            password=SMTP_PASS,
-            start_tls=True,
-        )
+        raw = base64.urlsafe_b64encode(msg.as_bytes()).decode()
+        service.users().messages().send(userId="me", body={"raw": raw}).execute()
 
         _log("email_send", to, "success", {"subject": subject, "cc": cc})
         return {"success": True, "message": f"Email sent to {to}"}
@@ -225,7 +220,7 @@ def main():
     @server.call_tool()
     async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
         if name == "send_email":
-            result = await _send_smtp(
+            result = await _send_gmail_api(
                 to=arguments["to"],
                 subject=arguments["subject"],
                 body=arguments["body"],
