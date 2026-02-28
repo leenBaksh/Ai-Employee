@@ -30,6 +30,8 @@ import queue
 import threading
 import argparse
 import logging
+import urllib.request
+import urllib.error
 from pathlib import Path
 from datetime import datetime, timezone
 from dotenv import load_dotenv
@@ -67,6 +69,11 @@ class WhatsAppWatcher(BaseWatcher):
         self.access_token = os.getenv("WHATSAPP_ACCESS_TOKEN", "")
         self.phone_number_id = os.getenv("WHATSAPP_PHONE_NUMBER_ID", "")
         self.dry_run = os.getenv("DRY_RUN", "false").lower() == "true"
+        self.auto_reply_enabled = os.getenv("WHATSAPP_AUTO_REPLY", "false").lower() == "true"
+        self.auto_reply_message = os.getenv(
+            "WHATSAPP_AUTO_REPLY_MESSAGE",
+            "Thank you for your message! We've received it and will get back to you shortly. 🙏"
+        )
         self._message_queue: queue.Queue = queue.Queue()
         self._processed_ids: set[str] = self._load_processed_ids()
         self._flask_thread: threading.Thread | None = None
@@ -91,6 +98,46 @@ class WhatsAppWatcher(BaseWatcher):
     def _detect_priority(self, text: str, sender_name: str) -> str:
         combined = f"{text} {sender_name}".lower()
         return "high" if any(kw in combined for kw in URGENT_KEYWORDS) else "normal"
+
+    # ── Auto-Reply ────────────────────────────────────────────────────────────
+
+    def _send_auto_reply(self, to: str):
+        """Send an instant auto-reply via WhatsApp Cloud API v25.0."""
+        if self.dry_run:
+            logger.info(f"[DRY RUN] Would send auto-reply to {to}")
+            return
+
+        if not self.access_token or not self.phone_number_id:
+            logger.warning("Auto-reply skipped — WHATSAPP_ACCESS_TOKEN or WHATSAPP_PHONE_NUMBER_ID not set")
+            return
+
+        url = f"https://graph.facebook.com/v25.0/{self.phone_number_id}/messages"
+        payload = json.dumps({
+            "messaging_product": "whatsapp",
+            "to": to,
+            "type": "text",
+            "text": {"body": self.auto_reply_message},
+        }).encode("utf-8")
+
+        req = urllib.request.Request(
+            url,
+            data=payload,
+            method="POST",
+            headers={
+                "Authorization": f"Bearer {self.access_token}",
+                "Content-Type": "application/json",
+            },
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                result = json.loads(resp.read().decode())
+                msg_id = result.get("messages", [{}])[0].get("id", "unknown")
+                logger.info(f"Auto-reply sent to {to} (msg_id={msg_id})")
+        except urllib.error.HTTPError as e:
+            body = e.read().decode()
+            logger.error(f"Auto-reply failed (HTTP {e.code}): {body}")
+        except Exception as exc:
+            logger.error(f"Auto-reply error: {exc}")
 
     # ── Flask Webhook Server ──────────────────────────────────────────────────
 
@@ -270,6 +317,10 @@ _Add context or decision here._
             "priority": priority,
             "task_file": task_file.name,
         })
+
+        if self.auto_reply_enabled:
+            self._send_auto_reply(sender_id)
+
         return task_file
 
     # ── Override run() to start webhook server first ──────────────────────────
