@@ -1,28 +1,27 @@
 # AI Employee Dashboard
 ---
-last_updated: 2026-02-28 20:11 UTC
+last_updated: 2026-03-01 22:02 UTC
 status: active
-version: 0.3.0
-tier: Gold
+version: 0.2.0
+tier: Silver
 ---
 
 ## System Status
 
 | Component | Status | Last Check |
 |-----------|--------|------------|
-| Filesystem Watcher | Running | 2026-02-28 20:11 UTC |
-| Whatsapp Watcher | Running | 2026-02-28 20:11 UTC |
-| Scheduler | Running | 2026-02-28 20:11 UTC |
+| Filesystem Watcher | Running | 2026-03-01 22:02 UTC |
+| Scheduler | Running | 2026-03-01 22:02 UTC |
 
 ---
 
 ## Inbox Summary
 
-- **Needs Action:** 7
+- **Needs Action:** 0
 - **Pending Approval:** 0
 - **Email Drafts:** 1
-- **Scheduled Triggers:** 12
-- **Done (all time):** 66
+- **Scheduled Triggers:** 0
+- **Done (all time):** 97
 
 ---
 
@@ -36,25 +35,12 @@ _Check `/Logs/` for detailed action history._
 
 | Metric | Value |
 |--------|-------|
-| Tasks in queue | 7 |
+| Tasks in queue | 0 |
 | Pending approvals | 0 |
 | Drafts awaiting review | 1 |
-| Scheduled jobs pending | 12 |
-| Completed tasks | 66 |
+| Scheduled jobs pending | 0 |
+| Completed tasks | 97 |
 
 ---
 
-## Gold Tier
-
-| Feature | Status |
-|---------|--------|
-| Ralph Wiggum Loop | Idle |
-| Facebook drafts queued | 0 |
-| Instagram drafts queued | 0 |
-| Twitter drafts queued | 0 |
-| Odoo MCP | Available |
-| Audit MCP | Available |
-
----
-
-_Updated automatically by AI Employee v0.3 · [Company Handbook](Company_Handbook.md) · [Business Goals](Business_Goals.md)_
+_Updated automatically by AI Employee v0.2 · [Company Handbook](Company_Handbook.md) · [Business Goals](Business_Goals.md)_

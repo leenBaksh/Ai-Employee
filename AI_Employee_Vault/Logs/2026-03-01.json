@@ -1,0 +1,1315 @@
+[
+  {
+    "timestamp": "2026-03-01T14:42:06.136013+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-01T14:42:06.192833+00:00",
+    "action_type": "scheduled_trigger_created",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "job": "daily_briefing",
+      "file": "TRIGGER_20260301T144206Z_daily_briefing.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-01T14:42:06.496202+00:00",
+    "action_type": "daily_briefing_triggered",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {},
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-01T14:42:06.594323+00:00",
+    "action_type": "scheduled_trigger_created",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "job": "odoo_health_check",
+      "file": "TRIGGER_20260301T144206Z_odoo_health_check.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-01T14:42:06.638326+00:00",
+    "action_type": "odoo_health_check_triggered",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {},
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-01T14:42:08.374466+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260301T144206Z_daily_briefing.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-01T14:42:08.386271+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260301T144206Z_odoo_health_check.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-01T14:42:11.843641+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260301T144206Z_daily_briefing.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-01T14:42:12.688020+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260301T144206Z_odoo_health_check.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-01T14:42:17.878214+00:00",
+    "action_type": "scheduled_trigger_created",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "job": "daily_briefing",
+      "file": "TRIGGER_20260301T144217Z_daily_briefing.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-01T14:42:17.900928+00:00",
+    "action_type": "daily_briefing_triggered",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {},
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-01T14:42:18.681147+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260301T144217Z_daily_briefing.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-01T14:42:20.347778+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260301T144217Z_daily_briefing.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-01T15:42:34.541183+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-01T19:21:34.192576+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-01T19:21:35.143911+00:00",
+    "action_type": "scheduled_trigger_created",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "job": "weekly_audit",
+      "file": "TRIGGER_20260301T192135Z_weekly_audit.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-01T19:21:35.169521+00:00",
+    "action_type": "weekly_audit_triggered",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "period": "2026-02-22 to 2026-03-01"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-01T19:21:37.115700+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260301T192135Z_weekly_audit.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-01T19:21:39.492848+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260301T192135Z_weekly_audit.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-01T19:21:58.115344+00:00",
+    "action_type": "scheduled_trigger_created",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "job": "weekly_audit",
+      "file": "TRIGGER_20260301T192158Z_weekly_audit.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-01T19:21:58.343593+00:00",
+    "action_type": "weekly_audit_triggered",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "period": "2026-02-22 to 2026-03-01"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-01T19:21:59.524715+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260301T192158Z_weekly_audit.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-01T19:22:02.476591+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260301T192158Z_weekly_audit.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-01T20:44:39.542006+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-01T21:33:42.548353+00:00",
+    "action_type": "approval_granted",
+    "actor": "dashboard",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "result": "approved"
+  },
+  {
+    "timestamp": "2026-03-01T21:33:42.868690+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:33:48.389746+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:33:53.397136+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:33:56.296489+00:00",
+    "action_type": "approval_granted",
+    "actor": "dashboard",
+    "target": "APPROVAL_whatsapp_Test_User_20260302.md",
+    "result": "approved"
+  },
+  {
+    "timestamp": "2026-03-01T21:33:58.414454+00:00",
+    "action_type": "unknown_approval",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_Test_User_20260302.md",
+    "parameters": {},
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-03-01T21:33:58.419192+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:34:03.458236+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:34:08.464798+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:34:13.477599+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:34:18.482793+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:34:23.491678+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:34:28.500300+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:34:33.507487+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:34:38.514273+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:34:43.548638+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:34:48.559753+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:34:53.566436+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:34:58.571899+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:35:03.577732+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:35:08.584795+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:35:13.593170+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:35:18.722378+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:35:23.730926+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:35:28.738184+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:35:33.748528+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:35:38.764536+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:35:43.773521+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:35:48.781484+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:35:53.825936+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:35:58.833231+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:36:03.841247+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:36:08.849961+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:36:13.861502+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:36:18.868286+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:36:23.876406+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:36:28.898790+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:36:34.331007+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:36:39.337954+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:36:44.348982+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:36:49.359236+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:36:54.365683+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:36:59.388468+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:37:04.395341+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:37:09.400293+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:37:14.409880+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:37:19.418676+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:37:24.426160+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:37:29.433988+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:37:34.440206+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:37:39.500316+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:37:44.512079+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:37:49.518065+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:37:54.525827+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:37:59.534034+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:38:04.540246+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:38:09.545206+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:38:14.683982+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:38:19.900830+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:38:24.905996+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:38:29.912366+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:38:34.917735+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:38:39.946446+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:38:44.955732+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:38:49.962436+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:38:54.968430+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:38:59.977949+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:39:04.984180+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:39:10.005451+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:39:15.278456+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:39:20.286600+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:39:25.293182+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:39:30.299679+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:39:35.306258+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:39:40.314254+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:39:45.341862+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:39:50.349949+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:39:55.354735+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:40:00.361664+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:40:05.369517+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:40:10.376761+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:40:15.386034+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:40:20.394201+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:40:25.426719+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:40:30.435253+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:40:35.443425+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:40:40.449739+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:40:45.461770+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "APPROVAL_whatsapp_World_Digital_20260302.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x90 in position 554: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-01T21:45:14.562468+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-01T21:57:17.770190+00:00",
+    "action_type": "process_restart",
+    "actor": "orchestrator",
+    "target": "whatsapp_watcher",
+    "parameters": {
+      "exit_code": -15
+    },
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-03-01T21:57:17.961264+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "whatsapp_watcher",
+    "parameters": {
+      "pid": 99220
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-01T21:58:19.034206+00:00",
+    "action_type": "process_restart",
+    "actor": "orchestrator",
+    "target": "whatsapp_watcher",
+    "parameters": {
+      "exit_code": -15
+    },
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-03-01T21:58:19.059383+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "whatsapp_watcher",
+    "parameters": {
+      "pid": 99784
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-01T21:59:20.495372+00:00",
+    "action_type": "process_restart",
+    "actor": "orchestrator",
+    "target": "whatsapp_watcher",
+    "parameters": {
+      "exit_code": -9
+    },
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-03-01T21:59:20.521965+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "whatsapp_watcher",
+    "parameters": {
+      "pid": 100130
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-01T22:02:25.300254+00:00",
+    "action_type": "process_restart",
+    "actor": "orchestrator",
+    "target": "scheduler",
+    "parameters": {
+      "exit_code": -15
+    },
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-03-01T22:02:25.344225+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "scheduler",
+    "parameters": {
+      "pid": 100664
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-01T22:02:26.398853+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-01T22:02:28.386818+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  }
+]

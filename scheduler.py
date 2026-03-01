@@ -16,6 +16,8 @@ import sys
 import json
 import subprocess
 import logging
+import urllib.request
+import urllib.error
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
 from dotenv import load_dotenv
@@ -45,6 +47,12 @@ DRY_RUN = os.getenv("DRY_RUN", "false").lower() == "true"
 DAILY_BRIEFING_TIME = os.getenv("DAILY_BRIEFING_TIME", "08:00")
 WEEKLY_AUDIT_TIME   = os.getenv("WEEKLY_AUDIT_TIME", "22:00")
 WEEKLY_AUDIT_DAY    = int(os.getenv("WEEKLY_AUDIT_DAY", "6"))  # 6 = Sunday
+
+WHATSAPP_DAILY_REPORT_ENABLED = os.getenv("WHATSAPP_DAILY_REPORT_ENABLED", "false").lower() == "true"
+WHATSAPP_DAILY_REPORT_TIME    = os.getenv("WHATSAPP_DAILY_REPORT_TIME", "08:00")
+WHATSAPP_DAILY_REPORT_TO      = os.getenv("WHATSAPP_DAILY_REPORT_TO", "")
+WHATSAPP_ACCESS_TOKEN         = os.getenv("WHATSAPP_ACCESS_TOKEN", "")
+WHATSAPP_PHONE_NUMBER_ID      = os.getenv("WHATSAPP_PHONE_NUMBER_ID", "")
 
 
 def _log(action_type: str, result: str, details: dict = None):
@@ -321,6 +329,97 @@ def job_social_limits_check():
     _log("social_limits_check", "success", {"limits": report})
 
 
+def job_daily_whatsapp_report():
+    """Daily at configured time — send vault summary to World Digital via WhatsApp."""
+    logger.info("▶ Daily WhatsApp report job starting")
+    if DRY_RUN:
+        logger.info("[DRY RUN] Would send daily WhatsApp report")
+        return
+    if not WHATSAPP_DAILY_REPORT_TO:
+        logger.warning("Daily WhatsApp report skipped — WHATSAPP_DAILY_REPORT_TO not set")
+        return
+    if not WHATSAPP_ACCESS_TOKEN or not WHATSAPP_PHONE_NUMBER_ID:
+        logger.warning("Daily WhatsApp report skipped — WhatsApp credentials not set")
+        return
+
+    now = datetime.now(timezone.utc)
+    today = now.strftime("%Y-%m-%d")
+
+    # Vault stats
+    needs_action = len([f for f in NEEDS_ACTION.glob("*.md") if f.is_file()])
+    pending_approval = len(list((VAULT_PATH / "Pending_Approval").glob("*.md")))
+    done_total = len(list((VAULT_PATH / "Done").glob("*.md")))
+
+    # Today's action count from log
+    log_file = LOGS_DIR / f"{today}.json"
+    actions_today = 0
+    if log_file.exists():
+        try:
+            entries = json.loads(log_file.read_text(encoding="utf-8"))
+            actions_today = len(entries)
+        except Exception:
+            pass
+
+    # Status line
+    if needs_action == 0 and pending_approval == 0:
+        status_line = "✅ All clear — nothing needs your attention."
+    else:
+        parts = []
+        if needs_action > 0:
+            parts.append(f"⚠️ {needs_action} task(s) need attention")
+        if pending_approval > 0:
+            parts.append(f"📋 {pending_approval} approval(s) waiting")
+        status_line = " · ".join(parts)
+
+    message = (
+        f"🤖 *AI Employee Daily Report*\n"
+        f"📅 {now.strftime('%A, %b %d %Y')} — {now.strftime('%H:%M')} UTC\n\n"
+        f"📥 Inbox: {needs_action} pending\n"
+        f"⏳ Awaiting approval: {pending_approval}\n"
+        f"✅ Completed (all time): {done_total}\n"
+        f"⚡ Actions logged today: {actions_today}\n\n"
+        f"{status_line}\n\n"
+        f"_Reply *URGENT* to flag a priority item._\n"
+        f"_AI Employee v0.4 Platinum_"
+    )
+
+    url = f"https://graph.facebook.com/v25.0/{WHATSAPP_PHONE_NUMBER_ID}/messages"
+    payload = json.dumps({
+        "messaging_product": "whatsapp",
+        "to": WHATSAPP_DAILY_REPORT_TO,
+        "type": "text",
+        "text": {"body": message},
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        url, data=payload, method="POST",
+        headers={
+            "Authorization": f"Bearer {WHATSAPP_ACCESS_TOKEN}",
+            "Content-Type": "application/json",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            result = json.loads(resp.read().decode())
+            msg_id = result.get("messages", [{}])[0].get("id", "unknown")
+            logger.info(f"Daily WhatsApp report sent to {WHATSAPP_DAILY_REPORT_TO} (msg_id={msg_id})")
+            _log("whatsapp_daily_report_sent", "success", {
+                "to": WHATSAPP_DAILY_REPORT_TO,
+                "msg_id": msg_id,
+                "needs_action": needs_action,
+                "pending_approval": pending_approval,
+                "done_total": done_total,
+                "actions_today": actions_today,
+            })
+    except urllib.error.HTTPError as e:
+        body = e.read().decode()
+        logger.error(f"Daily WhatsApp report failed (HTTP {e.code}): {body}")
+        _log("whatsapp_daily_report_sent", "error", {"error": body})
+    except Exception as exc:
+        logger.error(f"Daily WhatsApp report error: {exc}")
+        _log("whatsapp_daily_report_sent", "error", {"error": str(exc)})
+
+
 def main():
     logger.info(f"Scheduler starting — vault: {VAULT_PATH}")
     logger.info(f"Daily briefing: {DAILY_BRIEFING_TIME}")
@@ -331,6 +430,11 @@ def main():
     # Daily jobs
     schedule.every().day.at(DAILY_BRIEFING_TIME).do(job_daily_briefing)
     schedule.every().day.at("09:00").do(job_odoo_health_check)  # Gold Tier
+
+    # Daily WhatsApp report (Platinum)
+    if WHATSAPP_DAILY_REPORT_ENABLED:
+        schedule.every().day.at(WHATSAPP_DAILY_REPORT_TIME).do(job_daily_whatsapp_report)
+        logger.info(f"Daily WhatsApp report: {WHATSAPP_DAILY_REPORT_TIME} UTC → {WHATSAPP_DAILY_REPORT_TO}")
 
     # Weekly audit — Sunday (Silver)
     day_names = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
