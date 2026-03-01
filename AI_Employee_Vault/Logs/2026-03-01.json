@@ -1311,5 +1311,20 @@
       }
     },
     "result": "success"
+  },
+  {
+    "timestamp": "2026-03-01T22:02:58.304860+00:00",
+    "action_type": "whatsapp_daily_report_sent",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "to": "923103871019",
+      "msg_id": "wamid.HBgMOTIzMTAzODcxMDE5FQIAERgSQzY5MTIyRDA4Njg5QzIzNjFBAA==",
+      "needs_action": 0,
+      "pending_approval": 0,
+      "done_total": 96,
+      "actions_today": 123
+    },
+    "result": "success"
   }
 ]
