@@ -6360,5 +6360,25 @@
       "error": "'charmap' codec can't decode byte 0x8f in position 1873: character maps to <undefined>"
     },
     "result": "error"
+  },
+  {
+    "timestamp": "2026-03-03T15:45:55.079749+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "LINKEDIN_POST_20260302T032000Z.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x8f in position 1873: character maps to <undefined>"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-03T15:46:00.090617+00:00",
+    "action_type": "approval_execution_error",
+    "actor": "orchestrator",
+    "target": "LINKEDIN_POST_20260302T032000Z.md",
+    "parameters": {
+      "error": "'charmap' codec can't decode byte 0x8f in position 1873: character maps to <undefined>"
+    },
+    "result": "error"
   }
 ]
