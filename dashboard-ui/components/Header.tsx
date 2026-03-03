@@ -1,9 +1,16 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useDashboardContext } from '@/context/DashboardContext'
 
 export default function Header() {
   const { connected, data } = useDashboardContext()
+  const router = useRouter()
+
+  async function handleLogout() {
+    await fetch('/api/auth/logout', { method: 'POST' })
+    router.push('/login')
+  }
 
   return (
     <header className="bg-slate-900 border-b border-slate-800 px-6 py-3.5 flex items-center justify-between flex-shrink-0 z-10">
@@ -32,6 +39,12 @@ export default function Header() {
             {connected ? 'LIVE' : 'POLLING'}
           </span>
         </div>
+        <button
+          onClick={handleLogout}
+          className="text-slate-500 hover:text-slate-300 text-xs px-2 py-1 rounded border border-slate-700 hover:border-slate-500 transition-colors"
+        >
+          Sign out
+        </button>
       </div>
     </header>
   )

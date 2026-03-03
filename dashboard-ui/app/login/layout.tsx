@@ -1,0 +1,4 @@
+// Standalone auth layout — no sidebar, header, or DashboardProvider
+export default function LoginLayout({ children }: { children: React.ReactNode }) {
+  return <>{children}</>
+}

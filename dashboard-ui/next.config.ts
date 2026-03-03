@@ -1,14 +1,20 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  // Proxy all /api/* calls to the Flask backend on :8888
+  // Proxy /api/* to Flask backend on :8888.
+  // /api/auth/* is intentionally excluded — served by Next.js route handlers.
   async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: 'http://localhost:8888/api/:path*',
-      },
-    ]
+    return {
+      beforeFiles: [],
+      afterFiles: [
+        {
+          // Match /api/* but NOT /api/auth/* (auth routes handled by Next.js)
+          source: '/api/:path((?!auth(?:/|$)).*)',
+          destination: 'http://localhost:8888/api/:path*',
+        },
+      ],
+      fallback: [],
+    }
   },
 }
 

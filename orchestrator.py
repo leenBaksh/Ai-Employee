@@ -639,14 +639,42 @@ Navigate to: {platform_url}
                 p_dir = self.vault_path / "To_Post" / platform
                 social_counts[platform] = len(list(p_dir.glob("POST_*.md"))) if p_dir.exists() else 0
 
+            # WhatsApp stats
+            wa_processed = 0
+            wa_file = self.vault_path / ".whatsapp_processed_ids.json"
+            if wa_file.exists():
+                try:
+                    wa_processed = len(json.loads(wa_file.read_text(encoding="utf-8")))
+                except Exception:
+                    pass
+            wa_auto_reply = os.getenv("WHATSAPP_AUTO_REPLY", "false").lower() == "true"
+            wa_daily_report = os.getenv("WHATSAPP_DAILY_REPORT_ENABLED", "false").lower() == "true"
+            wa_report_time = os.getenv("WHATSAPP_DAILY_REPORT_TIME", "08:00")
+            wa_report_to = os.getenv("WHATSAPP_DAILY_REPORT_TO", "—")
+
+            # Local agent signal
+            signal_file = self.vault_path / "Signals" / "HEALTH_local-01.json"
+            agent_status = "Unknown"
+            agent_ts = "—"
+            if signal_file.exists():
+                try:
+                    sig = json.loads(signal_file.read_text(encoding="utf-8"))
+                    agent_status = sig.get("status", "unknown").title()
+                    agent_ts = sig.get("timestamp", "—")[:16].replace("T", " ") + " UTC"
+                except Exception:
+                    pass
+
+            inbox_status = "✅ Clear" if na_count == 0 else f"⚠️ {na_count} pending"
+            approval_status = "✅ Clear" if pa_count == 0 else f"📋 {pa_count} waiting"
+
             dashboard = self.vault_path / "Dashboard.md"
             dashboard.write_text(
                 f"""# AI Employee Dashboard
 ---
 last_updated: {now}
 status: active
-version: 0.3.0
-tier: Gold
+version: 0.4.0
+tier: Platinum
 ---
 
 ## System Status
@@ -654,15 +682,17 @@ tier: Gold
 | Component | Status | Last Check |
 |-----------|--------|------------|
 {system_rows}
+| Local Agent (local-01) | {agent_status} | {agent_ts} |
+| Daily WhatsApp Report | {"✅ Enabled" if wa_daily_report else "⬜ Disabled"} | {wa_report_time} UTC → {wa_report_to} |
 
 ---
 
 ## Inbox Summary
 
-- **Needs Action:** {na_count}
-- **Pending Approval:** {pa_count}
-- **Email Drafts:** {draft_count}
+- **Needs Action:** {inbox_status}
+- **Pending Approval:** {approval_status}
 - **Scheduled Triggers:** {sched_count}
+- **Drafts awaiting review:** {draft_count}
 - **Done (all time):** {done_count}
 
 ---
@@ -685,11 +715,23 @@ _Check `/Logs/` for detailed action history._
 
 ---
 
-## Gold Tier
+## WhatsApp Channel
+
+| Metric | Value |
+|--------|-------|
+| Messages received (all time) | {wa_processed} |
+| Auto-reply | {"✅ Enabled" if wa_auto_reply else "⬜ Disabled"} |
+| Daily report | {"✅ " + wa_report_time + " UTC → " + wa_report_to if wa_daily_report else "⬜ Disabled"} |
+
+---
+
+## Platinum Tier
 
 | Feature | Status |
 |---------|--------|
 | Ralph Wiggum Loop | {ralph_status} |
+| Cloud Agent | Deployed |
+| Vault Sync | Configured |
 | Facebook drafts queued | {social_counts.get('Facebook', 0)} |
 | Instagram drafts queued | {social_counts.get('Instagram', 0)} |
 | Twitter drafts queued | {social_counts.get('Twitter', 0)} |
@@ -698,7 +740,16 @@ _Check `/Logs/` for detailed action history._
 
 ---
 
-_Updated automatically by AI Employee v0.3 · [Company Handbook](Company_Handbook.md) · [Business Goals](Business_Goals.md)_
+## Quick Links
+
+- [Company Handbook](Company_Handbook.md)
+- [Business Goals](Business_Goals.md)
+- [Logs](Logs/)
+- [Done](Done/)
+
+---
+
+_Updated automatically by AI Employee v0.4 Platinum · [Company Handbook](Company_Handbook.md) · [Business Goals](Business_Goals.md)_
 """,
                 encoding='utf-8',
             )

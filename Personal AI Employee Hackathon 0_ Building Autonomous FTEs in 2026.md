@@ -65,9 +65,10 @@ Before diving into building your Personal AI Employee, ensure you have the follo
 
 | Component | Requirement | Purpose |
 | :---- | :---- | :---- |
-| [Claude Code](https://claude.com/product/claude-code) | Active subscription (Pro or Use Free Gemini API with Claude Code Router) | Primary reasoning engine |
+| [Claude Code](https://claude.com/product/claude-code) | Active subscription (Pro or Max) | Primary reasoning engine |
 | [Obsidian](https://obsidian.md/download) | v1.10.6+ (free) | Knowledge base & dashboard |
 | [Python](https://www.python.org/downloads/) | 3.13 or higher | Sentinel scripts & orchestration |
+| [UV](https://docs.astral.sh/uv/) | Latest (`curl -LsSf https://astral.sh/uv/install.sh \| sh`) | Python package manager & script runner (replaces pip/venv) |
 | [Node.js](http://Node.js) | v24+ LTS | MCP servers & automation |
 | [Github Desktop](https://desktop.github.com/download/) | Latest stable | Version control for your vault |
 
@@ -107,7 +108,7 @@ This hackathon assumes intermediate technical proficiency:
 
 3. Verify Claude Code works by running: claude \--version
 
-4. Set up a UV Python project
+4. Set up a UV Python project: `uv init ai-employee && cd ai-employee && uv sync` (all watcher scripts are run as `uv run <script>`, not `python <script>`)
 
 5. Join the Wednesday Research Meeting Zoom link
 
@@ -157,7 +158,7 @@ Estimated time: 40+ hours
 
 2. Full cross-domain integration (Personal \+ Business)
 
-3. Create an accounting system for your business in Odoo Community (self-hosted, local) and integrate it via an [MCP server](https://github.com/AlanOgic/mcp-odoo-adv) using Odoo’s JSON-RPC APIs (Odoo 19+). 
+3. Create an accounting system for your business in Odoo Community (self-hosted, local) and integrate it via a custom Python MCP server using Odoo’s JSON-RPC APIs (Odoo 17+). The reference implementation (`mcp_servers/odoo_mcp_server.py`) exposes five tools: `odoo_get_customers`, `odoo_get_invoices`, `odoo_create_invoice_draft`, `odoo_get_revenue_summary`, `odoo_get_transactions`. Required `.env` vars: `ODOO_URL`, `ODOO_DB`, `ODOO_USER`, `ODOO_PASSWORD`. Note: Cloud Odoo deployment (Platinum requirement) is aspirational — the reference implementation connects to a local Odoo instance. 
 
 4. Integrate Facebook and Instagram and post messages and generate summary
 
@@ -199,6 +200,7 @@ All Gold requirements plus:
 5. **Deploy Odoo Community on a Cloud VM (24/7)** with HTTPS, backups, and health monitoring; integrate Cloud Agent with Odoo via MCP for draft-only accounting actions and Local approval for posting invoices/payments.  
 6. Optional A2A Upgrade (Phase 2): Replace some file handoffs with direct A2A messages later, while keeping the vault as the audit record  
 7. **Platinum demo (minimum passing gate):** Email arrives while Local is offline → Cloud drafts reply \+ writes approval file → when Local returns, user approves → Local executes send via MCP → logs → moves task to /Done.
+8. **(Bonus) Live Web Dashboard:** A Next.js dashboard (port 3000) with real-time SSE updates showing vault stats, tasks, approvals (with one-click approve/reject), activity logs, done archive, and agent health. Protected with password authentication (session cookie, HMAC-SHA256). See Section 8 for full details.
 
 ### **1\. The "Foundational Layer" (Local Engine)**
 
@@ -313,40 +315,30 @@ status: pending
         self.processed\_ids.add(message\['id'\])  
         return filepath
 
-## **WhatsApp Watcher (Playwright-based)**
+## **WhatsApp Watcher (Meta Cloud API — Recommended)**
 
-Note: This uses WhatsApp Web automation. Be aware of WhatsApp's terms of service.
+The recommended implementation uses the **Meta WhatsApp Business Cloud API** (webhook push, no browser automation, fully ToS-compliant). A Flask server runs on port 8089 and receives webhook events from Meta.
 
-\# whatsapp\_watcher.py  
-from playwright.sync\_api import sync\_playwright  
-from base\_watcher import BaseWatcher  
-from pathlib import Path  
-import json
+Required `.env` variables:
 
-class WhatsAppWatcher(BaseWatcher):  
-    def \_\_init\_\_(self, vault\_path: str, session\_path: str):  
-        super().\_\_init\_\_(vault\_path, check\_interval=30)  
-        self.session\_path \= Path(session\_path)  
-        self.keywords \= \['urgent', 'asap', 'invoice', 'payment', 'help'\]  
-          
-    def check\_for\_updates(self) \-\> list:  
-        with sync\_playwright() as p:  
-            browser \= p.chromium.launch\_persistent\_context(  
-                self.session\_path, headless=True  
-            )  
-            page \= browser.pages\[0\]  
-            page.goto('https://web.whatsapp.com')  
-            page.wait\_for\_selector('\[data-testid="chat-list"\]')  
-              
-            \# Find unread messages  
-            unread \= page.query\_selector\_all('\[aria-label\*="unread"\]')  
-            messages \= \[\]  
-            for chat in unread:  
-                text \= chat.inner\_text().lower()  
-                if any(kw in text for kw in self.keywords):  
-                    messages.append({'text': text, 'chat': chat})  
-            browser.close()  
-            return messages
+\# .env — WhatsApp Meta Cloud API
+WHATSAPP\_VERIFY\_TOKEN=your\_verify\_token
+WHATSAPP\_ACCESS\_TOKEN=your\_meta\_access\_token
+WHATSAPP\_PHONE\_NUMBER\_ID=your\_phone\_number\_id
+WHATSAPP\_WEBHOOK\_PORT=8089
+WHATSAPP\_AUTO\_REPLY=true
+WHATSAPP\_AUTO\_REPLY\_MESSAGE="Thanks for your message\! Our AI Employee has received it and will follow up shortly."
+
+Setup flow:
+
+1. Create a Meta Developer App with WhatsApp Business product
+2. Set the webhook URL to `https://<your-ngrok-url>/webhook` (use ngrok for local dev)
+3. Run `uv run whatsapp-watcher --setup` for step-by-step instructions
+4. Start the watcher: `uv run whatsapp-watcher`
+
+Auto-reply feature: When `WHATSAPP_AUTO_REPLY=true`, every incoming message triggers an immediate acknowledgement reply via the Meta Graph API (v25.0). This is a deliberate exception to the HITL approval rule — the reply is a courtesy acknowledgement only, not a substantive action.
+
+The watcher also writes every incoming message as a task file to `/Needs_Action/` for Claude to process, following the same pattern as the Gmail Watcher. A scheduled daily WhatsApp summary report can be pushed to a configured number by setting `WHATSAPP_DAILY_REPORT_ENABLED=true`.
 
 ## **File System Watcher (for local drops)**
 
@@ -399,41 +391,55 @@ Claude uses custom **MCP (Model Context Protocol)** servers to act:
 
 ## **Recommended MCP Servers**
 
-| Server | Capabilities | Use Case |
-| :---- | :---- | :---- |
-| filesystem | Read, write, list files | Built-in, use for vault |
-| email-mcp | Send, draft, search emails | Gmail integration |
-| browser-mcp | Navigate, click, fill forms | Payment portals |
-| calendar-mcp | Create, update events | Scheduling |
-| slack-mcp | Send messages, read channels | Team communication |
+| Server | Tier | Capabilities | Use Case |
+| :---- | :---- | :---- | :---- |
+| filesystem | Bronze | Read, write, list files | Built-in, use for vault |
+| email | Bronze/Silver | `send_email`, `draft_email`, `list_drafts` | Send emails after human approval |
+| playwright | Silver | 22 `browser_*` tools (HTTP, port 8808) | LinkedIn posting, web browsing, browser automation |
+| odoo | Gold | `odoo_get_customers`, `odoo_get_invoices`, `odoo_create_invoice_draft`, `odoo_get_revenue_summary`, `odoo_get_transactions` | Odoo ERP — invoices, accounting, customers |
+| social | Gold | `social_draft_post`, `social_check_limits`, `social_get_summary`, `social_list_pending` | Facebook, Instagram, Twitter drafts and rate limiting |
+| audit | Gold | `audit_get_errors`, `audit_get_activity_summary`, `audit_search_logs`, `audit_get_weekly_report` | Log analysis, error surfacing, weekly audit reports |
+| context7 | Dev | `resolve-library-id`, `get-library-docs` | Real-time library docs during development (not part of runtime agent loop) |
+
+> **Note:** `calendar-mcp` and `slack-mcp` are aspirational integrations not included in the reference implementation. The Playwright MCP HTTP server is started via `bash .claude/skills/browsing-with-playwright/scripts/start-server.sh` and called through a helper client script rather than directly via MCP protocol.
 
 ## 
 
 ## **Claude Code Configuration**
 
-Configure MCP servers in your Claude Code settings:
+Configure MCP servers in your project-scoped Claude Code settings (`.claude/mcp.json` in the project root — not a global config file). Use `"mcpServers"` as the root key. Python MCP servers are run via `uv run`; Node.js MCP servers via `npx`:
 
-// \~/.config/claude-code/mcp.json  
-{  
-  "servers": \[  
-    {  
-      "name": "email",  
-      "command": "node",  
-      "args": \["/path/to/email-mcp/index.js"\],  
-      "env": {  
-        "GMAIL\_CREDENTIALS": "/path/to/credentials.json"  
-      }  
-    },  
-    {  
-      "name": "browser",  
-      "command": "npx",  
-      "args": \["@anthropic/browser-mcp"\],  
-      "env": {  
-        "HEADLESS": "true"  
-      }  
-    }  
-  \]  
+// .claude/mcp.json (project root — project-scoped, not global)
+{
+  "mcpServers": {
+    "email": {
+      "command": "uv",
+      "args": \["run", "--directory", ".", "email-mcp"\]
+    },
+    "odoo": {
+      "command": "uv",
+      "args": \["run", "--directory", ".", "odoo-mcp"\]
+    },
+    "social": {
+      "command": "uv",
+      "args": \["run", "--directory", ".", "social-mcp"\]
+    },
+    "audit": {
+      "command": "uv",
+      "args": \["run", "--directory", ".", "audit-mcp"\]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": \["@playwright/mcp@latest"\]
+    },
+    "context7": {
+      "command": "npx",
+      "args": \["-y", "@upstash/context7-mcp"\]
+    }
+  }
 }
+
+Each Python MCP server is defined as a `[project.scripts]` entry in `pyproject.toml` (e.g., `email-mcp = "mcp_servers.email_mcp_server:main"`), so `uv run email-mcp` resolves automatically.
 
 ## **Human-in-the-Loop Pattern**
 
@@ -492,23 +498,44 @@ To keep your AI Employee working autonomously until a task is complete, use the
     \--max-iterations 10  
 \`\`\`
 
+**Reference Implementation — State File Pattern (Gold tier):**
+
+The production implementation uses a JSON state file in `/Ralph_State/ralph_current.json`:
+
+\`\`\`json
+{
+  "active": true,
+  "task": "Process all files in /Needs\_Action",
+  "iterations": 3,
+  "max\_iterations": 10,
+  "continuation\_prompt": "Continue processing tasks in /Needs\_Action. Move each to /Done when complete."
+}
+\`\`\`
+
+The stop hook (`.claude/hooks/stop_hook.py`) reads this file on every Claude exit attempt. If `active: true` and `iterations < max_iterations`, it exits with code `2` (block exit) and re-injects the `continuation_prompt`. If `active: false` or max iterations reached, it exits `0` (allow stop). The orchestrator starts a Ralph loop by writing this state file when it detects a `RALPH_*.md` approval file in `/Approved/`.
+
 **Two Completion Strategies:**
 
-1. **Promise-based (simple):** Claude outputs \`\<promise\>TASK\_COMPLETE\</promise\>\`  
-2. **File movement (advanced \- Gold tier)**: Stop hook detects when task file moves to /Done  
-* More reliable (completion is natural part of workflow)  
-* Orchestrator creates state file programmatically  
-* See reference implementation for details
+1. **State file (recommended — Gold tier):** Orchestrator writes `ralph_current.json`. Stop hook checks `active` flag. Claude sets `active: false` or moves the task file to `/Done/` when done.
+2. **Promise-based (simple):** Claude outputs `TASK\_COMPLETE` string. Stop hook scans Claude's last output for the string.
 
 Reference: [https://github.com/anthropics/claude-code/tree/main/.claude/plugins/ralph-wiggum](https://github.com/anthropics/claude-code/tree/main/.claude/plugins/ralph-wiggum)
 
 ### **3\. Continuous vs. Scheduled Operations**
 
-| Operation Type | Example Task | Local Trigger |
-| :---- | :---- | :---- |
-| **Scheduled** | **Daily Briefing:** Summarize business tasks at 8:00 AM. | cron (Mac/Linux) or Task Scheduler (Win) calls Claude. |
-| **Continuous** | **Lead Capture:** Watch WhatsApp for keywords like "Pricing." | Python watchdog script monitoring the /Inbox folder. |
-| **Project-Based** | **Q1 Tax Prep:** Categorize 3 months of business expenses. | Manual drag-and-drop of a file into the /Active\_Project folder. |
+| Operation Type | Example Task | Trigger | Tier |
+| :---- | :---- | :---- | :---- |
+| **Scheduled** | **Daily Briefing:** Summarize business tasks at 8:00 AM | `scheduler.py` via `uv run scheduler` (uses APScheduler) | Silver |
+| **Scheduled** | **Weekly Business Audit + CEO Briefing:** Every Sunday 22:00 | `scheduler.py` — calls `/weekly-briefing` + `/weekly-business-audit` skills | Gold |
+| **Scheduled** | **SLA Monitor:** Check for stale /Needs\_Action items every 30 min | `scheduler.py` — writes alert if task age \> threshold | Gold |
+| **Scheduled** | **Odoo Health Check:** Verify Odoo connectivity daily | `scheduler.py` — calls `/odoo-health-check` skill | Gold |
+| **Scheduled** | **Social Rate Limit Check:** Verify post counts before posting | `scheduler.py` — calls `social_check_limits` MCP tool | Gold |
+| **Scheduled** | **WhatsApp Daily Report:** Push summary to configured number | `scheduler.py` — requires `WHATSAPP_DAILY_REPORT_ENABLED=true` | Gold |
+| **Continuous** | **Lead Capture:** Watch WhatsApp for keywords like "Pricing" | WhatsApp watcher (Meta Cloud API webhook, port 8089) | Silver |
+| **Continuous** | **Email triage:** Monitor Gmail for unread/important messages | Gmail watcher (Google OAuth2, polls every 2 min) | Silver |
+| **Continuous** | **Social approval queue:** Watch /To\_Post/* for new posts | Social watcher (polls /To\_Post/Facebook\|Instagram\|Twitter/) | Gold |
+| **Continuous** | **File drop:** Process files dropped in /Inbox | Filesystem watcher (watchdog, event-driven) | Bronze |
+| **Project-Based** | **Q1 Tax Prep:** Categorize 3 months of business expenses | Manual file drop into /Inbox or /Needs\_Action | Any |
 
 ### 
 
@@ -627,7 +654,7 @@ Strong week with revenue ahead of target. One bottleneck identified.
 ### **5\. Tech Stack Summary**
 
 * **Knowledge Base:** Obsidian (Local Markdown).  
-* **Logic Engine:** Claude Code (running claude-4-5-opus or any other LLM using Claude Code Router).  
+* **Logic Engine:** Claude Code (running `claude-opus-4-6`, `claude-sonnet-4-6`, or `claude-haiku-4-5` — use the most capable model your subscription supports).  
 * **External Integration:** **MCP Servers** (Local Node.js/Python scripts) for Gmail, WhatsApp, and Banking.  
   * **Playwright** for "Computer Use" (interacting with websites for payments).  
 * **Automation Glue:** A master Python Orchestrator.py that handles the timing and folder watching.
@@ -650,13 +677,49 @@ Never store credentials in plain text or in your Obsidian vault.
 
 * Rotate credentials monthly and after any suspected breach
 
-Example .env structure:
+Example .env structure (copy `.env.example` → `.env` and fill in values — never commit `.env`):
 
-\# .env \- NEVER commit this file  
-GMAIL\_CLIENT\_ID=your\_client\_id  
-GMAIL\_CLIENT\_SECRET=your\_client\_secret  
-BANK\_API\_TOKEN=your\_token  
-WHATSAPP\_SESSION\_PATH=/secure/path/session
+\# .env \- NEVER commit this file
+
+\# Gmail (OAuth2)
+GMAIL\_CLIENT\_ID=your\_client\_id
+GMAIL\_CLIENT\_SECRET=your\_client\_secret
+
+\# WhatsApp Business Cloud API (Meta)
+WHATSAPP\_VERIFY\_TOKEN=your\_verify\_token
+WHATSAPP\_ACCESS\_TOKEN=your\_meta\_access\_token
+WHATSAPP\_PHONE\_NUMBER\_ID=your\_phone\_number\_id
+WHATSAPP\_AUTO\_REPLY=true
+WHATSAPP\_WEBHOOK\_PORT=8089
+
+\# Email sending (SMTP)
+SMTP\_USER=your@gmail.com
+SMTP\_PASSWORD=your\_app\_password
+
+\# Odoo ERP
+ODOO\_URL=http://localhost:8069
+ODOO\_DB=your\_db
+ODOO\_USER=admin
+ODOO\_PASSWORD=your\_odoo\_password
+
+\# Scheduler
+DAILY\_BRIEFING\_TIME=08:00
+WEEKLY\_AUDIT\_DAY=sunday
+WEEKLY\_AUDIT\_TIME=22:00
+
+\# Cloud Agent (Platinum)
+CLOUD\_AGENT\_ID=cloud-01
+HEALTH\_OFFLINE\_THRESHOLD=300
+VAULT\_SYNC\_BRANCH=main
+
+\# Dry-run mode (set true during development)
+DRY\_RUN=false
+
+> **Dashboard auth** uses a separate `dashboard-ui/.env.local` (not this `.env`):
+> ```
+> DASHBOARD\_PASSWORD=changeme
+> SESSION\_SECRET=<32-char random hex>
+> ```
 
 ## **6.2 Sandboxing & Isolation**
 
@@ -786,6 +849,87 @@ while True:
 
 ### 
 
+# **8\. Live Web Dashboard (Bonus Feature — Platinum Tier)**
+
+Beyond Obsidian as a passive markdown viewer, you can add a real-time **web dashboard** accessible from any browser on your network. This gives you an operational control panel for the vault without opening Obsidian.
+
+## **8.1 Architecture**
+
+\`\`\`
+Browser (port 3000)
+    └─▶ Next.js 15 Frontend  ─── /api/* proxy ──▶ Flask Backend (port 8888)
+                                                        └─▶ AI\_Employee\_Vault/
+\`\`\`
+
+* **Backend:** `dashboard_server.py` (Flask + flask-cors) — reads vault folders, streams SSE events
+* **Frontend:** `dashboard-ui/` (Next.js 15 + Tailwind CSS + TypeScript)
+* **Live updates:** Server-Sent Events (`GET /api/stream`) push vault state every 5 seconds — no polling, no WebSockets
+* **API proxy:** `next.config.ts` rewrites `/api/*` to Flask on port 8888 (except `/api/auth/*`)
+
+## **8.2 Dashboard Pages**
+
+| Page | URL | What it shows |
+| :---- | :---- | :---- |
+| Overview | / | Agent health bar, stat cards, mini task list, recent activity, pending approvals |
+| Tasks | /tasks | Full `/Needs\_Action/` folder with type badges and age indicators |
+| Approvals | /approvals | `/Pending\_Approval/` items with one-click **Approve** / **Reject** buttons |
+| Logs | /logs | Searchable and filterable `/Logs/YYYY-MM-DD.json` activity log table |
+| Done | /done | `/Done/` archive with completion timestamps |
+| Health | /health | Agent status cards from `/Signals/HEALTH\_\*.json` (online/offline/never seen) |
+
+## **8.3 Approve / Reject Flow**
+
+The Approvals page calls `POST /api/approve/<filename>` or `POST /api/reject/<filename>`. The Flask backend moves the file from `/Pending\_Approval/` to `/Approved/` or `/Rejected/`, which the Orchestrator's HITL loop detects and acts on. This gives you one-click human-in-the-loop control from any browser without touching the file system manually.
+
+## **8.4 Authentication**
+
+The dashboard is password-protected using Next.js middleware:
+
+* **Mechanism:** HMAC-SHA256 session cookie (`ai_session`, httpOnly, 7-day, SameSite=Lax)
+* **Token:** `HMAC-SHA256(SESSION_SECRET, DASHBOARD_PASSWORD)` — derived at runtime, stored only in the cookie
+* **Crypto:** Web Crypto API (`crypto.subtle`) — Edge Runtime compatible, no Node.js crypto module
+* **Login page:** `/login` — standalone dark UI (no sidebar), redirects to requested page after auth
+* **API protection:** Unauthenticated API calls get `401 Unauthorized` JSON; page requests redirect to `/login?next=<path>`
+* **Logout:** Header "Sign out" button calls `POST /api/auth/logout`, clears cookie, redirects to `/login`
+
+Config (in `dashboard-ui/.env.local` — separate from main `.env`):
+
+\`\`\`
+DASHBOARD\_PASSWORD=changeme
+SESSION\_SECRET=\<32-char random hex — generate with: openssl rand -hex 32\>
+\`\`\`
+
+## **8.5 Running the Dashboard**
+
+\`\`\`bash
+\# Start Flask backend (port 8888)
+uv run dashboard
+
+\# Start Next.js frontend (port 3000) — in a separate terminal
+cd dashboard-ui && npm run dev
+
+\# Or build for production
+cd dashboard-ui && npm run build && npm start
+\`\`\`
+
+The Orchestrator can auto-start the Flask backend. The Next.js server runs separately (or as a systemd service in production).
+
+## **8.6 Flask API Endpoints**
+
+| Method | Endpoint | Description |
+| :---- | :---- | :---- |
+| GET | /api/stats | Vault folder counts (needs\_action, pending\_approval, done, drafts, in\_progress) |
+| GET | /api/health | Agent health from `/Signals/HEALTH\_\*.json` |
+| GET | /api/tasks | Files in `/Needs\_Action/` with age and type |
+| GET | /api/approvals | Files in `/Pending\_Approval/` with age and type |
+| GET | /api/done | Files in `/Done/` (recent 100) |
+| GET | /api/logs | JSON log entries, supports `?search=`, `?result=`, `?limit=` params |
+| GET | /api/stream | SSE stream — pushes full state JSON every 5 seconds |
+| POST | /api/approve/\<filename\> | Moves file from `/Pending\_Approval/` → `/Approved/` |
+| POST | /api/reject/\<filename\> | Moves file from `/Pending\_Approval/` → `/Rejected/` |
+
+---
+
 ### **Learning Material To Get Started:**
 
 These resources provide a foundational guide on how to integrate Claude Code agentic capabilities with local tools and file systems, which is the exact "foundation layer" required for your personal employee project.
@@ -889,7 +1033,7 @@ Curated resources organized by learning stage. Start with Prerequisites, then pr
 
 * Security disclosure: How credentials are handled
 
-* Tier declaration: Bronze, Silver, or Gold
+* Tier declaration: Bronze, Silver, Gold, or Platinum
 
 * Submit Form: [https://forms.gle/JR9T1SJq5rmQyGkGA](https://forms.gle/JR9T1SJq5rmQyGkGA) 
 
@@ -1002,7 +1146,7 @@ A: Your OAuth consent screen may need verification, or you haven't enabled the G
 
 **Q: Watcher scripts stop running overnight**
 
-A: Use a process manager like PM2 (Node.js) or supervisord (Python) to keep them alive. Alternatively, implement the Watchdog pattern from Section 7\.
+A: The recommended approach is to use the **Orchestrator** (`uv run python orchestrator.py`) as a single master process that spawns and monitors all watchers via `subprocess.Popen`. If a watcher crashes, the orchestrator detects it via `proc.poll()` and restarts it. For 24/7 production use, wrap the orchestrator itself in a **systemd service** (Linux) — see `cloud/setup_cloud.sh` for a ready-made systemd unit template. PM2 also works (`pm2 start orchestrator.py --interpreter python3`) if you prefer the Node.js ecosystem approach.
 
 **Q: Claude is making incorrect decisions**
 
@@ -1099,11 +1243,19 @@ The following ASCII diagram illustrates the complete system architecture:
 ┌─────────────────────────────────────────────────────────────────┐  
 │                    OBSIDIAN VAULT (Local)                       │  
 │  ┌──────────────────────────────────────────────────────────┐  │  
-│  │ /Needs\_Action/  │ /Plans/  │ /Done/  │ /Logs/            │  │  
-│  ├──────────────────────────────────────────────────────────┤  │  
-│  │ Dashboard.md    │ Company\_Handbook.md │ Business\_Goals.md│  │  
-│  ├──────────────────────────────────────────────────────────┤  │  
-│  │ /Pending\_Approval/  │  /Approved/  │  /Rejected/         │  │  
+│  │ /Inbox/  │ /Needs\_Action/  │ /Plans/  │ /Done/  │ /Logs/  │  │
+│  ├──────────────────────────────────────────────────────────┤  │
+│  │ Dashboard.md  │ Company\_Handbook.md  │ Business\_Goals.md │  │
+│  ├──────────────────────────────────────────────────────────┤  │
+│  │ /Pending\_Approval/ │ /Approved/ │ /Rejected/ │ /Drafts/ │  │
+│  ├──────────────────────────────────────────────────────────┤  │
+│  │ /Briefings/ │ /Invoices/ │ /Ralph\_State/ │ /Scheduled/  │  │
+│  ├──────────────────────────────────────────────────────────┤  │
+│  │ /Signals/ (heartbeats) │ /In\_Progress/cloud\|local/      │  │
+│  ├──────────────────────────────────────────────────────────┤  │
+│  │ /To\_Post/LinkedIn\|Facebook\|Instagram\|Twitter/          │  │
+│  ├──────────────────────────────────────────────────────────┤  │
+│  │ /Accounting/Rates.md  │ /Accounting/Current\_Month.md    │  │  
 │  └──────────────────────────────────────────────────────────┘  │  
 └────────────────────────────────┬────────────────────────────────┘  
                                  │                                   
@@ -1180,20 +1332,36 @@ A PM (like **PM2**, **supervisord**, or **Systemd**) acts as a watchdog. It daem
 
 * **Logging:** It captures stdout/stderr to log files, which is critical for debugging silent failures over long periods.
 
-Quick Recommendation:  
-For this hackathon, PM2 is often the easiest developer-friendly tool (originally for Node, but handles Python perfectly):
+**Recommended Approach — Orchestrator as Process Manager:**
 
-\# Install PM2  
-npm install \-g pm2
+The reference implementation uses a single **Orchestrator** (`orchestrator.py`) that spawns all watchers as subprocesses and monitors them in a health loop:
 
-\# Start your watcher and keep it alive forever  
-pm2 start gmail\_watcher.py \--interpreter python3
+\`\`\`bash
+\# Start all watchers (skip those without credentials)
+uv run python orchestrator.py --no-gmail --no-linkedin --no-whatsapp --no-social
 
-\# Freeze this list to start on reboot  
-pm2 save  
-pm2 startup
+\# Dry-run mode (no external actions — safe for development)
+uv run python orchestrator.py --dry-run
+\`\`\`
 
-Alternatively, the hackathon document suggests writing a custom Python "Watchdog" script that loops and checks PIDs, effectively building a primitive process manager yourself.
+The orchestrator uses `subprocess.Popen` to start each watcher and `proc.poll()` to detect crashes. Failed processes are logged to `/Logs/` and restarted automatically. This is simpler than PM2 for this use case.
+
+For **always-on production** (Cloud VM / Platinum tier), use **systemd**:
+
+\`\`\`bash
+\# Automated setup (see cloud/setup\_cloud.sh)
+sudo systemctl enable ai-employee
+sudo systemctl start ai-employee
+sudo journalctl -u ai-employee -f  # follow logs
+\`\`\`
+
+PM2 is also a valid alternative if you prefer it:
+
+\`\`\`bash
+npm install -g pm2
+pm2 start orchestrator.py --interpreter "uv run python"
+pm2 save && pm2 startup
+\`\`\`
 
 **Next Step: Advanced Custom Cloud FTE Architecture**  
 Once you have built this local AI Employee, you can shift to building cloud based custom FTEs:
