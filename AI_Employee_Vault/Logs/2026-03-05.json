@@ -1,0 +1,2160 @@
+[
+  {
+    "timestamp": "2026-03-05T14:37:03.234952+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T14:37:04.848778+00:00",
+    "action_type": "scheduled_trigger_created",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "job": "daily_briefing",
+      "file": "TRIGGER_20260305T143704Z_daily_briefing.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T14:37:06.077769+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260305T143704Z_daily_briefing.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T14:37:06.577028+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T14:37:09.637851+00:00",
+    "action_type": "whatsapp_daily_report_sent",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "error": "{\"error\":{\"message\":\"Unsupported post request. Object with ID '1032540726603479' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\",\"code\":100,\"type\":\"GraphMethodException\",\"error_subcode\":33,\"fbtrace_id\":\"ACFd1zrXy3cqJ0qu-AIb1oR\"}}"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T14:37:12.998903+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260305T143712Z_odoo_health_check.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T14:37:13.193967+00:00",
+    "action_type": "odoo_health_check_triggered",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {},
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T14:37:13.296003+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T14:37:18.194853+00:00",
+    "action_type": "scheduled_trigger_created",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "job": "daily_briefing",
+      "file": "TRIGGER_20260305T143716Z_daily_briefing.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T14:37:19.416061+00:00",
+    "action_type": "daily_briefing_triggered",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {},
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T14:37:22.602202+00:00",
+    "action_type": "whatsapp_daily_report_sent",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "error": "{\"error\":{\"message\":\"Unsupported post request. Object with ID '1032540726603479' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\",\"code\":100,\"type\":\"GraphMethodException\",\"error_subcode\":33,\"fbtrace_id\":\"AF0uB6d-9Njn6U1wVuQSk0q\"}}"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T14:37:23.967529+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260305T143716Z_daily_briefing.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T14:37:25.005698+00:00",
+    "action_type": "scheduled_trigger_created",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "job": "odoo_health_check",
+      "file": "TRIGGER_20260305T143724Z_odoo_health_check.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T14:37:26.203346+00:00",
+    "action_type": "odoo_health_check_triggered",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {},
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T14:37:29.237222+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260305T143724Z_odoo_health_check.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T14:39:09.139002+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T14:41:11.583833+00:00",
+    "action_type": "email_task_created",
+    "actor": "GmailWatcher",
+    "target": "Dribbble <no-reply@n.dribbble.com>",
+    "parameters": {
+      "message_id": "19cbcdfe3780ce39",
+      "subject": "\ud83d\udc69\u200d\ud83d\udcbbThe job title holding designers back",
+      "priority": "normal",
+      "task_file": "EMAIL_20260305T144111Z____The_job_title_holding_designers_back.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T14:41:11.672749+00:00",
+    "action_type": "file_created",
+    "actor": "GmailWatcher",
+    "target": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault/Needs_Action/EMAIL_20260305T144111Z____The_job_title_holding_designers_back.md",
+    "parameters": {},
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T14:41:12.058870+00:00",
+    "action_type": "email_task_created",
+    "actor": "GmailWatcher",
+    "target": "ngrok team <team@m.ngrok.com>",
+    "parameters": {
+      "message_id": "19cbcdfb8380cede",
+      "subject": "Hi wdigital085@gmail.com, need help setting up your first endpoint?",
+      "priority": "high",
+      "task_file": "EMAIL_20260305T144112Z_Hi_wdigital085_gmail_com__need_help_sett.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T14:41:12.078861+00:00",
+    "action_type": "file_created",
+    "actor": "GmailWatcher",
+    "target": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault/Needs_Action/EMAIL_20260305T144112Z_Hi_wdigital085_gmail_com__need_help_sett.md",
+    "parameters": {},
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T14:41:12.193632+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260305T144111Z____The_job_title_holding_designers_back.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T14:41:12.216319+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260305T144112Z_Hi_wdigital085_gmail_com__need_help_sett.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T14:41:12.424171+00:00",
+    "action_type": "email_task_created",
+    "actor": "GmailWatcher",
+    "target": "Yulys <noreply@yulys.com>",
+    "parameters": {
+      "message_id": "19cbcd53d2aafb88",
+      "subject": "World, New Opportunities Are Waiting for You",
+      "priority": "normal",
+      "task_file": "EMAIL_20260305T144112Z_World__New_Opportunities_Are_Waiting_for.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T14:41:12.445882+00:00",
+    "action_type": "file_created",
+    "actor": "GmailWatcher",
+    "target": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault/Needs_Action/EMAIL_20260305T144112Z_World__New_Opportunities_Are_Waiting_for.md",
+    "parameters": {},
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T14:41:12.852289+00:00",
+    "action_type": "email_task_created",
+    "actor": "GmailWatcher",
+    "target": "PosterMyWall <hello@marketing.postermywall.com>",
+    "parameters": {
+      "message_id": "19cbc5f026adfcc3",
+      "subject": "One kit to rule them all \u26a1",
+      "priority": "normal",
+      "task_file": "EMAIL_20260305T144112Z_One_kit_to_rule_them_all__.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T14:41:12.893318+00:00",
+    "action_type": "file_created",
+    "actor": "GmailWatcher",
+    "target": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault/Needs_Action/EMAIL_20260305T144112Z_One_kit_to_rule_them_all__.md",
+    "parameters": {},
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T14:41:17.259841+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260305T144112Z_One_kit_to_rule_them_all__.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T14:41:17.280479+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260305T144112Z_World__New_Opportunities_Are_Waiting_for.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T14:43:13.710545+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T14:49:16.102622+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T14:55:19.188752+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T15:01:21.398828+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T15:07:23.359130+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T15:13:25.129901+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T15:17:26.928286+00:00",
+    "action_type": "email_task_created",
+    "actor": "GmailWatcher",
+    "target": "World Digital <wdigital085@gmail.com>",
+    "parameters": {
+      "message_id": "19cbe919570e7fc9",
+      "subject": "Urgent payment",
+      "priority": "high",
+      "task_file": "EMAIL_20260305T151726Z_Urgent_payment.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T15:17:26.956409+00:00",
+    "action_type": "file_created",
+    "actor": "GmailWatcher",
+    "target": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault/Needs_Action/EMAIL_20260305T151726Z_Urgent_payment.md",
+    "parameters": {},
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T15:17:27.893290+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260305T151726Z_Urgent_payment.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T15:19:27.206415+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T15:31:31.882552+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T15:35:33.384666+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T15:37:24.227532+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T15:37:34.140770+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T15:37:37.253361+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T15:49:39.320483+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T15:53:41.649184+00:00",
+    "action_type": "email_task_created",
+    "actor": "GmailWatcher",
+    "target": "Facebook <notification@facebookmail.com>",
+    "parameters": {
+      "message_id": "19cbeb2d24a5f73b",
+      "subject": "Confirm your business email address",
+      "priority": "normal",
+      "task_file": "EMAIL_20260305T155341Z_Confirm_your_business_email_address.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T15:53:41.847217+00:00",
+    "action_type": "file_created",
+    "actor": "GmailWatcher",
+    "target": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault/Needs_Action/EMAIL_20260305T155341Z_Confirm_your_business_email_address.md",
+    "parameters": {},
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T15:53:46.594750+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260305T155341Z_Confirm_your_business_email_address.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T16:03:44.872392+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T16:11:48.681751+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T16:17:51.115027+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T16:23:53.633737+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T16:27:54.976314+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T16:33:59.797331+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T16:36:01.265388+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T16:37:33.111657+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T16:37:45.802608+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T16:46:05.809163+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T16:50:08.327954+00:00",
+    "action_type": "email_task_created",
+    "actor": "GmailWatcher",
+    "target": "Feedcoyote <noreply-feedcoyote-t5rnle1@no-reply.feedcoyote.com>",
+    "parameters": {
+      "message_id": "19cbee7e77a65089",
+      "subject": "World Digital, you've got a new match on Feedcoyote",
+      "priority": "normal",
+      "task_file": "EMAIL_20260305T165008Z_World_Digital__you_ve_got_a_new_match_on.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T16:50:08.347570+00:00",
+    "action_type": "file_created",
+    "actor": "GmailWatcher",
+    "target": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault/Needs_Action/EMAIL_20260305T165008Z_World_Digital__you_ve_got_a_new_match_on.md",
+    "parameters": {},
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T16:50:09.339995+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260305T165008Z_World_Digital__you_ve_got_a_new_match_on.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T16:54:09.649057+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T17:00:12.952294+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T17:08:16.716004+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T17:14:20.847347+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T17:32:36.940650+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno -3] Temporary failure in name resolution"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T17:34:37.587857+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T17:37:38.076702+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T17:37:50.488612+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T17:40:43.848442+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T17:47:46.092649+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "The read operation timed out"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T17:49:57.307524+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T17:52:07.339089+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T17:54:17.366968+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T17:56:27.425181+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T17:58:37.474173+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T18:00:47.506665+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T18:02:57.616552+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T18:05:07.654675+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T18:07:17.706824+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T18:37:58.927991+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "The read operation timed out"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T18:38:25.506798+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T18:38:35.727532+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T18:52:05.057724+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T19:00:06.324281+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T19:08:09.215196+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T19:24:13.344997+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T19:30:15.352652+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T19:34:16.407648+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T19:36:16.889570+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T19:38:27.025254+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T19:38:37.292974+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T19:41:15.651482+00:00",
+    "action_type": "process_restart",
+    "actor": "orchestrator",
+    "target": "whatsapp_watcher",
+    "parameters": {
+      "exit_code": -15
+    },
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-03-05T19:41:15.825453+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "whatsapp_watcher",
+    "parameters": {
+      "pid": 10162
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T19:43:17.906686+00:00",
+    "action_type": "process_restart",
+    "actor": "orchestrator",
+    "target": "whatsapp_watcher",
+    "parameters": {
+      "exit_code": -15
+    },
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-03-05T19:43:17.932755+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "whatsapp_watcher",
+    "parameters": {
+      "pid": 10441
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T19:44:19.451401+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T19:56:22.059144+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T20:02:23.494631+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T20:06:25.278006+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T20:10:26.258261+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T20:16:28.200310+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T20:22:30.276834+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T20:24:31.894793+00:00",
+    "action_type": "email_task_created",
+    "actor": "GmailWatcher",
+    "target": "Facebook <noreply@developers.facebook.com>",
+    "parameters": {
+      "message_id": "19cbfa97192c5b84",
+      "subject": "New Developer Alert for Personal AI Employee",
+      "priority": "normal",
+      "task_file": "EMAIL_20260305T202431Z_New_Developer_Alert_for_Personal_AI_Empl.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T20:24:31.938425+00:00",
+    "action_type": "file_created",
+    "actor": "GmailWatcher",
+    "target": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault/Needs_Action/EMAIL_20260305T202431Z_New_Developer_Alert_for_Personal_AI_Empl.md",
+    "parameters": {},
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T20:24:32.425086+00:00",
+    "action_type": "email_task_created",
+    "actor": "GmailWatcher",
+    "target": "Facebook <noreply@developers.facebook.com>",
+    "parameters": {
+      "message_id": "19cbfa96b52ada2b",
+      "subject": "New Developer Alert for Personal AI Employee",
+      "priority": "normal",
+      "task_file": "EMAIL_20260305T202432Z_New_Developer_Alert_for_Personal_AI_Empl.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T20:24:32.461237+00:00",
+    "action_type": "file_created",
+    "actor": "GmailWatcher",
+    "target": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault/Needs_Action/EMAIL_20260305T202432Z_New_Developer_Alert_for_Personal_AI_Empl.md",
+    "parameters": {},
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T20:24:35.758827+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260305T202431Z_New_Developer_Alert_for_Personal_AI_Empl.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T20:24:35.797375+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260305T202432Z_New_Developer_Alert_for_Personal_AI_Empl.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T20:26:32.651141+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T20:30:33.719080+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T20:34:35.232126+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T20:36:36.040697+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T20:38:33.893027+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T20:38:42.390625+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T20:40:37.099656+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T20:46:39.339969+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T20:50:40.394366+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T20:56:41.951890+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:02:44.002987+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:15:08.987159+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:16:43.474836+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:18:45.888862+00:00",
+    "action_type": "process_restart",
+    "actor": "orchestrator",
+    "target": "whatsapp_watcher",
+    "parameters": {
+      "exit_code": -15
+    },
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-03-05T21:18:45.957407+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "whatsapp_watcher",
+    "parameters": {
+      "pid": 12520
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T21:20:05.534395+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:21:06.309258+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:21:23.877864+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:22:06.182198+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:22:41.281389+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:23:28.209884+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:23:57.165972+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:24:41.603868+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:25:38.753308+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:26:31.257070+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:27:30.478111+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:27:51.756745+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:28:46.607726+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:29:11.576098+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:30:05.488880+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:30:32.815735+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:30:52.716562+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:31:33.365556+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:31:51.630623+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:32:50.616113+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:32:53.340648+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:33:20.606681+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:34:13.160624+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:34:45.441886+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:35:35.857406+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:36:07.217846+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:36:56.349579+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:36:56.731410+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:37:33.471213+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:38:19.420932+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:38:43.050484+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T21:38:52.347762+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T21:38:59.614510+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:39:40.074688+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:40:24.934506+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:40:58.596917+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T21:41:02.248474+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T22:14:40.821080+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "filesystem_watcher",
+    "parameters": {
+      "pid": 7729
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T22:14:41.121424+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "gmail_watcher",
+    "parameters": {
+      "pid": 7730
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T22:14:41.157801+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "scheduler",
+    "parameters": {
+      "pid": 7731
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T22:14:41.335103+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260305T144112Z_Hi_wdigital085_gmail_com__need_help_sett.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T22:14:41.359094+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260305T151726Z_Urgent_payment.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T22:14:41.396529+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260305T155341Z_Confirm_your_business_email_address.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T22:14:41.430887+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260305T165008Z_World_Digital__you_ve_got_a_new_match_on.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T22:14:41.477135+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260305T202431Z_New_Developer_Alert_for_Personal_AI_Empl.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T22:14:41.515996+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260305T202432Z_New_Developer_Alert_for_Personal_AI_Empl.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T22:14:41.566391+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260305T143704Z_daily_briefing.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T22:14:41.593044+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260305T143712Z_odoo_health_check.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T22:14:41.627235+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260305T143716Z_daily_briefing.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T22:14:41.655698+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260305T143724Z_odoo_health_check.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T22:14:41.975269+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T22:14:44.663513+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Gmail dependencies not installed. Run: uv sync"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T22:18:16.643822+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "filesystem_watcher",
+    "parameters": {
+      "pid": 8757
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T22:18:16.663919+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "gmail_watcher",
+    "parameters": {
+      "pid": 8758
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T22:18:16.687591+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "scheduler",
+    "parameters": {
+      "pid": 8759
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T22:18:16.820525+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260305T144112Z_Hi_wdigital085_gmail_com__need_help_sett.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T22:18:16.838967+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260305T151726Z_Urgent_payment.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T22:18:16.869790+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260305T155341Z_Confirm_your_business_email_address.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T22:18:16.901295+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260305T165008Z_World_Digital__you_ve_got_a_new_match_on.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T22:18:16.935974+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260305T202431Z_New_Developer_Alert_for_Personal_AI_Empl.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T22:18:16.962901+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260305T202432Z_New_Developer_Alert_for_Personal_AI_Empl.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T22:18:17.009785+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260305T143704Z_daily_briefing.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T22:18:17.028471+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260305T143712Z_odoo_health_check.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T22:18:17.078449+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260305T143716Z_daily_briefing.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T22:18:17.108671+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260305T143724Z_odoo_health_check.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-05T22:18:17.289822+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-05T22:20:29.613417+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T22:24:35.494424+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T22:28:41.860090+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-05T22:34:49.817039+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  }
+]

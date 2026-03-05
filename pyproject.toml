@@ -4,8 +4,8 @@ version = "0.4.0"
 description = "Personal AI Employee - Platinum Tier implementation"
 requires-python = ">=3.13"
 dependencies = [
-    # Bronze
-    "watchdog>=4.0.0",
+    # Bronze (watchdog 6.x drops inotify on Linux/WSL2 — pin <6)
+    "watchdog>=4.0.0,<6.0.0",
     "python-dotenv>=1.0.0",
     # Silver — Gmail
     "google-auth>=2.0.0",
@@ -22,7 +22,9 @@ dependencies = [
     "httpx>=0.27.0",
     # Gold — Structured logging
     "structlog>=24.0.0",
-    # Silver — WhatsApp Business webhook server
+    # Silver — WhatsApp Web automation
+    "playwright>=1.40.0",
+    # Silver — WhatsApp Business webhook server (kept for other uses)
     "flask>=3.0.0",
     # Dashboard — CORS for Next.js frontend on :3000
     "flask-cors>=4.0.0",

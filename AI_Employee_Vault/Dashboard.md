@@ -1,6 +1,6 @@
 # AI Employee Dashboard
 ---
-last_updated: 2026-03-03 20:21 UTC
+last_updated: 2026-03-05 22:38 UTC
 status: active
 version: 0.4.0
 tier: Platinum
@@ -10,22 +10,19 @@ tier: Platinum
 
 | Component | Status | Last Check |
 |-----------|--------|------------|
-| Filesystem Watcher | Running | 2026-03-03 20:21 UTC |
-| Gmail Watcher | Running | 2026-03-03 20:21 UTC |
-| Linkedin Watcher | Running | 2026-03-03 20:21 UTC |
-| Whatsapp Watcher | Running | 2026-03-03 20:21 UTC |
-| Social Watcher | Running | 2026-03-03 20:21 UTC |
-| Scheduler | Running | 2026-03-03 20:21 UTC |
-| Local Agent (local-01) | Online | 2026-03-03 20:20 UTC |
-| Daily WhatsApp Report | ✅ Enabled | 08:00 UTC → 923103871019 |
+| Filesystem Watcher | Running | 2026-03-05 22:38 UTC |
+| Gmail Watcher | Running | 2026-03-05 22:38 UTC |
+| Scheduler | Running | 2026-03-05 22:38 UTC |
+| Local Agent (local-01) | Online | 2026-03-05 22:37 UTC |
+| Daily WhatsApp Report | ⬜ Disabled | 08:00 UTC → — |
 
 ---
 
 ## Inbox Summary
 
-- **Needs Action:** ✅ Clear
+- **Needs Action:** ⚠️ 6 pending
 - **Pending Approval:** ✅ Clear
-- **Scheduled Triggers:** 12
+- **Scheduled Triggers:** 4
 - **Drafts awaiting review:** 1
 - **Done (all time):** 131
 
@@ -41,10 +38,10 @@ _Check `/Logs/` for detailed action history._
 
 | Metric | Value |
 |--------|-------|
-| Tasks in queue | 0 |
+| Tasks in queue | 6 |
 | Pending approvals | 0 |
 | Drafts awaiting review | 1 |
-| Scheduled jobs pending | 12 |
+| Scheduled jobs pending | 4 |
 | Completed tasks | 131 |
 
 ---
@@ -53,9 +50,9 @@ _Check `/Logs/` for detailed action history._
 
 | Metric | Value |
 |--------|-------|
-| Messages received (all time) | 23 |
-| Auto-reply | ✅ Enabled |
-| Daily report | ✅ 08:00 UTC → 923103871019 |
+| Messages received (all time) | 0 |
+| Auto-reply | ⬜ Disabled |
+| Daily report | ⬜ Disabled |
 
 ---
 

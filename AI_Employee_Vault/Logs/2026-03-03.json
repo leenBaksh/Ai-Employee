@@ -812,5 +812,123 @@
       "error": "[Errno 104] Connection reset by peer"
     },
     "result": "error"
+  },
+  {
+    "timestamp": "2026-03-03T20:39:38.123929+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-03T20:41:37.110142+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-03T20:44:37.368149+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-03T20:54:20.731447+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-03T21:39:17.717210+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-03T21:41:17.565891+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-03T21:45:07.716164+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
   }
 ]

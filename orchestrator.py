@@ -213,15 +213,12 @@ class Orchestrator:
             self._start_process("scheduler", "scheduler")
 
     def _start_whatsapp_watcher(self):
-        """Start the WhatsApp Business webhook watcher (Silver Tier)."""
-        verify_token = os.getenv("WHATSAPP_VERIFY_TOKEN", "")
-        if not verify_token:
-            logger.warning("WHATSAPP_VERIFY_TOKEN not set — WhatsApp Watcher skipped")
-            logger.warning("  → Run: uv run whatsapp-watcher --setup")
-            return
-        port = os.getenv("WHATSAPP_WEBHOOK_PORT", "8089")
+        """Start the WhatsApp Web Playwright watcher (Silver Tier)."""
+        # Playwright-based — no Meta Cloud API token required.
+        # Session is persisted at secrets/whatsapp_session/ after first --setup run.
+        session_path = os.getenv("WHATSAPP_SESSION_PATH", "./secrets/whatsapp_session")
         self._start_process("whatsapp_watcher", "watchers.whatsapp_watcher",
-                            extra_args=["--port", port])
+                            extra_args=["--session", session_path])
 
     def _start_social_watcher(self):
         """Start the Social Media watcher for all platforms (Gold Tier)."""
