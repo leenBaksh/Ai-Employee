@@ -31,6 +31,7 @@ Configure in Claude Code (~/.claude.json or project .claude/mcp.json):
 """
 
 import os
+import sys
 import json
 import base64
 import asyncio
@@ -40,11 +41,15 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
 
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from rate_limiter import get_limiter, RateLimitExceededError
+from audit_logger import write_log_entry, infer_approval
+
 load_dotenv()
 
 # ── Config ────────────────────────────────────────────────────────────────────
 VAULT_PATH   = Path(os.getenv("VAULT_PATH", "./AI_Employee_Vault")).resolve()
-DRY_RUN      = os.getenv("DRY_RUN", "false").lower() == "true"
+DRY_RUN      = os.getenv("DRY_RUN", "true").lower() == "true"
 SMTP_USER    = os.getenv("SMTP_USER", "")
 FROM_NAME    = os.getenv("SMTP_FROM_NAME", "AI Employee")
 GMAIL_CREDS  = os.getenv("GMAIL_CREDENTIALS_PATH", "./secrets/gmail_credentials.json")
@@ -57,23 +62,17 @@ DRAFTS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def _log(action_type: str, target: str, result: str, details: dict = None):
-    log_file = LOGS_DIR / f"{datetime.now(timezone.utc).strftime('%Y-%m-%d')}.json"
-    entry = {
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "action_type": action_type,
-        "actor": "email_mcp_server",
-        "target": target,
-        "parameters": details or {},
-        "result": result,
-    }
-    entries = []
-    if log_file.exists():
-        try:
-            entries = json.loads(log_file.read_text(encoding='utf-8'))
-        except Exception:
-            entries = []
-    entries.append(entry)
-    log_file.write_text(json.dumps(entries, indent=2), encoding='utf-8')
+    approval_status, approved_by = infer_approval(action_type, DRY_RUN)
+    write_log_entry(
+        logs_dir=LOGS_DIR,
+        action_type=action_type,
+        actor="email_mcp_server",
+        target=target,
+        result=result,
+        parameters=details or {},
+        approval_status=approval_status,
+        approved_by=approved_by,
+    )
 
 
 async def _send_gmail_api(to: str, subject: str, body: str, cc: str = None) -> dict:
@@ -81,6 +80,13 @@ async def _send_gmail_api(to: str, subject: str, body: str, cc: str = None) -> d
     if DRY_RUN:
         _log("email_send", to, "dry_run", {"subject": subject, "cc": cc})
         return {"success": True, "dry_run": True, "message": f"[DRY RUN] Would send to {to}: {subject}"}
+
+    # Rate limiting — max 10 emails per hour
+    try:
+        get_limiter(VAULT_PATH).check("email_send")
+    except RateLimitExceededError as e:
+        _log("email_send", to, "rate_limited", {"error": str(e)})
+        return {"success": False, "error": str(e), "rate_limited": True}
 
     try:
         from google.oauth2.credentials import Credentials

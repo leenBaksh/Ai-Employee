@@ -18,6 +18,7 @@ const NAV: NavItem[] = [
   { href: '/logs',       label: 'Logs',        icon: '📋' },
   { href: '/done',       label: 'Done',        icon: '✅' },
   { href: '/health',     label: 'Health',      icon: '💚' },
+  { href: '/assistant',  label: 'Assistant',   icon: '🤖' },
 ]
 
 export default function Sidebar() {

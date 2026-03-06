@@ -25,11 +25,16 @@ Configure in .claude/mcp.json:
 
 import os
 import re
+import sys
 import json
 import asyncio
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
 from dotenv import load_dotenv
+
+# audit_logic.py lives at the project root
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from audit_logic import run_subscription_audit
 
 load_dotenv()
 
@@ -217,6 +222,16 @@ def main():
                 description="Generate a structured 7-day business summary: activity stats, error rate, vault health, top actions.",
                 inputSchema={"type": "object", "properties": {}},
             ),
+            types.Tool(
+                name="audit_get_subscription_report",
+                description=(
+                    "Scan Bank_Transactions.md for subscription charges and flag any that violate "
+                    "the Subscription Audit Rules from Business_Goals.md: idle >30 days, "
+                    "price increase >20%, or duplicate tools. "
+                    "Returns flagged items with monthly/annual saving amounts and suggested approval filenames."
+                ),
+                inputSchema={"type": "object", "properties": {}},
+            ),
         ]
 
     @server.call_tool()
@@ -235,6 +250,8 @@ def main():
             )
         elif name == "audit_get_weekly_report":
             result = _get_weekly_report()
+        elif name == "audit_get_subscription_report":
+            result = run_subscription_audit(VAULT_PATH)
         else:
             result = {"error": f"Unknown tool: {name}"}
 

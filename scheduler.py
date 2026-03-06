@@ -42,7 +42,7 @@ VAULT_PATH = Path(os.getenv("VAULT_PATH", "./AI_Employee_Vault")).resolve()
 LOGS_DIR = VAULT_PATH / "Logs"
 BRIEFINGS_DIR = VAULT_PATH / "Briefings"
 NEEDS_ACTION = VAULT_PATH / "Needs_Action"
-DRY_RUN = os.getenv("DRY_RUN", "false").lower() == "true"
+DRY_RUN = os.getenv("DRY_RUN", "true").lower() == "true"
 
 DAILY_BRIEFING_TIME = os.getenv("DAILY_BRIEFING_TIME", "08:00")
 WEEKLY_AUDIT_TIME   = os.getenv("WEEKLY_AUDIT_TIME", "22:00")
@@ -144,14 +144,16 @@ def job_weekly_audit():
     _trigger_claude_skill(
         skill_prompt=(
             f"Run the weekly CEO briefing audit for period {period_start} to {period_end}:\n"
-            "1. Read Business_Goals.md for targets\n"
+            "1. Read Business_Goals.md for targets and subscription audit rules\n"
             "2. Count completed tasks in /Done/ from this week\n"
-            "3. Read Accounting/Current_Month.md for revenue\n"
-            "4. Check /Logs/ for all actions this week\n"
-            "5. Identify bottlenecks (tasks that took > 2 days)\n"
-            "6. Flag unused subscriptions per Business_Goals.md audit rules\n"
-            f"7. Write Monday Morning CEO Briefing to /Briefings/{today.strftime('%Y-%m-%d')}_Monday_Briefing.md\n"
-            "8. Update Dashboard.md with weekly summary"
+            "3. Read Accounting/Bank_Transactions.md for revenue and subscription inventory\n"
+            "4. Read Accounting/Current_Month.md for MTD reconciliation\n"
+            "5. Check /Logs/ for all actions this week\n"
+            "6. Identify bottlenecks (tasks that took > 2 days)\n"
+            "7. Run subscription audit — create Pending_Approval/APPROVAL_cancel_sub_*.md for each flagged item\n"
+            f"8. Write Monday Morning CEO Briefing to /Briefings/{today.strftime('%Y-%m-%d')}_Monday_Briefing.md\n"
+            "9. Update Dashboard.md with weekly summary\n"
+            "10. Run /weekly-briefing skill for full structured output"
         ),
         job_name="weekly_audit"
     )
@@ -329,6 +331,65 @@ def job_social_limits_check():
     _log("social_limits_check", "success", {"limits": report})
 
 
+def job_credential_rotation_reminder():
+    """1st of each month — remind owner to rotate credentials."""
+    logger.info("▶ Credential rotation reminder")
+    if DRY_RUN:
+        logger.info("[DRY RUN] Would create credential rotation reminder")
+        return
+
+    NEEDS_ACTION.mkdir(parents=True, exist_ok=True)
+    today = datetime.now(timezone.utc)
+    reminder_file = NEEDS_ACTION / f"ALERT_credential_rotation_{today.strftime('%Y%m')}.md"
+
+    if reminder_file.exists():
+        return  # already created this month
+
+    reminder_file.write_text(
+        f"""---
+type: security_reminder
+severity: medium
+created: {today.isoformat()}
+status: pending
+---
+
+## Monthly Credential Rotation Reminder
+
+Security policy requires credentials to be rotated monthly.
+
+### Credentials to Rotate
+
+- [ ] `GMAIL_CLIENT_SECRET` — regenerate in Google Cloud Console
+- [ ] `SMTP_PASSWORD` — generate new Gmail App Password
+- [ ] `BANK_API_TOKEN` — rotate in banking provider dashboard
+- [ ] `WHATSAPP_ACCESS_TOKEN` — refresh Meta Business token
+- [ ] `SLACK_BOT_TOKEN` — rotate in Slack app settings
+- [ ] `DASHBOARD_PASSWORD` — update in dashboard-ui/.env.local
+- [ ] `SESSION_SECRET` — regenerate random 64-char hex
+
+### After Rotating
+
+1. Update `.env` with new values
+2. For Keychain storage: `python secrets_manager.py set <NAME> <new_value>`
+3. Restart all watchers: `uv run python orchestrator.py`
+4. Run `python secrets_manager.py scan` to verify no leaks in vault
+5. Move this file to /Done/
+
+### Verify No Leaks
+
+```bash
+python secrets_manager.py scan ./AI_Employee_Vault
+```
+
+---
+*Handbook §6: rotate credentials monthly and after any suspected breach.*
+""",
+        encoding="utf-8",
+    )
+    logger.info(f"Credential rotation reminder created: {reminder_file.name}")
+    _log("credential_rotation_reminder_created", "success", {"month": today.strftime("%Y-%m")})
+
+
 def job_daily_whatsapp_report():
     """Daily at configured time — send vault summary to World Digital via WhatsApp."""
     logger.info("▶ Daily WhatsApp report job starting")
@@ -426,6 +487,9 @@ def main():
     logger.info(f"Weekly audit: Sunday {WEEKLY_AUDIT_TIME}")
     if DRY_RUN:
         logger.warning("DRY RUN MODE — no external triggers")
+
+    # Security
+    schedule.every().day.at("07:00").do(job_credential_rotation_reminder)  # fires on 1st of month
 
     # Daily jobs
     schedule.every().day.at(DAILY_BRIEFING_TIME).do(job_daily_briefing)

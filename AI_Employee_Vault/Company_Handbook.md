@@ -108,53 +108,38 @@ Every Sunday night, the AI Employee should:
 
 ---
 
+---
+
+## 10. Security & Privacy (§6)
+
+### 10.1 What NEVER goes in the vault
+- API keys, tokens, passwords, or secrets of any kind
+- Full bank account numbers or card numbers
+- Client SSNs, tax IDs, or passport numbers
+- OAuth tokens or session cookies
+- The contents of `.env` or `secrets/`
+
+All of the above must live in `.env` (gitignored) or the OS keychain.
+Run `python secrets_manager.py scan` at any time to verify the vault is clean.
+
+### 10.2 Credential Storage Priority
+1. Environment variable (`.env` file, never committed)
+2. macOS Keychain via `python secrets_manager.py set <NAME> <value>`
+3. 1Password CLI: `op://AI Employee/<NAME>/credential`
+
+Never hardcode credentials in Python source files.
+
+### 10.3 Credential Rotation
+Rotate all credentials on the 1st of each month — the scheduler creates a reminder
+task at `Needs_Action/ALERT_credential_rotation_YYYYMM.md`.
+Also rotate immediately after any suspected breach.
+
+### 10.4 Vault Privacy Rules
+- Truncate email/message bodies to 500 characters maximum in task files
+- Never log full bank transaction details with account numbers
+- PII (names, emails, phones) in task files is acceptable; SSNs/passwords are not
+- `/Signals/` heartbeat files are gitignored — they may contain IP addresses
+
+---
+
 _This handbook was initialized on 2026-02-23. Update it as your business rules evolve._
-
-
-# Company Handbook - Claude's Rules
-
-This document tells Claude how to make decisions.
-
-## Email Policy
-- New emails: Create in /Needs_Action/
-- Auto-reply: No (human review first)
-- Urgent keywords: Flag for immediate review
-- Spam: Move to archive
-
-## Invoice Policy
-- Amount < $100: Auto-approve ✅
-- Amount >= $100: Request human approval
-- New customer: Always get approval
-- Known customers: Can auto-approve if < $100
-
-## Payment Policy
-- ALL payments: Require human approval
-- Before sending: Create /Pending_Approval/
-- Only execute if in /Approved/ folder
-- Always verify amount before sending
-
-## WhatsApp Policy
-- New messages: Analyze for urgency
-- Urgent keywords: Invoice, payment, help, urgent, ASAP
-- Create action file if urgent
-- Non-urgent: Wait for human review
-
-## LinkedIn Policy
-- Post frequency: Max 2 per day
-- Content type: Business updates only
-- Scheduling: Queue for future
-- Analytics: Track engagement weekly
-
-## General Rules
-- ALWAYS preserve audit trail
-- NEVER assume - always ask first
-- ALWAYS get approval for > $100
-- ALWAYS log every action
-- Be conservative - when in doubt, ask
-
-## Approval Thresholds
-- Emails to new recipients: Approval needed
-- Amounts < $50: Auto-approve (known recipients)
-- Amounts $50-$100: Auto-approve (known), approval (new)
-- Amounts > $100: Always approval
-- Social media: Approval for immediate posts

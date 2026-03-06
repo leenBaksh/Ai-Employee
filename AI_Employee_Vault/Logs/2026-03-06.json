@@ -1,0 +1,68 @@
+[
+  {
+    "timestamp": "2026-03-06T04:30:42.378656+00:00",
+    "action_type": "approval_granted",
+    "actor": "dashboard",
+    "target": "APPROVAL_cancel_sub_HubSpot_Starter_CRM_20260306.md",
+    "result": "approved"
+  },
+  {
+    "timestamp": "2026-03-06T04:30:44.435346+00:00",
+    "action_type": "unknown_approval",
+    "actor": "orchestrator",
+    "target": "APPROVAL_cancel_sub_ClickUp_Business_20260306.md",
+    "parameters": {},
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-03-06T04:30:44.608922+00:00",
+    "action_type": "unknown_approval",
+    "actor": "orchestrator",
+    "target": "APPROVAL_cancel_sub_GitHub_Copilot_20260306.md",
+    "parameters": {},
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-03-06T04:30:44.659805+00:00",
+    "action_type": "unknown_approval",
+    "actor": "orchestrator",
+    "target": "APPROVAL_cancel_sub_HubSpot_Starter_CRM_20260306.md",
+    "parameters": {},
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-03-06T04:30:44.977816+00:00",
+    "action_type": "approval_granted",
+    "actor": "dashboard",
+    "target": "APPROVAL_cancel_sub_Adobe_Creative_Cloud_20260306.md",
+    "result": "approved"
+  },
+  {
+    "timestamp": "2026-03-06T04:30:50.102036+00:00",
+    "action_type": "unknown_approval",
+    "actor": "orchestrator",
+    "target": "APPROVAL_cancel_sub_Adobe_Creative_Cloud_20260306.md",
+    "parameters": {},
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-03-06T04:37:51.254430+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T04:47:53.008359+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  }
+]

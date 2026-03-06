@@ -61,6 +61,7 @@ def _path(name: str) -> Path:
     return p
 
 NEEDS_ACTION_CLOUD = _path("Needs_Action/cloud")
+NEEDS_ACTION_EMAIL = _path("Needs_Action/email")   # Cloud owns: email domain
 NEEDS_ACTION_ROOT  = _path("Needs_Action")
 IN_PROGRESS_CLOUD  = _path("In_Progress/cloud")
 PENDING_APPROVAL   = _path("Pending_Approval")
@@ -259,11 +260,24 @@ class CloudAgent:
         self._running = False
 
     def _process_email_tasks(self):
-        """Check Needs_Action/cloud/ for email tasks and draft replies."""
-        email_tasks = list(NEEDS_ACTION_CLOUD.glob("EMAIL_*.md"))
-        # Also check root Needs_Action for unclaimed email tasks
-        email_tasks += [f for f in NEEDS_ACTION_ROOT.glob("EMAIL_*.md")
-                        if not (IN_PROGRESS_CLOUD / f.name).exists()]
+        """Check domain email/ dir first, then cloud/, then root for unclaimed email tasks."""
+        seen = set()
+        email_tasks = []
+        # Priority 1: Platinum domain dir (Gmail watcher writes here)
+        for f in NEEDS_ACTION_EMAIL.glob("EMAIL_*.md"):
+            if f.name not in seen:
+                seen.add(f.name)
+                email_tasks.append(f)
+        # Priority 2: cloud/ subdirectory
+        for f in NEEDS_ACTION_CLOUD.glob("EMAIL_*.md"):
+            if f.name not in seen:
+                seen.add(f.name)
+                email_tasks.append(f)
+        # Priority 3: root Needs_Action (backwards-compat)
+        for f in NEEDS_ACTION_ROOT.glob("EMAIL_*.md"):
+            if f.name not in seen and not (IN_PROGRESS_CLOUD / f.name).exists():
+                seen.add(f.name)
+                email_tasks.append(f)
 
         for task_file in email_tasks:
             claimed = claim_item(task_file)

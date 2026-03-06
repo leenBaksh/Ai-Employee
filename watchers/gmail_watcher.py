@@ -132,7 +132,7 @@ class GmailWatcher(BaseWatcher):
         self.watch_labels = watch_labels or ["INBOX", "IMPORTANT"]
         self._processed_ids: set[str] = self._load_processed_ids()
         self._service = None
-        self.dry_run = os.getenv("DRY_RUN", "false").lower() == "true"
+        self.dry_run = os.getenv("DRY_RUN", "true").lower() == "true"
 
     def _processed_ids_file(self) -> Path:
         return self.vault_path / ".gmail_processed_ids.json"
@@ -202,7 +202,10 @@ class GmailWatcher(BaseWatcher):
 
         # Sanitize for filename
         safe_subject = "".join(c if c.isalnum() or c in "-_" else "_" for c in subject)[:40]
-        task_file = self.needs_action / f"EMAIL_{timestamp}_{safe_subject}.md"
+        # Platinum: route email tasks to domain subdirectory for Cloud Agent ownership
+        email_dir = self.needs_action / "email"
+        email_dir.mkdir(parents=True, exist_ok=True)
+        task_file = email_dir / f"EMAIL_{timestamp}_{safe_subject}.md"
 
         task_file.write_text(
             f"""---

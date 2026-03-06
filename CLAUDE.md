@@ -9,7 +9,8 @@ AI_Employee_Vault/
 ├── Dashboard.md              ← Live status board (update after every task batch)
 ├── Company_Handbook.md       ← YOUR RULES — read this first, always
 ├── Business_Goals.md         ← Business objectives and Q1 metrics
-├── Inbox/                    ← Files dropped by user (filesystem watcher picks up)
+├── Inbox/                    ← Quick file drops (filesystem watcher → TASK_*.md)
+├── Active_Project/           ← Project file drops (filesystem watcher → PROJECT_TASK_*.md)
 ├── Needs_Action/             ← Tasks waiting for Claude (created by all watchers)
 ├── Done/                     ← Completed tasks — move files here when resolved
 ├── Plans/                    ← Multi-step plans you create
@@ -34,7 +35,8 @@ AI_Employee_Vault/
 ├── Updates/                  ← Cloud Agent writes UPDATE_*.md signals for Local Agent
 └── Accounting/
     ├── Rates.md              ← Client billing rates (invoices need pre-approved clients)
-    └── Current_Month.md      ← Monthly transaction log
+    ├── Current_Month.md      ← Monthly summary (reconciled against Odoo)
+    └── Bank_Transactions.md  ← Running ledger + Subscriptions Inventory (weekly audit reads this)
 ```
 
 ## Core Rules (from Company_Handbook.md)
@@ -60,6 +62,8 @@ AI_Employee_Vault/
 | Post Instagram | `/post-instagram` | Draft + queue an Instagram post |
 | Post Twitter | `/post-twitter` | Draft + queue a Twitter/X post |
 | Send Email | `/send-email` | Draft + queue an email for approval |
+| Schedule Meeting | `/schedule-meeting` | Draft + queue a calendar event for approval |
+| Send Slack | `/send-slack` | Read Slack channels or draft a message for approval |
 | Weekly Briefing | `/weekly-briefing` | Generate Monday CEO report |
 | Weekly Business Audit | `/weekly-business-audit` | Full 7-day audit via Audit MCP |
 | Odoo Create Invoice | `/odoo-create-invoice` | Create invoice draft in Odoo ERP |
@@ -76,12 +80,17 @@ AI_Employee_Vault/
 
 | Server | Tools | Use When |
 |--------|-------|----------|
-| `email` | `send_email`, `draft_email`, `list_drafts` | Sending emails after approval |
+| `gmail` | `gmail_get_recent`, `gmail_search`, `gmail_send_draft` | Read inbox on-demand, search emails, draft replies (HITL) |
+| `email` | `send_email`, `draft_email`, `list_drafts` | Send emails via SMTP after approval |
+| `whatsapp` | `whatsapp_get_recent`, `whatsapp_send_message`, `whatsapp_get_status` | Read received messages, draft replies (HITL) |
+| `banking` | `banking_get_transactions`, `banking_add_transaction`, `banking_get_summary`, `banking_get_subscription_report` | Read/write Bank_Transactions.md, subscription audit |
 | `odoo` | `odoo_get_customers`, `odoo_get_invoices`, `odoo_create_invoice_draft`, `odoo_get_revenue_summary`, `odoo_get_transactions` | Odoo ERP operations |
 | `social` | `social_draft_post`, `social_check_limits`, `social_get_summary`, `social_list_pending` | Facebook/Instagram/Twitter drafts |
-| `audit` | `audit_get_errors`, `audit_get_activity_summary`, `audit_search_logs`, `audit_get_weekly_report` | Log analysis and error surfacing |
-| `playwright` | 22 `browser_*` tools | LinkedIn/social posting, web browsing, browser automation |
-| `context7` | `resolve-library-id`, `get-library-docs` | Looking up up-to-date library docs during development |
+| `audit` | `audit_get_errors`, `audit_get_activity_summary`, `audit_search_logs`, `audit_get_weekly_report`, `audit_get_subscription_report` | Log analysis, error surfacing, subscription audit |
+| `calendar` | `list_events`, `create_event`, `update_event`, `delete_event` | Google Calendar — reads immediately, writes require approval |
+| `slack` | `list_channels`, `read_channel`, `send_message`, `add_reaction` | Slack — reads/reactions immediate, messages require approval |
+| `playwright` | 22 `browser_*` tools | LinkedIn/social posting, web browsing, Playwright Computer Use |
+| `context7` | `resolve-library-id`, `get-library-docs` | Look up current library docs during development |
 
 ### Playwright MCP — HTTP Server (port 8808)
 Start: `bash .claude/skills/browsing-with-playwright/scripts/start-server.sh`
@@ -93,6 +102,27 @@ Social posting flow: `/Approved/SOCIAL_<PLATFORM>_*.md` → orchestrator creates
 ### Context7 MCP — Documentation Lookup
 Use `context7` when you need current API docs for any library. Call `resolve-library-id` first,
 then `get-library-docs` with the resolved ID. Example: "get docs for playwright".
+
+### Claude Code Router — Model Configuration
+This system runs on Claude Code. You can switch the underlying model at any time:
+
+```bash
+# Default (recommended for most tasks)
+claude --model claude-sonnet-4-6
+
+# High-reasoning tasks (complex audit, multi-step planning)
+claude --model claude-opus-4-6
+
+# Fast lightweight tasks (dashboard updates, log checks)
+claude --model claude-haiku-4-5
+
+# Use any OpenRouter-compatible model via dashboard assistant
+# Set CLAUDE_MODEL in dashboard-ui/.env.local (e.g. anthropic/claude-sonnet-4-5)
+```
+
+The AI Employee uses **claude-sonnet-4-6** by default. Switch to Opus for complex multi-step
+reasoning (e.g. full business audit, tax prep). The Next.js assistant page routes to OpenRouter
+via `OPENROUTER_API_KEY` + `CLAUDE_MODEL` env vars — fully swappable without code changes.
 
 ## Running the System
 

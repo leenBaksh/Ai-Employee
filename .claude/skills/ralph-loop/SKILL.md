@@ -1,4 +1,14 @@
-# Skill: Ralph Wiggum Loop
+---
+name: ralph-loop
+description: |
+  Start or stop the Ralph Wiggum autonomous continuation loop.
+  Keeps Claude working on a multi-step task until a completion condition is met
+  or the iteration limit is reached.
+  Use when the user asks to "start ralph", "run autonomously", "loop until done",
+  or when a batch task needs multiple Claude turns to complete.
+---
+
+# Ralph Wiggum Loop — AI Employee Skill
 
 **Command:** `/ralph-loop`
 **Tier:** Gold
@@ -14,9 +24,43 @@ Named after Ralph Wiggum from The Simpsons — he just keeps going.
 
 1. **Stop Hook** (`.claude/hooks/stop_hook.py`) runs every time Claude would normally stop
 2. Hook reads `/Ralph_State/ralph_current.json`
-3. If task is **active** and iterations < max: hook returns exit code 2 + re-injects continuation prompt
-4. Claude receives the prompt and continues working
-5. After `max_iterations` (default: 10), hook allows Claude to stop
+3. Hook checks **completion conditions** (see below) — if met, allows stop
+4. If task is **active** and iterations < max: hook returns exit code 2 + re-injects continuation prompt
+5. Claude receives the prompt and continues working
+6. After `max_iterations` (default: 10), hook allows Claude to stop
+
+## Completion Strategies
+
+The hook checks these conditions **before** the circuit breaker, in order:
+
+### Strategy 1: Promise Tag (Simple)
+
+Output `<promise>TASK_COMPLETE</promise>` anywhere in your final response.
+The hook scans the transcript and allows stop immediately.
+
+**When to use:** Single-file tasks, linear workflows, when you know the task is done.
+
+```
+I have finished processing all 6 inbox items and updated the dashboard.
+
+<promise>TASK_COMPLETE</promise>
+```
+
+### Strategy 2: File Movement (Advanced)
+
+Set `source_file` in the state. When that file appears in `Done/`, the hook detects it and allows stop.
+
+**When to use:** Tasks that naturally end by moving a file to Done/ (inbox processing, invoice handling).
+
+```json
+{
+  "source_file": "TASK_process_inbox_20260310.md"
+}
+```
+
+### Strategy 3: Max Iterations (Safety Net)
+
+If neither completion strategy triggers, the loop stops after `max_iterations`. This is the circuit breaker — not the intended exit path.
 
 ## State File Schema
 
@@ -29,8 +73,8 @@ Location: `AI_Employee_Vault/Ralph_State/ralph_current.json`
   "iterations": 3,
   "max_iterations": 10,
   "continuation_prompt": "Continue processing /Needs_Action items. Next: check for SLA breaches.",
-  "started": "2026-02-23T08:00:00Z",
-  "source_file": "RALPH_process_inbox_20260223.md"
+  "source_file": "RALPH_process_inbox_20260223.md",
+  "started": "2026-02-23T08:00:00Z"
 }
 ```
 
@@ -45,7 +89,8 @@ type: ralph_task
 action: ralph_loop
 task: Process all inbox items and run weekly briefing
 max_iterations: 8
-continuation_prompt: Continue working through /Needs_Action items. After each item, check if more remain.
+continuation_prompt: Continue working through /Needs_Action items. After each item, check if more remain. Output <promise>TASK_COMPLETE</promise> when the inbox is empty.
+source_file: RALPH_process_inbox_YYYYMMDD.md
 ---
 
 # Ralph Loop: Process Inbox + Weekly Briefing
@@ -61,13 +106,19 @@ Create the JSON directly in `/Ralph_State/ralph_current.json`.
 
 ## Stopping Ralph Early
 
-Set `"active": false` in `ralph_current.json`, OR:
-```bash
-python .claude/hooks/stop_hook.py  # exits 0 if active=false
+Set `"active": false` in `ralph_current.json`, OR output the promise tag:
+
+```
+<promise>TASK_COMPLETE</promise>
 ```
 
 ## Checking Status
-Read `AI_Employee_Vault/Ralph_State/ralph_current.json` to see current iteration count.
+Read `AI_Employee_Vault/Ralph_State/ralph_current.json` to see current iteration count and completion reason.
+
+Completion reasons written by hook:
+- `promise_tag_detected` — clean completion via promise
+- `source_file_in_done` — clean completion via file movement
+- `max_iterations_reached` — circuit breaker fired (review if task finished)
 
 ## Safety Limits
 - Default max: 10 iterations (set `RALPH_MAX_ITERATIONS` in `.env`)
@@ -84,3 +135,4 @@ Read `AI_Employee_Vault/Ralph_State/ralph_current.json` to see current iteration
 - Don't use Ralph for single-task work
 - Don't set max_iterations > 20
 - Don't use Ralph for tasks requiring human approval mid-loop
+- Don't rely on max_iterations as the completion signal — use a promise or source_file

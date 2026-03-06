@@ -1,32 +1,27 @@
-# Transactions — February 2026
+# Transactions — March 2026
 ---
-month: 2026-02
-last_updated: 2026-02-23
+month: 2026-03
+last_updated: 2026-03-06
 reconciled: false
-note: "Figures sourced from Dashboard activity log. Pending Odoo sync for full reconciliation."
+note: "Figures sourced from Bank_Transactions.md. Pending Odoo sync for full reconciliation."
 ---
 
 ## Summary
 
 | | Amount |
 |-|--------|
-| **Income** | $4,000.00 |
-| **Expenses** | $0.00 (untracked) |
-| **Net** | $4,000.00 |
+| **Income** | $0.00 |
+| **Expenses** | $28.50 |
+| **Net** | -$28.50 |
 | **MTD Goal** | $10,000.00 |
-| **Progress** | 40% |
+| **Progress** | 0% |
 
 ## Transactions
 
 | Date | Description | Amount | Category | Type | Status |
 |------|-------------|--------|----------|------|--------|
-| 2026-02-10 | ABC Corp — Invoice (wk1) | $500.00 | Consulting | Income | ✅ Logged |
-| 2026-02-10 | Invoice 2 (from weekly activity) | $500.00 | Consulting | Income | ✅ Logged |
-| 2026-02-11 | Invoice 3 (from weekly activity) | $500.00 | Consulting | Income | ✅ Logged |
-| 2026-02-12 | Invoice 4 (from weekly activity) | $500.00 | Consulting | Income | ✅ Logged |
-| 2026-02-13 | Invoice 5 (from weekly activity) | $500.00 | Consulting | Income | ✅ Logged |
-| 2026-02-20 | 2 payments processed (weekly activity) | $1,000.00 | Consulting | Income | ✅ Logged |
-| 2026-02-24 | ABC Corp — January Invoice INV-2026-01-001 | $500.00 | Consulting | Income | ✅ Approved & Sent |
+| 2026-03-05 | Notion Pro subscription | -$16.00 | subscription | expense | cleared |
+| 2026-03-05 | Slack Pro subscription | -$12.50 | subscription | expense | cleared |
 
 ## ⚠️ Pending
 | Date | Description | Amount | Status |
@@ -34,11 +29,11 @@ note: "Figures sourced from Dashboard activity log. Pending Odoo sync for full r
 | — | — | — | — |
 
 ## Notes
-- Revenue figure of $3,500 sourced from Dashboard activity data (week of 2026-02-20)
-- Individual transaction breakdown is estimated — Finance Watcher (Silver tier) will provide exact figures
-- Pending invoice for ABC Corp ($500) requires fresh approval before sending
-- Expenses not yet tracked — add manually or via Finance Watcher
+- March 2026 — month in progress
+- Previous month (Feb 2026): $4,000.00 income, $209.68 expenses, $3,790.32 net (see Bank_Transactions.md)
+- Full running ledger and subscription inventory: `Accounting/Bank_Transactions.md`
+- Add new transactions to Bank_Transactions.md or via `/odoo-accounting-summary`
 
 ---
 
-_⚠️ This file requires reconciliation with Odoo once connected. Figures are estimates from dashboard activity._
+_⚠️ Requires reconciliation with Odoo once connected. Update via `/odoo-accounting-summary`._

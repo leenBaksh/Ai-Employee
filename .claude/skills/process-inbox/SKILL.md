@@ -22,23 +22,33 @@ cat AI_Employee_Vault/Company_Handbook.md
 
 ## Step 2: Inventory the Inbox
 
-List all pending task files:
+List all pending task files including domain subdirectories (Platinum routing):
 
 ```bash
 ls AI_Employee_Vault/Needs_Action/
+ls AI_Employee_Vault/Needs_Action/email/    # Cloud Agent domain — emails
+ls AI_Employee_Vault/Needs_Action/local/    # Local Agent domain
+ls AI_Employee_Vault/Needs_Action/cloud/    # Cloud Agent overflow
 ```
 
-If the folder is empty, report "Inbox is clear. Nothing to process." and stop.
+Also check Pending Approval for items awaiting your decision:
+```bash
+ls AI_Employee_Vault/Pending_Approval/
+```
+
+If all folders are empty, report "Inbox is clear. Nothing to process." and stop.
 
 ## Step 3: Process Each Task File
 
-For each `.md` file in `/Needs_Action/`:
+For each `.md` file across all `/Needs_Action/` directories:
 
 1. **Read the task file** to understand what it requires.
 2. **Check the `type` field** in the frontmatter:
    - `file_drop` → Summarize the referenced file and suggest an action.
-   - `email` → Draft a reply (subject to approval rules in handbook).
+   - `email` → Draft a reply via Cloud Agent pattern (approval required — Handbook §3).
+   - `whatsapp_message` → Draft reply, create approval in `/Pending_Approval/`.
    - `alert` → Escalate immediately, do not auto-resolve.
+   - `approval_request` → Review and either approve (move to `/Approved/`) or reject (move to `/Rejected/`).
 3. **Determine autonomy level** from `Company_Handbook.md`:
    - HIGH autonomy → Complete and move to `/Done/`.
    - LOW autonomy → Create an approval request in `/Pending_Approval/`.

@@ -33,6 +33,7 @@ import subprocess
 from pathlib import Path
 from datetime import datetime, timezone
 from dotenv import load_dotenv
+from audit_logger import write_log_entry, infer_approval
 
 load_dotenv()
 
@@ -61,7 +62,7 @@ class Orchestrator:
         self.scheduled_dir     = self.vault_path / "Scheduled"
         self.drafts_dir        = self.vault_path / "Drafts"
         self.ralph_state_dir   = self.vault_path / "Ralph_State"
-        self.dry_run           = os.getenv("DRY_RUN", "false").lower() == "true"
+        self.dry_run           = os.getenv("DRY_RUN", "true").lower() == "true"
         self.enable_gmail      = enable_gmail
         self.enable_linkedin   = enable_linkedin
         self.enable_scheduler  = enable_scheduler
@@ -87,12 +88,14 @@ class Orchestrator:
                   self.vault_path / "To_Post" / "Twitter",
                   self.ralph_state_dir,
                   # Platinum Tier directories
+                  self.vault_path / "Needs_Action" / "email",   # Cloud domain: email
                   self.vault_path / "Needs_Action" / "cloud",
                   self.vault_path / "Needs_Action" / "local",
                   self.vault_path / "In_Progress" / "cloud",
                   self.vault_path / "In_Progress" / "local",
                   self.vault_path / "Updates",
-                  self.vault_path / "Signals"]:
+                  self.vault_path / "Signals",
+                  self.vault_path / "Active_Project"]:
             d.mkdir(parents=True, exist_ok=True)
 
     def write_local_health_signal(self):
@@ -129,23 +132,17 @@ class Orchestrator:
     # ── Logging ───────────────────────────────────────────────────────────────
 
     def log_action(self, action_type: str, target: str, result: str, details: dict = None):
-        log_file = self.logs_path / f"{datetime.now(timezone.utc).strftime('%Y-%m-%d')}.json"
-        entry = {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "action_type": action_type,
-            "actor": "orchestrator",
-            "target": target,
-            "parameters": details or {},
-            "result": result,
-        }
-        entries = []
-        if log_file.exists():
-            try:
-                entries = json.loads(log_file.read_text(encoding='utf-8'))
-            except Exception:
-                entries = []
-        entries.append(entry)
-        log_file.write_text(json.dumps(entries, indent=2), encoding='utf-8')
+        approval_status, approved_by = infer_approval(action_type, self.dry_run)
+        write_log_entry(
+            logs_dir=self.logs_path,
+            action_type=action_type,
+            actor="orchestrator",
+            target=target,
+            result=result,
+            parameters=details or {},
+            approval_status=approval_status,
+            approved_by=approved_by,
+        )
 
     # ── Process Management ────────────────────────────────────────────────────
 
@@ -599,17 +596,96 @@ Navigate to: {platform_url}
             self._notified_triggers.add(trigger_file.name)
             self.log_action("scheduled_trigger_detected", trigger_file.name, "notified")
 
+    # ── Cloud Updates Merge (Platinum) ────────────────────────────────────────
+
+    def process_cloud_updates(self):
+        """
+        Read UPDATE_*.md signals written by the Cloud Agent in /Updates/.
+        Log each signal, then move to /Done/ (single-consumer pattern).
+        Local Agent is the only consumer — Cloud Agent only writes here.
+        """
+        updates_dir = self.vault_path / "Updates"
+        for update_file in sorted(updates_dir.glob("UPDATE_*.md")):
+            try:
+                content = update_file.read_text(encoding="utf-8").strip()
+                logger.info(f"[Cloud→Local] {update_file.name}: {content[:120]}")
+                self.log_action("cloud_update_merged", update_file.name, "success",
+                                {"content_preview": content[:200]})
+                dest = self.done / update_file.name
+                update_file.rename(dest)
+            except Exception as e:
+                logger.error(f"Failed to process cloud update {update_file.name}: {e}")
+
     # ── Dashboard ─────────────────────────────────────────────────────────────
+
+    def _read_accounting_summary(self) -> dict:
+        """Read Accounting/Current_Month.md for bank balance and MTD revenue."""
+        result = {"income": "—", "expenses": "—", "net": "—", "mtd_goal": "—", "progress": "—"}
+        acct_file = self.vault_path / "Accounting" / "Current_Month.md"
+        if not acct_file.exists():
+            return result
+        try:
+            content = acct_file.read_text(encoding="utf-8")
+            for line in content.splitlines():
+                if "**Income**" in line or "| **Income**" in line:
+                    parts = line.split("|")
+                    result["income"] = parts[2].strip() if len(parts) > 2 else "—"
+                elif "**Expenses**" in line or "| **Expenses**" in line:
+                    parts = line.split("|")
+                    result["expenses"] = parts[2].strip() if len(parts) > 2 else "—"
+                elif "**Net**" in line or "| **Net**" in line:
+                    parts = line.split("|")
+                    result["net"] = parts[2].strip() if len(parts) > 2 else "—"
+                elif "**MTD Goal**" in line or "| **MTD Goal**" in line:
+                    parts = line.split("|")
+                    result["mtd_goal"] = parts[2].strip() if len(parts) > 2 else "—"
+                elif "**Progress**" in line or "| **Progress**" in line:
+                    parts = line.split("|")
+                    result["progress"] = parts[2].strip() if len(parts) > 2 else "—"
+        except Exception:
+            pass
+        return result
+
+    def _read_active_projects(self) -> list[str]:
+        """Read Business_Goals.md for active project list."""
+        projects = []
+        goals_file = self.vault_path / "Business_Goals.md"
+        if not goals_file.exists():
+            return ["_No active projects_"]
+        try:
+            content = goals_file.read_text(encoding="utf-8")
+            in_projects = False
+            for line in content.splitlines():
+                if "### Active Projects" in line:
+                    in_projects = True
+                    continue
+                if in_projects:
+                    if line.startswith("###") or line.startswith("---"):
+                        break
+                    if line.strip() and not line.startswith("_No active"):
+                        projects.append(line.strip())
+        except Exception:
+            pass
+        return projects if projects else ["_No active projects_"]
 
     def update_dashboard(self):
         """Write a fresh Dashboard.md with live vault counts."""
         try:
-            na_count    = len(list(self.needs_action.glob("*.md")))
+            # Domain-aware counts
+            email_count = len(list((self.needs_action / "email").glob("EMAIL_*.md"))) if (self.needs_action / "email").exists() else 0
+            na_count    = len(list(self.needs_action.glob("*.md"))) + email_count
             done_count  = len(list(self.done.glob("*")))
             pa_count    = len(list((self.vault_path / "Pending_Approval").glob("*.md")))
             draft_count = len(list(self.drafts_dir.glob("DRAFT_*.md")))
             sched_count = len(list(self.scheduled_dir.glob("TRIGGER_*.md")))
             now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+
+            # Financial summary
+            acct = self._read_accounting_summary()
+
+            # Active projects
+            active_projects = self._read_active_projects()
+            projects_md = "\n".join(f"  {p}" for p in active_projects)
 
             active = {n: "Running" for n, p in self._processes.items() if p.poll() is None}
             system_rows = "\n".join(
@@ -661,17 +737,68 @@ Navigate to: {platform_url}
                 except Exception:
                     pass
 
+            # Cloud agent signal
+            cloud_signal_file = self.vault_path / "Signals" / "HEALTH_cloud-01.json"
+            cloud_agent_status = "Not deployed"
+            cloud_agent_ts = "—"
+            cloud_pending = 0
+            if cloud_signal_file.exists():
+                try:
+                    csig = json.loads(cloud_signal_file.read_text(encoding="utf-8"))
+                    age_s = (datetime.now(timezone.utc) -
+                             datetime.fromisoformat(csig["timestamp"])).total_seconds()
+                    cloud_agent_status = "Offline (>" + str(int(age_s)) + "s)" if age_s > 300 else csig.get("status", "unknown").title()
+                    cloud_agent_ts = csig.get("timestamp", "—")[:16].replace("T", " ") + " UTC"
+                    cloud_pending = csig.get("in_progress_count", 0)
+                except Exception:
+                    pass
+
+            # Pending cloud updates
+            updates_pending = len(list((self.vault_path / "Updates").glob("UPDATE_*.md")))
+
             inbox_status = "✅ Clear" if na_count == 0 else f"⚠️ {na_count} pending"
             approval_status = "✅ Clear" if pa_count == 0 else f"📋 {pa_count} waiting"
+            email_status = "✅ Clear" if email_count == 0 else f"📧 {email_count} unread"
+            wa_status = "✅ Clear" if wa_processed == 0 else f"💬 {wa_processed} received"
 
             dashboard = self.vault_path / "Dashboard.md"
-            dashboard.write_text(
-                f"""# AI Employee Dashboard
+            dashboard_tmp = self.vault_path / "Dashboard.md.tmp"
+            content = f"""# AI Employee Dashboard
 ---
 last_updated: {now}
 status: active
 version: 0.4.0
 tier: Platinum
+written_by: local-01
+---
+
+## 💰 Financial Overview
+
+| Metric | Value |
+|--------|-------|
+| MTD Revenue | {acct['income']} |
+| MTD Expenses | {acct['expenses']} |
+| Net | {acct['net']} |
+| Monthly Goal | {acct['mtd_goal']} |
+| Progress | {acct['progress']} |
+
+---
+
+## 📋 Active Projects
+
+{projects_md}
+
+---
+
+## 📬 Pending Messages
+
+| Channel | Status |
+|---------|--------|
+| Emails (Needs Action) | {email_status} |
+| WhatsApp (all time) | {wa_status} |
+| Drafts awaiting review | {draft_count} |
+| Pending Approval | {approval_status} |
+
 ---
 
 ## System Status
@@ -680,6 +807,7 @@ tier: Platinum
 |-----------|--------|------------|
 {system_rows}
 | Local Agent (local-01) | {agent_status} | {agent_ts} |
+| Cloud Agent (cloud-01) | {cloud_agent_status} | {cloud_agent_ts} |
 | Daily WhatsApp Report | {"✅ Enabled" if wa_daily_report else "⬜ Disabled"} | {wa_report_time} UTC → {wa_report_to} |
 
 ---
@@ -687,9 +815,9 @@ tier: Platinum
 ## Inbox Summary
 
 - **Needs Action:** {inbox_status}
+- **Emails:** {email_status}
 - **Pending Approval:** {approval_status}
 - **Scheduled Triggers:** {sched_count}
-- **Drafts awaiting review:** {draft_count}
 - **Done (all time):** {done_count}
 
 ---
@@ -700,15 +828,20 @@ _Check `/Logs/` for detailed action history._
 
 ---
 
-## Quick Stats
+## Platinum Tier
 
-| Metric | Value |
-|--------|-------|
-| Tasks in queue | {na_count} |
-| Pending approvals | {pa_count} |
-| Drafts awaiting review | {draft_count} |
-| Scheduled jobs pending | {sched_count} |
-| Completed tasks | {done_count} |
+| Feature | Status |
+|---------|--------|
+| Ralph Wiggum Loop | {ralph_status} |
+| Cloud Agent | {cloud_agent_status} ({cloud_pending} in-progress) |
+| Cloud Updates pending | {updates_pending} |
+| Vault Sync | Configured |
+| Email domain routing | ✅ Needs_Action/email/ |
+| Facebook drafts queued | {social_counts.get('Facebook', 0)} |
+| Instagram drafts queued | {social_counts.get('Instagram', 0)} |
+| Twitter drafts queued | {social_counts.get('Twitter', 0)} |
+| Odoo MCP | Available |
+| Audit MCP | Available |
 
 ---
 
@@ -722,34 +855,21 @@ _Check `/Logs/` for detailed action history._
 
 ---
 
-## Platinum Tier
-
-| Feature | Status |
-|---------|--------|
-| Ralph Wiggum Loop | {ralph_status} |
-| Cloud Agent | Deployed |
-| Vault Sync | Configured |
-| Facebook drafts queued | {social_counts.get('Facebook', 0)} |
-| Instagram drafts queued | {social_counts.get('Instagram', 0)} |
-| Twitter drafts queued | {social_counts.get('Twitter', 0)} |
-| Odoo MCP | Available |
-| Audit MCP | Available |
-
----
-
 ## Quick Links
 
 - [Company Handbook](Company_Handbook.md)
 - [Business Goals](Business_Goals.md)
+- [Accounting](Accounting/Current_Month.md)
 - [Logs](Logs/)
 - [Done](Done/)
 
 ---
 
-_Updated automatically by AI Employee v0.4 Platinum · [Company Handbook](Company_Handbook.md) · [Business Goals](Business_Goals.md)_
-""",
-                encoding='utf-8',
-            )
+_Updated automatically by AI Employee v0.4 Platinum · Local Agent local-01 · [Company Handbook](Company_Handbook.md)_
+"""
+            # Atomic write: temp → rename (single-writer rule — Local Agent only)
+            dashboard_tmp.write_text(content, encoding='utf-8')
+            dashboard_tmp.replace(dashboard)
         except Exception as e:
             logger.error(f"Dashboard update failed: {e}")
 
@@ -788,6 +908,10 @@ _Updated automatically by AI Employee v0.4 Platinum · [Company Handbook](Compan
             # Dashboard update (every 30s)
             if tick % 6 == 0:
                 self.update_dashboard()
+
+            # Platinum: merge Cloud Agent signals from /Updates/ (every 30s)
+            if tick % 6 == 0:
+                self.process_cloud_updates()
 
             # Platinum: write Local Agent health heartbeat (every 60s)
             if tick % 12 == 0:

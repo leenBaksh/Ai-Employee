@@ -48,7 +48,7 @@ class LinkedInWatcher(BaseWatcher):
         self.to_post_dir.mkdir(parents=True, exist_ok=True)
         self.scheduled_dir = self.vault_path / "Scheduled"
         self.scheduled_dir.mkdir(parents=True, exist_ok=True)
-        self.dry_run = os.getenv("DRY_RUN", "false").lower() == "true"
+        self.dry_run = os.getenv("DRY_RUN", "true").lower() == "true"
         self._posts_today_file = self.vault_path / ".linkedin_posts_today.json"
         self._posts_today: dict = self._load_posts_today()
         self._triggered: set = set()

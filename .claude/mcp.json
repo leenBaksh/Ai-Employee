@@ -53,6 +53,41 @@
       "command": "npx",
       "args": ["@playwright/mcp@latest"]
     },
+    "calendar": {
+      "command": "uv",
+      "args": ["run", "--directory", ".", "calendar-mcp"],
+      "env": {
+        "VAULT_PATH": "./AI_Employee_Vault"
+      }
+    },
+    "slack": {
+      "command": "uv",
+      "args": ["run", "--directory", ".", "slack-mcp"],
+      "env": {
+        "VAULT_PATH": "./AI_Employee_Vault"
+      }
+    },
+    "banking": {
+      "command": "uv",
+      "args": ["run", "--directory", ".", "banking-mcp"],
+      "env": {
+        "VAULT_PATH": "./AI_Employee_Vault"
+      }
+    },
+    "whatsapp": {
+      "command": "uv",
+      "args": ["run", "--directory", ".", "whatsapp-mcp"],
+      "env": {
+        "VAULT_PATH": "./AI_Employee_Vault"
+      }
+    },
+    "gmail": {
+      "command": "uv",
+      "args": ["run", "--directory", ".", "gmail-mcp"],
+      "env": {
+        "VAULT_PATH": "./AI_Employee_Vault"
+      }
+    },
     "context7": {
       "command": "npx",
       "args": ["@upstash/context7-mcp"]

@@ -2,7 +2,6 @@
   "hooks": {
     "Stop": [
       {
-        "matcher": "Ralph.*loop|Autonomous.*task|Continue.*working",
         "hooks": [
           {
             "type": "command",

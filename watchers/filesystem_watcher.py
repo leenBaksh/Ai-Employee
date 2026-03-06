@@ -40,6 +40,22 @@ class InboxDropHandler(FileSystemEventHandler):
         self.watcher.create_action_file(source)
 
 
+class ActiveProjectDropHandler(FileSystemEventHandler):
+    """Watchdog event handler: reacts to files dropped into /Active_Project."""
+
+    def __init__(self, watcher: "FilesystemWatcher"):
+        self.watcher = watcher
+
+    def on_created(self, event):
+        if event.is_directory:
+            return
+        source = Path(event.src_path)
+        if source.name.startswith(".") or source.suffix == ".md":
+            return
+        self.watcher.logger.info(f"New project file detected in Active_Project: {source.name}")
+        self.watcher.create_project_action_file(source)
+
+
 class FilesystemWatcher(BaseWatcher):
     """
     Watches the Obsidian vault /Inbox folder using watchdog.
@@ -51,7 +67,9 @@ class FilesystemWatcher(BaseWatcher):
     def __init__(self, vault_path: str):
         super().__init__(vault_path, check_interval=0)  # event-driven, no polling interval
         self.inbox = self.vault_path / "Inbox"
+        self.active_project = self.vault_path / "Active_Project"
         self.inbox.mkdir(parents=True, exist_ok=True)
+        self.active_project.mkdir(parents=True, exist_ok=True)
         self._observer = None
 
     def check_for_updates(self) -> list:
@@ -63,7 +81,7 @@ class FilesystemWatcher(BaseWatcher):
         Copy the dropped file to /Needs_Action and create a .md task file.
         Returns the path to the created .md task file.
         """
-        dry_run = os.getenv("DRY_RUN", "false").lower() == "true"
+        dry_run = os.getenv("DRY_RUN", "true").lower() == "true"
         timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
         safe_name = source.stem.replace(" ", "_")
 
@@ -123,15 +141,109 @@ _Add any observations or action taken here._
 
         return task_file
 
+    def create_project_action_file(self, source: Path) -> Path:
+        """
+        Handle a file dropped into /Active_Project.
+        Copies the file to /Needs_Action and creates a project-type task file.
+        Returns the path to the created .md task file.
+        """
+        dry_run = os.getenv("DRY_RUN", "true").lower() == "true"
+        timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        safe_name = source.stem.replace(" ", "_")
+
+        dest_file = self.needs_action / f"PROJECT_{timestamp}_{source.name}"
+        task_file = self.needs_action / f"PROJECT_TASK_{timestamp}_{safe_name}.md"
+
+        if dry_run:
+            self.logger.info(f"[DRY RUN] Would copy {source.name} → {dest_file.name}")
+            self.logger.info(f"[DRY RUN] Would create project task: {task_file.name}")
+            return task_file
+
+        shutil.copy2(source, dest_file)
+        self.logger.info(f"Copied project file: {source.name} → {dest_file.name}")
+
+        # Infer project type from filename/extension for smarter defaults
+        ext = source.suffix.lower()
+        if ext in (".csv", ".xlsx", ".xls", ".ods"):
+            project_hint = "This looks like a spreadsheet — likely financial data, transactions, or inventory."
+            suggested_actions = (
+                "- [ ] Parse and categorize rows (use pandas or read line by line)\n"
+                "- [ ] Group by category/date and produce summary totals\n"
+                "- [ ] Flag anomalies or missing values\n"
+                "- [ ] Write summary report to /Plans/\n"
+                "- [ ] Move this task to /Done/ when complete"
+            )
+        elif ext == ".pdf":
+            project_hint = "This looks like a PDF document — likely a contract, invoice, or statement."
+            suggested_actions = (
+                "- [ ] Extract key fields (dates, amounts, parties, clauses)\n"
+                "- [ ] Cross-reference with Odoo records if financial\n"
+                "- [ ] Flag action items or deadlines\n"
+                "- [ ] Write summary to /Plans/\n"
+                "- [ ] Move this task to /Done/ when complete"
+            )
+        else:
+            project_hint = "Review the file contents and determine the project scope."
+            suggested_actions = (
+                "- [ ] Read and understand the project requirements\n"
+                "- [ ] Create a multi-step Plan.md in /Plans/\n"
+                "- [ ] Identify approval requirements\n"
+                "- [ ] Move this task to /Done/ when complete"
+            )
+
+        task_file.write_text(
+            f"""---
+type: project_drop
+source: active_project
+original_name: {source.name}
+file_ref: {dest_file.name}
+size_bytes: {source.stat().st_size}
+received: {datetime.now(timezone.utc).isoformat()}
+priority: high
+status: pending
+---
+
+## Project File Dropped for Processing
+
+A project file has been placed in Active_Project and requires a structured response.
+
+**File:** `{source.name}`
+**Size:** {source.stat().st_size:,} bytes
+**Stored as:** `{dest_file.name}`
+
+## Context
+
+{project_hint}
+
+## Suggested Actions
+
+{suggested_actions}
+
+## Notes
+_Add project scope, dependencies, or constraints here._
+""",
+            encoding='utf-8',
+        )
+
+        self.log_action(
+            action_type="project_file_detected",
+            target=source.name,
+            result="success",
+            details={"task_file": task_file.name, "dest_file": dest_file.name},
+        )
+
+        return task_file
+
     def run(self):
         """Start the watchdog observer and block until interrupted."""
         self.logger.info(f"Watching inbox: {self.inbox}")
-        self.logger.info("Drop a file into the Inbox folder to trigger processing.")
+        self.logger.info(f"Watching active projects: {self.active_project}")
+        self.logger.info("Drop a file into Inbox (quick tasks) or Active_Project (project work).")
         self.logger.info("Press Ctrl+C to stop.")
 
-        handler = InboxDropHandler(self)
         self._observer = Observer()
-        self._observer.schedule(handler, str(self.inbox), recursive=False)
+        self._observer.schedule(InboxDropHandler(self), str(self.inbox), recursive=False)
+        self._observer.schedule(ActiveProjectDropHandler(self), str(self.active_project), recursive=False)
         self._observer.start()
 
         try:

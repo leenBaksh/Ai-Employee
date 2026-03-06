@@ -8,8 +8,8 @@ const nextConfig: NextConfig = {
       beforeFiles: [],
       afterFiles: [
         {
-          // Match /api/* but NOT /api/auth/* (auth routes handled by Next.js)
-          source: '/api/:path((?!auth(?:/|$)).*)',
+          // Match /api/* but NOT /api/auth/* or /api/assistant (handled by Next.js)
+          source: '/api/:path((?!auth(?:/|$)|assistant(?:/|$)).*)',
           destination: 'http://localhost:8888/api/:path*',
         },
       ],

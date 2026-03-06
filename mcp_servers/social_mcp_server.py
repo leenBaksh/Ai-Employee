@@ -23,11 +23,15 @@ Security:
 """
 
 import os
+import sys
 import json
 import asyncio
 from pathlib import Path
 from datetime import datetime, timezone, date
 from dotenv import load_dotenv
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from audit_logger import write_log_entry, infer_approval
 
 load_dotenv()
 
@@ -49,24 +53,17 @@ _STATE_FILE = VAULT_PATH / ".social_posts_today.json"
 
 
 def _log(action_type: str, target: str, result: str, details: dict = None):
-    LOGS_DIR.mkdir(parents=True, exist_ok=True)
-    log_file = LOGS_DIR / f"{datetime.now(timezone.utc).strftime('%Y-%m-%d')}.json"
-    entry = {
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "action_type": action_type,
-        "actor": "social_mcp_server",
-        "target": target,
-        "parameters": details or {},
-        "result": result,
-    }
-    entries = []
-    if log_file.exists():
-        try:
-            entries = json.loads(log_file.read_text(encoding="utf-8"))
-        except Exception:
-            entries = []
-    entries.append(entry)
-    log_file.write_text(json.dumps(entries, indent=2), encoding="utf-8")
+    approval_status, approved_by = infer_approval(action_type)
+    write_log_entry(
+        logs_dir=LOGS_DIR,
+        action_type=action_type,
+        actor="social_mcp_server",
+        target=target,
+        result=result,
+        parameters=details or {},
+        approval_status=approval_status,
+        approved_by=approved_by,
+    )
 
 
 def _load_state() -> dict:

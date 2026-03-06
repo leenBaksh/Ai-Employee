@@ -1,11 +1,23 @@
 """base_watcher.py — Abstract base class for all AI Employee watchers."""
 
+import os
+import sys
 import time
 import logging
-import json
 from pathlib import Path
 from abc import ABC, abstractmethod
 from datetime import datetime, timezone
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from audit_logger import write_log_entry, infer_approval
+
+# DEV_MODE / DRY_RUN: default True — safe by default, must explicitly set to "false"
+# DEV_MODE takes precedence over DRY_RUN if both are set.
+def _resolve_dry_run() -> bool:
+    dev_mode = os.getenv("DEV_MODE", "").lower()
+    if dev_mode in ("true", "false"):
+        return dev_mode == "true"
+    return os.getenv("DRY_RUN", "true").lower() == "true"
 
 # Configure logging
 logging.basicConfig(
@@ -28,7 +40,10 @@ class BaseWatcher(ABC):
         self.needs_action = self.vault_path / "Needs_Action"
         self.logs_path = self.vault_path / "Logs"
         self.check_interval = check_interval
+        self.dry_run = _resolve_dry_run()
         self.logger = logging.getLogger(self.__class__.__name__)
+        if self.dry_run:
+            self.logger.warning("DRY RUN mode — no external actions will be taken. Set DRY_RUN=false to enable.")
         self._ensure_dirs()
 
     def _ensure_dirs(self):
@@ -45,27 +60,18 @@ class BaseWatcher(ABC):
         """Create a .md file in Needs_Action and return its path."""
 
     def log_action(self, action_type: str, target: str, result: str, details: dict = None):
-        """Append a structured JSON log entry to today's log file."""
-        log_file = self.logs_path / f"{datetime.now(timezone.utc).strftime('%Y-%m-%d')}.json"
-        entry = {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "action_type": action_type,
-            "actor": self.__class__.__name__,
-            "target": target,
-            "parameters": details or {},
-            "result": result,
-        }
-
-        # Read existing entries or start fresh
-        entries = []
-        if log_file.exists():
-            try:
-                entries = json.loads(log_file.read_text(encoding='utf-8'))
-            except json.JSONDecodeError:
-                entries = []
-
-        entries.append(entry)
-        log_file.write_text(json.dumps(entries, indent=2), encoding='utf-8')
+        """Append a compliant audit log entry via the central audit_logger."""
+        approval_status, approved_by = infer_approval(action_type, self.dry_run)
+        write_log_entry(
+            logs_dir=self.logs_path,
+            action_type=action_type,
+            actor=self.__class__.__name__,
+            target=target,
+            result=result,
+            parameters=details or {},
+            approval_status=approval_status,
+            approved_by=approved_by,
+        )
 
     def run(self):
         """Main event loop — runs continuously until interrupted.

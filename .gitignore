@@ -1,9 +1,22 @@
 # Secrets — NEVER commit these
 .env
+.env.local
+.env.*.local
 secrets/
 *.pid
 *.token
 *.json.secret
+*_credentials.json
+*_token.json
+*_session/
+*_session
+*.pem
+*.key
+*.p12
+*.pfx
+# AI Employee vault secrets
+AI_Employee_Vault/Signals/
+AI_Employee_Vault/.whatsapp_processed_ids.json
 
 # Python
 __pycache__/

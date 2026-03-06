@@ -1,6 +1,6 @@
 # Business Goals
 ---
-last_updated: 2026-02-23
+last_updated: 2026-03-06
 review_frequency: weekly
 ---
 
@@ -8,7 +8,7 @@ review_frequency: weekly
 
 ### Revenue Target
 - Monthly goal: $10,000
-- Current MTD: $0
+- Current MTD: $0.00
 
 ### Key Metrics to Track
 | Metric | Target | Alert Threshold |
@@ -18,7 +18,9 @@ review_frequency: weekly
 | Software costs | < $500/month | > $600/month |
 
 ### Active Projects
-_No active projects yet. Add them here._
+1. AI Employee Platform — Due Mar 31 — Budget $0 (internal)
+2. Client Onboarding Automation — Due Apr 15 — Budget $2,000
+3. Q1 Tax Prep — Due Apr 30 — Budget $500
 
 ### Subscription Audit Rules
 Flag for review if:
@@ -26,6 +28,9 @@ Flag for review if:
 - Cost increased > 20%
 - Duplicate functionality with another tool
 
+Full subscription inventory: `Accounting/Bank_Transactions.md → Subscriptions Inventory`
+The weekly briefing reads this table and creates `Pending_Approval/APPROVAL_cancel_sub_*.md` for flagged items.
+
 ---
 
-_Updated by AI Employee when instructed._
+_Updated by AI Employee when instructed. Run `/weekly-briefing` each Sunday to review._
