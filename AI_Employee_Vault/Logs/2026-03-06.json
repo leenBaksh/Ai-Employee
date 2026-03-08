@@ -64,5 +64,2056 @@
       "error": "[Errno 104] Connection reset by peer"
     },
     "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T04:57:55.443046+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T05:01:56.246407+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T05:15:58.440914+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T15:58:14.451791+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-06T15:58:39.365056+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:00:40.544750+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:02:44.426801+00:00",
+    "action_type": "email_task_created",
+    "actor": "GmailWatcher",
+    "target": "Mercor <no-reply@mercor.com>",
+    "parameters": {
+      "message_id": "19cc2ea2aa0aa947",
+      "subject": "Upload your resume to unlock work offers on Mercor",
+      "priority": "normal",
+      "task_file": "EMAIL_20260306T160244Z_Upload_your_resume_to_unlock_work_offers.md"
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-06T16:02:44.500151+00:00",
+    "action_type": "file_created",
+    "actor": "GmailWatcher",
+    "target": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault/Needs_Action/EMAIL_20260306T160244Z_Upload_your_resume_to_unlock_work_offers.md",
+    "parameters": {},
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-06T16:02:45.246194+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260306T160244Z_Upload_your_resume_to_unlock_work_offers.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-06T16:04:46.139485+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:06:32.769249+00:00",
+    "action_type": "orchestrator_restart",
+    "actor": "watchdog",
+    "target": "orchestrator",
+    "parameters": {
+      "pid": 24247,
+      "total_restarts": 1
+    },
+    "approval_status": "auto",
+    "approved_by": "auto",
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-06T16:06:34.208572+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "filesystem_watcher",
+    "parameters": {
+      "pid": 24251
+    },
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-06T16:06:34.247573+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "gmail_watcher",
+    "parameters": {
+      "pid": 24252
+    },
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-06T16:06:34.285778+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "linkedin_watcher",
+    "parameters": {
+      "pid": 24253
+    },
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-06T16:06:34.321808+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "whatsapp_watcher",
+    "parameters": {
+      "pid": 24254
+    },
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-06T16:06:34.355958+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "social_watcher",
+    "parameters": {
+      "pid": 24255
+    },
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-06T16:06:34.393391+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "scheduler",
+    "parameters": {
+      "pid": 24256
+    },
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-06T16:06:34.901604+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260306T160244Z_Upload_your_resume_to_unlock_work_offers.md",
+    "parameters": {},
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-06T16:06:35.244788+00:00",
+    "action_type": "unknown_approval",
+    "actor": "orchestrator",
+    "target": "APPROVAL_cancel_sub_Adobe_Creative_Cloud_20260306.md",
+    "parameters": {},
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-03-06T16:06:35.313695+00:00",
+    "action_type": "unknown_approval",
+    "actor": "orchestrator",
+    "target": "APPROVAL_cancel_sub_ClickUp_Business_20260306.md",
+    "parameters": {},
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-03-06T16:06:35.344074+00:00",
+    "action_type": "unknown_approval",
+    "actor": "orchestrator",
+    "target": "APPROVAL_cancel_sub_GitHub_Copilot_20260306.md",
+    "parameters": {},
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-03-06T16:06:35.481593+00:00",
+    "action_type": "unknown_approval",
+    "actor": "orchestrator",
+    "target": "APPROVAL_cancel_sub_HubSpot_Starter_CRM_20260306.md",
+    "parameters": {},
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-03-06T16:06:35.542919+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260305T143704Z_daily_briefing.md",
+    "parameters": {},
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-06T16:06:35.565473+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260305T143712Z_odoo_health_check.md",
+    "parameters": {},
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-06T16:06:35.596831+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260305T143716Z_daily_briefing.md",
+    "parameters": {},
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-06T16:06:35.627083+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260305T143724Z_odoo_health_check.md",
+    "parameters": {},
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-06T16:06:35.654977+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260306T042418Z_daily_briefing.md",
+    "parameters": {},
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-06T16:06:35.686416+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260306T042520Z_odoo_health_check.md",
+    "parameters": {},
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-06T16:06:36.692048+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-06T16:07:55.973818+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:09:05.895717+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:10:27.356499+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:10:48.914735+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:11:19.317927+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:11:38.406284+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:12:48.030969+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:13:56.187298+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:15:03.749138+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:15:23.704669+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:16:12.088151+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:16:55.783393+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:17:20.667937+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:18:29.416455+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:19:26.521942+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:19:40.572465+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:20:56.838201+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:20:59.490729+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:22:09.638947+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:23:17.989250+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:23:31.005908+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:24:29.138431+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:25:07.286334+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:25:40.945072+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:26:53.227107+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:27:38.723741+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:28:07.680935+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:29:12.597812+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T16:29:14.977451+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:07:34.359834+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-06T17:08:18.183194+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-06T17:08:36.840649+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:08:54.317228+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:09:45.249962+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:10:54.664255+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:12:02.538141+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:13:09.906661+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:14:18.175207+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:15:25.779282+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:16:33.487261+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:16:56.613821+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:17:41.875545+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:18:52.073242+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:19:33.336124+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:19:59.042603+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:21:07.485114+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:22:15.837582+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:23:24.557486+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:24:32.043484+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:25:38.342314+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:26:43.843689+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:26:58.488741+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:27:49.241749+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:28:55.146691+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:30:01.527685+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:31:08.601427+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:32:15.461092+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:33:21.151204+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:34:28.040851+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:35:34.161284+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:35:35.865102+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:36:45.229601+00:00",
+    "action_type": "poll_error",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsAppWatcher",
+    "parameters": {
+      "error": "Page.goto: net::ERR_NAME_NOT_RESOLVED at https://web.whatsapp.com/\nCall log:\n  - navigating to \"https://web.whatsapp.com/\", waiting until \"domcontentloaded\"\n",
+      "error_category": "logic",
+      "consecutive_errors": 1,
+      "backoff_seconds": 60
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:37:45.902215+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:38:00.317856+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "The read operation timed out"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:38:22.014638+00:00",
+    "action_type": "poll_error",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsAppWatcher",
+    "parameters": {
+      "error": "Page.goto: net::ERR_NAME_NOT_RESOLVED at https://web.whatsapp.com/\nCall log:\n  - navigating to \"https://web.whatsapp.com/\", waiting until \"domcontentloaded\"\n",
+      "error_category": "logic",
+      "consecutive_errors": 2,
+      "backoff_seconds": 120
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:39:55.944590+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:40:12.707736+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:40:56.967275+00:00",
+    "action_type": "poll_error",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsAppWatcher",
+    "parameters": {
+      "error": "Page.goto: net::ERR_NAME_NOT_RESOLVED at https://web.whatsapp.com/\nCall log:\n  - navigating to \"https://web.whatsapp.com/\", waiting until \"domcontentloaded\"\n",
+      "error_category": "logic",
+      "consecutive_errors": 3,
+      "backoff_seconds": 240
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:40:58.658122+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "ALERT_repeated_failure_WhatsAppWatcher_20260306T174056Z.md",
+    "parameters": {},
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-06T17:40:58.691219+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "ALERT_repeated_failure_WhatsAppWatcher_20260306T174056Z.md",
+    "parameters": {},
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-06T17:42:06.006971+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:42:22.866446+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:44:16.055445+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:44:34.081466+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:45:36.309661+00:00",
+    "action_type": "poll_error",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsAppWatcher",
+    "parameters": {
+      "error": "Page.goto: net::ERR_NAME_NOT_RESOLVED at https://web.whatsapp.com/\nCall log:\n  - navigating to \"https://web.whatsapp.com/\", waiting until \"domcontentloaded\"\n",
+      "error_category": "logic",
+      "consecutive_errors": 4,
+      "backoff_seconds": 240
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:46:26.099298+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:46:49.782572+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:48:36.139266+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:48:59.837654+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:50:46.195334+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T17:51:09.861485+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at gmail.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T18:12:54.444814+00:00",
+    "action_type": "poll_error",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsAppWatcher",
+    "parameters": {
+      "error": "Page.goto: net::ERR_NAME_NOT_RESOLVED at https://web.whatsapp.com/\nCall log:\n  - navigating to \"https://web.whatsapp.com/\", waiting until \"domcontentloaded\"\n",
+      "error_category": "logic",
+      "consecutive_errors": 5,
+      "backoff_seconds": 240
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T18:13:04.953084+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-06T18:13:20.671635+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-06T18:14:32.629861+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "The read operation timed out"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T18:14:57.964329+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "The read operation timed out"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T18:16:42.756848+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at oauth2.googleapis.com"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T18:17:09.171563+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at oauth2.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T18:17:31.831365+00:00",
+    "action_type": "poll_error",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsAppWatcher",
+    "parameters": {
+      "error": "Page.goto: net::ERR_NAME_NOT_RESOLVED at https://web.whatsapp.com/\nCall log:\n  - navigating to \"https://web.whatsapp.com/\", waiting until \"domcontentloaded\"\n",
+      "error_category": "logic",
+      "consecutive_errors": 6,
+      "backoff_seconds": 240
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T18:18:52.859695+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at oauth2.googleapis.com"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T18:19:19.205155+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at oauth2.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T18:21:02.983936+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at oauth2.googleapis.com"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T18:21:29.243943+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at oauth2.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T18:22:10.029989+00:00",
+    "action_type": "poll_error",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsAppWatcher",
+    "parameters": {
+      "error": "Page.goto: net::ERR_NAME_NOT_RESOLVED at https://web.whatsapp.com/\nCall log:\n  - navigating to \"https://web.whatsapp.com/\", waiting until \"domcontentloaded\"\n",
+      "error_category": "logic",
+      "consecutive_errors": 7,
+      "backoff_seconds": 240
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T18:23:13.026669+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at oauth2.googleapis.com"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T18:23:39.287848+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at oauth2.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T18:25:23.075651+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at oauth2.googleapis.com"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T18:25:55.095651+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at oauth2.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T18:26:48.312123+00:00",
+    "action_type": "poll_error",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsAppWatcher",
+    "parameters": {
+      "error": "Page.goto: net::ERR_NAME_NOT_RESOLVED at https://web.whatsapp.com/\nCall log:\n  - navigating to \"https://web.whatsapp.com/\", waiting until \"domcontentloaded\"\n",
+      "error_category": "logic",
+      "consecutive_errors": 8,
+      "backoff_seconds": 240
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T18:27:33.115360+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at oauth2.googleapis.com"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T18:28:05.132210+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "Unable to find the server at oauth2.googleapis.com"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T19:13:08.730983+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-06T19:13:24.503492+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-06T19:13:29.079718+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T19:14:35.541126+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T19:15:41.852499+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T19:16:09.275667+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T19:16:50.501213+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T19:18:00.817063+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T19:19:08.649494+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T19:20:10.187009+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T19:20:17.879258+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T19:21:31.803912+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T19:21:38.384896+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T19:22:42.678887+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T19:23:49.670720+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T19:24:56.579781+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T19:26:03.376389+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T19:27:09.395849+00:00",
+    "action_type": "whatsapp_poll",
+    "actor": "WhatsAppWatcher",
+    "target": "WhatsApp Web",
+    "parameters": {
+      "error": "not logged in \u2014 QR scan required"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T19:30:17.531805+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T19:36:19.534102+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T19:40:26.577525+00:00",
+    "action_type": "gmail_poll",
+    "actor": "GmailWatcher",
+    "target": "Gmail API",
+    "parameters": {
+      "error": "[Errno 104] Connection reset by peer"
+    },
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T19:43:11.197936+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "filesystem_watcher",
+    "parameters": {
+      "pid": 38571
+    },
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-06T19:43:11.239918+00:00",
+    "action_type": "process_start",
+    "actor": "orchestrator",
+    "target": "scheduler",
+    "parameters": {
+      "pid": 38572
+    },
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-06T19:43:11.412925+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "ALERT_repeated_failure_WhatsAppWatcher_20260306T174056Z.md",
+    "parameters": {},
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-06T19:43:11.439799+00:00",
+    "action_type": "task_detected",
+    "actor": "orchestrator",
+    "target": "EMAIL_20260306T160244Z_Upload_your_resume_to_unlock_work_offers.md",
+    "parameters": {},
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-06T19:43:11.733182+00:00",
+    "action_type": "unknown_approval",
+    "actor": "orchestrator",
+    "target": "APPROVAL_cancel_sub_Adobe_Creative_Cloud_20260306.md",
+    "parameters": {},
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-03-06T19:43:11.849143+00:00",
+    "action_type": "unknown_approval",
+    "actor": "orchestrator",
+    "target": "APPROVAL_cancel_sub_ClickUp_Business_20260306.md",
+    "parameters": {},
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-03-06T19:43:11.964580+00:00",
+    "action_type": "unknown_approval",
+    "actor": "orchestrator",
+    "target": "APPROVAL_cancel_sub_GitHub_Copilot_20260306.md",
+    "parameters": {},
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-03-06T19:43:12.684533+00:00",
+    "action_type": "unknown_approval",
+    "actor": "orchestrator",
+    "target": "APPROVAL_cancel_sub_HubSpot_Starter_CRM_20260306.md",
+    "parameters": {},
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "warning"
+  },
+  {
+    "timestamp": "2026-03-06T19:43:12.742502+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260305T143704Z_daily_briefing.md",
+    "parameters": {},
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-06T19:43:12.871442+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260305T143712Z_odoo_health_check.md",
+    "parameters": {},
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-06T19:43:13.078171+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260305T143716Z_daily_briefing.md",
+    "parameters": {},
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-06T19:43:13.173365+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260305T143724Z_odoo_health_check.md",
+    "parameters": {},
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-06T19:43:13.274863+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260306T042418Z_daily_briefing.md",
+    "parameters": {},
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-06T19:43:13.324343+00:00",
+    "action_type": "scheduled_trigger_detected",
+    "actor": "orchestrator",
+    "target": "TRIGGER_20260306T042520Z_odoo_health_check.md",
+    "parameters": {},
+    "approval_status": "n/a",
+    "approved_by": "n/a",
+    "result": "notified"
+  },
+  {
+    "timestamp": "2026-03-06T19:43:13.532796+00:00",
+    "action_type": "social_limits_check",
+    "actor": "scheduler",
+    "target": "scheduled_job",
+    "parameters": {
+      "limits": {
+        "Facebook": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Instagram": {
+          "queued": 0,
+          "limit": 2,
+          "remaining": 2
+        },
+        "Twitter": {
+          "queued": 0,
+          "limit": 5,
+          "remaining": 5
+        }
+      }
+    },
+    "result": "success"
+  },
+  {
+    "timestamp": "2026-03-06T20:15:27.791566+00:00",
+    "action_type": "whatsapp_draft_created",
+    "actor": "dashboard",
+    "target": "03103871019",
+    "result": "pending"
+  },
+  {
+    "timestamp": "2026-03-06T20:16:44.716288+00:00",
+    "action_type": "approval_granted",
+    "actor": "dashboard",
+    "target": "APPROVAL_whatsapp_20260306T201527Z.md",
+    "result": "approved"
+  },
+  {
+    "timestamp": "2026-03-06T20:16:55.875102+00:00",
+    "action_type": "whatsapp_reply_error",
+    "actor": "orchestrator",
+    "target": "03103871019",
+    "parameters": {
+      "error": "Client error '401 Unauthorized' for url 'https://graph.facebook.com/v25.0/your_phone_number_id/messages'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401"
+    },
+    "approval_status": "auto",
+    "approved_by": "system",
+    "result": "error"
+  },
+  {
+    "timestamp": "2026-03-06T20:21:21.697070+00:00",
+    "action_type": "whatsapp_send_failed",
+    "actor": "dashboard",
+    "target": "923103871019",
+    "result": "error"
   }
 ]

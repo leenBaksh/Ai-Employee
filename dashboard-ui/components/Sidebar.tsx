@@ -19,6 +19,10 @@ const NAV: NavItem[] = [
   { href: '/done',       label: 'Done',        icon: '✅' },
   { href: '/health',     label: 'Health',      icon: '💚' },
   { href: '/assistant',  label: 'Assistant',   icon: '🤖' },
+  { href: '/whatsapp',   label: 'WhatsApp',    icon: '💬' },
+  { href: '/gmail',      label: 'Gmail',       icon: '✉️' },
+  { href: '/odoo',       label: 'Odoo',        icon: '🏢' },
+  { href: '/linkedin',   label: 'LinkedIn',    icon: '💼' },
 ]
 
 export default function Sidebar() {

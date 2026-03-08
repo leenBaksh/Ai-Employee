@@ -1,0 +1,6 @@
+{
+  "contacts": [
+    "client@example.com"
+  ],
+  "_note": "Auto-maintained by permission_guard.add_known_contact(). Add contacts here after first human-approved email send."
+}

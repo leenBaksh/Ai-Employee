@@ -230,7 +230,7 @@ def main():
         from mcp.server.stdio import stdio_server
         from mcp import types
     except ImportError:
-        print("ERROR: mcp package not installed. Run: uv sync")
+        sys.stderr.write("ERROR: mcp package not installed. Run: uv sync\n")
         raise SystemExit(1)
 
     server = Server("slack-mcp")

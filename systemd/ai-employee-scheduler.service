@@ -1,0 +1,24 @@
+[Unit]
+Description=AI Employee — Scheduler (cron jobs)
+After=ai-employee-local.service
+Wants=ai-employee-local.service
+
+[Service]
+Type=simple
+User=%i
+WorkingDirectory=/mnt/d/Hackathon-00/Ai-Employee
+ExecStart=/home/%i/.local/bin/uv run scheduler
+Restart=always
+RestartSec=15
+StartLimitIntervalSec=120
+StartLimitBurst=3
+
+Environment="VAULT_PATH=/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault"
+Environment="DRY_RUN=false"
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=ai-employee-scheduler
+
+[Install]
+WantedBy=default.target

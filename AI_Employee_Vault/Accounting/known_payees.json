@@ -1,0 +1,12 @@
+{
+  "payees": [
+    "Adobe Creative Cloud",
+    "AWS",
+    "Anthropic",
+    "ClickUp",
+    "GitHub Copilot",
+    "HubSpot",
+    "Notion Pro"
+  ],
+  "_note": "Auto-maintained by permission_guard.add_known_payee(). Populated from Bank_Transactions.md subscriptions inventory."
+}

@@ -1,0 +1,27 @@
+[Unit]
+Description=AI Employee — Local Orchestrator + Watchers
+Documentation=file:///mnt/d/Hackathon-00/Ai-Employee/ARCHITECTURE.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=%i
+WorkingDirectory=/mnt/d/Hackathon-00/Ai-Employee
+ExecStart=/home/%i/.local/bin/uv run python orchestrator.py --no-gmail --no-linkedin --no-social
+Restart=always
+RestartSec=10
+# Prevent restart storm: stop trying after 5 failures within 2 minutes
+StartLimitIntervalSec=120
+StartLimitBurst=5
+
+Environment="VAULT_PATH=/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault"
+Environment="DRY_RUN=false"
+
+# Capture logs via journald
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=ai-employee
+
+[Install]
+WantedBy=default.target

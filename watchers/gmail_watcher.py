@@ -176,8 +176,22 @@ class GmailWatcher(BaseWatcher):
                 self.logger.info(f"Found {len(new)} new email(s)")
             return new
         except Exception as e:
-            self.logger.error(f"Gmail API error: {e}")
-            self.log_action("gmail_poll", "Gmail API", "error", {"error": str(e)})
+            err_str = str(e)
+            if "403" in err_str or "forbidden" in err_str.lower():
+                self.logger.error(
+                    "Gmail API 403 Forbidden — check: "
+                    "(1) Gmail API enabled in Google Cloud Console, "
+                    "(2) OAuth consent screen verified, "
+                    "(3) gmail_token.json not expired. Re-run: uv run gmail-watcher --setup"
+                )
+            elif "401" in err_str or "unauthorized" in err_str.lower() or "invalid_grant" in err_str.lower():
+                self.logger.error(
+                    "Gmail API 401 Unauthorized — token expired or revoked. "
+                    "Re-run: uv run gmail-watcher --setup"
+                )
+            else:
+                self.logger.error(f"Gmail API error: {e}")
+            self.log_action("gmail_poll", "Gmail API", "error", {"error": err_str})
             return []
 
     def create_action_file(self, message: dict) -> Path:

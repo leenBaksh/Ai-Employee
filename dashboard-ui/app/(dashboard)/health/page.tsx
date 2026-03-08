@@ -1,6 +1,6 @@
 'use client'
 
-import { useDashboardContext, Agent } from '@/context/DashboardContext'
+import { useDashboardContext, Agent, ServiceConnection } from '@/context/DashboardContext'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -135,25 +135,96 @@ function Row({
   )
 }
 
+// ── Service Connection Card ───────────────────────────────────────────────────
+
+function ConnectionCard({ conn }: { conn: ServiceConnection }) {
+  const cfg: Record<string, { border: string; dot: string; badge: string; label: string }> = {
+    connected:      { border: 'border-green-700/70',  dot: 'bg-green-400 animate-pulse', badge: 'bg-green-950 text-green-400 border-green-800',   label: 'CONNECTED'      },
+    error:          { border: 'border-red-700/70',    dot: 'bg-red-500',                 badge: 'bg-red-950 text-red-400 border-red-800',         label: 'ERROR'          },
+    auth_error:     { border: 'border-orange-700/70', dot: 'bg-orange-400',              badge: 'bg-orange-950 text-orange-400 border-orange-800', label: 'AUTH ERROR'     },
+    dns_error:      { border: 'border-yellow-700/70', dot: 'bg-yellow-400',              badge: 'bg-yellow-950 text-yellow-400 border-yellow-800', label: 'DNS ERROR'      },
+    not_configured: { border: 'border-slate-600',     dot: 'bg-slate-500',               badge: 'bg-slate-800 text-slate-400 border-slate-700',   label: 'NOT CONFIGURED' },
+    never_seen:     { border: 'border-slate-700',     dot: 'bg-slate-600',               badge: 'bg-slate-800 text-slate-500 border-slate-700',   label: 'NEVER SEEN'     },
+    unknown:        { border: 'border-slate-700',     dot: 'bg-slate-500',               badge: 'bg-slate-800 text-slate-400 border-slate-700',   label: 'UNKNOWN'        },
+  }
+  const c = cfg[conn.status] ?? cfg.unknown
+
+  return (
+    <div className={`bg-slate-900 border-2 rounded-2xl p-5 flex-1 min-w-56 max-w-xs ${c.border}`}>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <span className="text-xl">{conn.icon}</span>
+          <span className="text-white font-bold text-base">{conn.label}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className={`w-2.5 h-2.5 rounded-full ${c.dot}`} />
+          <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${c.badge}`}>
+            {c.label}
+          </span>
+        </div>
+      </div>
+
+      <p className="text-slate-400 text-xs">{conn.detail}</p>
+
+      {conn.last_error_msg && conn.status !== 'connected' && (
+        <p className="text-red-400 text-xs mt-2 font-mono truncate" title={conn.last_error_msg}>
+          {conn.last_error_msg}
+        </p>
+      )}
+
+      <div className="mt-3 space-y-1 text-xs text-slate-600">
+        {conn.last_success && (
+          <div>Last OK: <span className="text-slate-500">{formatAgo(conn.last_success)}</span></div>
+        )}
+        {conn.last_error && (
+          <div>Last error: <span className="text-slate-500">{formatAgo(conn.last_error)}</span></div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 const PLACEHOLDER_AGENTS: Agent[] = [
   { agent_id: 'local-01', status: 'never_seen', timestamp: null },
 ]
 
+const PLACEHOLDER_CONNECTIONS: ServiceConnection[] = [
+  { id: 'gmail',     label: 'Gmail',     icon: '✉️', status: 'never_seen', detail: 'Loading…', last_success: null, last_error: null, last_error_msg: '' },
+  { id: 'whatsapp',  label: 'WhatsApp',  icon: '💬', status: 'never_seen', detail: 'Loading…', last_success: null, last_error: null, last_error_msg: '' },
+  { id: 'linkedin',  label: 'LinkedIn',  icon: '💼', status: 'never_seen', detail: 'Loading…', last_success: null, last_error: null, last_error_msg: '' },
+  { id: 'odoo',      label: 'Odoo',      icon: '🏢', status: 'never_seen', detail: 'Loading…', last_success: null, last_error: null, last_error_msg: '' },
+]
+
 export default function HealthPage() {
   const { data } = useDashboardContext()
-  const agents = data?.health?.length ? data.health : PLACEHOLDER_AGENTS
+  const agents      = data?.health?.length      ? data.health      : PLACEHOLDER_AGENTS
+  const connections = data?.connections?.length  ? data.connections : PLACEHOLDER_CONNECTIONS
 
   return (
-    <div className="p-6">
-      <h1 className="text-lg font-bold text-white mb-5">Agent Health</h1>
+    <div className="p-6 space-y-8">
 
-      <div className="flex flex-wrap gap-5">
-        {agents.map(agent => (
-          <AgentCard key={agent.agent_id} agent={agent} />
-        ))}
-      </div>
+      {/* Service connections */}
+      <section>
+        <h1 className="text-lg font-bold text-white mb-4">Service Connections</h1>
+        <div className="flex flex-wrap gap-4">
+          {connections.map(conn => (
+            <ConnectionCard key={conn.id} conn={conn} />
+          ))}
+        </div>
+      </section>
+
+      {/* Agent health */}
+      <section>
+        <h2 className="text-lg font-bold text-white mb-4">Agent Health</h2>
+        <div className="flex flex-wrap gap-5">
+          {agents.map(agent => (
+            <AgentCard key={agent.agent_id} agent={agent} />
+          ))}
+        </div>
+      </section>
+
     </div>
   )
 }

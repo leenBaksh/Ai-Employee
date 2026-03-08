@@ -28,6 +28,8 @@ dependencies = [
     "flask>=3.0.0",
     # Dashboard — CORS for Next.js frontend on :3000
     "flask-cors>=4.0.0",
+    # Invoice PDF generation
+    "fpdf2>=2.7.0",
 ]
 
 [project.scripts]
@@ -51,6 +53,8 @@ gmail-mcp        = "mcp_servers.gmail_mcp_server:main"
 cloud-agent      = "cloud_agent:main"
 health-monitor   = "cloud.health_monitor:run"
 dashboard        = "dashboard_server:main"
+# Error recovery §7.4
+watchdog-service = "process_watchdog:main"
 
 [build-system]
 requires = ["hatchling"]

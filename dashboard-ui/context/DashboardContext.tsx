@@ -40,9 +40,21 @@ export interface LogEntry {
   result: string
 }
 
+export interface ServiceConnection {
+  id: string
+  label: string
+  icon: string
+  status: 'connected' | 'error' | 'auth_error' | 'dns_error' | 'not_configured' | 'never_seen' | 'unknown'
+  detail: string
+  last_success: string | null
+  last_error: string | null
+  last_error_msg: string
+}
+
 export interface DashboardData {
   stats: Stats
   health: Agent[]
+  connections: ServiceConnection[]
   tasks: TaskItem[]
   approvals: TaskItem[]
   logs: LogEntry[]
@@ -75,15 +87,16 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
 
     const fetchAll = async () => {
       try {
-        const [stats, health, tasks, approvals, logs] = await Promise.all([
+        const [stats, health, connections, tasks, approvals, logs] = await Promise.all([
           fetch('/api/stats').then(r => r.json()),
           fetch('/api/health').then(r => r.json()),
+          fetch('/api/connections').then(r => r.json()),
           fetch('/api/tasks').then(r => r.json()),
           fetch('/api/approvals').then(r => r.json()),
           fetch('/api/logs').then(r => r.json()),
         ])
         setData({
-          stats, health, tasks, approvals, logs,
+          stats, health, connections, tasks, approvals, logs,
           done_recent: [],
           generated_at: new Date().toISOString(),
         })

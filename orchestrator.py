@@ -95,7 +95,11 @@ class Orchestrator:
                   self.vault_path / "In_Progress" / "local",
                   self.vault_path / "Updates",
                   self.vault_path / "Signals",
-                  self.vault_path / "Active_Project"]:
+                  self.vault_path / "Active_Project",
+                  # §7.3 Graceful Degradation directories
+                  self.vault_path / "Queue",       # offline email queue (Gmail API down)
+                  self.vault_path / "Quarantine",  # data-error item isolation
+                  ]:
             d.mkdir(parents=True, exist_ok=True)
 
     def write_local_health_signal(self):
@@ -248,6 +252,34 @@ class Orchestrator:
                 elif name == "whatsapp_watcher":
                     self._start_whatsapp_watcher()
 
+    # ── §7.3 Queue Retry Loop ─────────────────────────────────────────────────
+
+    def process_queued_emails(self):
+        """
+        §7.3 Graceful Degradation — retry queued emails when Gmail API recovers.
+        Picks up EMAIL_QUEUED_*.md files from /Queue/ and re-queues them as
+        approved actions so the existing email execution path handles them.
+        """
+        queue_dir = self.vault_path / "Queue"
+        for queued_file in sorted(queue_dir.glob("EMAIL_QUEUED_*.md")):
+            if queued_file.name in self._notified_tasks:
+                continue
+            try:
+                content = queued_file.read_text(encoding="utf-8")
+                to      = self._extract_frontmatter_field(content, "to")
+                subject = self._extract_frontmatter_field(content, "subject")
+                if not to or not subject:
+                    continue
+                # Re-route as an approved action (HITL already happened before original send)
+                dest = self.approved / queued_file.name.replace("EMAIL_QUEUED_", "APPROVED_queued_")
+                queued_file.rename(dest)
+                logger.info(f"Queue: moved {queued_file.name} to /Approved/ for retry")
+                self.log_action("email_queue_retry", to, "queued_to_approved",
+                                {"subject": subject, "file": queued_file.name})
+                self._notified_tasks.add(queued_file.name)
+            except Exception as e:
+                logger.error(f"Queue retry error for {queued_file.name}: {e}")
+
     # ── HITL Approval Execution Loop (Silver Tier) ────────────────────────────
 
     def process_approved_actions(self):
@@ -367,10 +399,139 @@ class Orchestrator:
             logger.error(f"WhatsApp reply failed: {e}")
             self.log_action("whatsapp_reply_error", to, "error", {"error": str(e)})
 
+    def _generate_invoice_pdf(self, customer: str, amount: str, date_str: str,
+                               invoice_file: Path) -> Path | None:
+        """Generate a PDF invoice using fpdf2. Returns the PDF path or None on failure."""
+        try:
+            from fpdf import FPDF
+
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.set_margins(20, 20, 20)
+
+            # Header
+            pdf.set_font("Helvetica", "B", 22)
+            pdf.set_text_color(30, 80, 160)
+            pdf.cell(0, 12, "INVOICE", ln=True, align="C")
+            pdf.set_draw_color(30, 80, 160)
+            pdf.set_line_width(0.8)
+            pdf.line(20, pdf.get_y(), 190, pdf.get_y())
+            pdf.ln(6)
+
+            # Meta row
+            pdf.set_font("Helvetica", "", 10)
+            pdf.set_text_color(80, 80, 80)
+            pdf.cell(95, 7, f"Date: {date_str}", ln=False)
+            pdf.cell(95, 7, f"Invoice #: INV-{date_str.replace('-', '')}", ln=True, align="R")
+            pdf.ln(4)
+
+            # Bill To
+            pdf.set_font("Helvetica", "B", 11)
+            pdf.set_text_color(0, 0, 0)
+            pdf.cell(0, 7, "Bill To:", ln=True)
+            pdf.set_font("Helvetica", "", 11)
+            pdf.cell(0, 7, customer, ln=True)
+            pdf.ln(6)
+
+            # Line items table header
+            pdf.set_fill_color(240, 244, 255)
+            pdf.set_font("Helvetica", "B", 10)
+            pdf.cell(110, 8, "Description", border=1, fill=True)
+            pdf.cell(40,  8, "Qty", border=1, fill=True, align="C")
+            pdf.cell(40,  8, "Amount", border=1, fill=True, align="R", ln=True)
+
+            # Line item
+            pdf.set_font("Helvetica", "", 10)
+            pdf.cell(110, 8, "Professional Services", border=1)
+            pdf.cell(40,  8, "1", border=1, align="C")
+            pdf.cell(40,  8, f"${amount}", border=1, align="R", ln=True)
+            pdf.ln(2)
+
+            # Total
+            pdf.set_font("Helvetica", "B", 11)
+            pdf.cell(150, 9, "TOTAL DUE", align="R")
+            pdf.cell(40,  9, f"${amount}", border=1, align="R", ln=True)
+            pdf.ln(8)
+
+            # Footer note
+            pdf.set_font("Helvetica", "I", 9)
+            pdf.set_text_color(100, 100, 100)
+            pdf.cell(0, 6, "Payment due within 30 days. Thank you for your business.", ln=True, align="C")
+
+            pdf_path = invoice_file.with_suffix(".pdf")
+            pdf.output(str(pdf_path))
+            logger.info(f"Invoice PDF generated: {pdf_path.name}")
+            return pdf_path
+        except Exception as e:
+            logger.error(f"PDF generation failed: {e}")
+            return None
+
+    def _send_via_gmail(self, to: str, subject: str, body: str, cc: str = None,
+                        attachment_path: "Path | None" = None) -> bool:
+        """Send an email via Gmail API (OAuth2), with optional PDF attachment. Returns True on success."""
+        import base64
+        from email.mime.text import MIMEText
+        from email.mime.multipart import MIMEMultipart
+        from email.mime.application import MIMEApplication
+
+        gmail_token = os.getenv("GMAIL_TOKEN_PATH", "./secrets/gmail_token.json")
+        smtp_user   = os.getenv("SMTP_USER", "")
+        from_name   = os.getenv("SMTP_FROM_NAME", "AI Employee")
+
+        token_path = Path(gmail_token)
+        if not token_path.exists():
+            logger.error(f"Gmail token not found at {token_path}")
+            return False
+
+        try:
+            from google.oauth2.credentials import Credentials
+            from googleapiclient.discovery import build
+
+            creds   = Credentials.from_authorized_user_file(str(token_path))
+            service = build("gmail", "v1", credentials=creds, cache_discovery=False)
+
+            msg = MIMEMultipart("alternative")
+            msg["From"]    = f"{from_name} <{smtp_user}>"
+            msg["To"]      = to
+            msg["Subject"] = subject
+            if cc:
+                msg["Cc"] = cc
+            msg.attach(MIMEText(f"{body}\n\n---\n*Sent via AI Employee.*", "plain"))
+
+            if attachment_path and Path(attachment_path).exists():
+                with open(attachment_path, "rb") as f:
+                    part = MIMEApplication(f.read(), _subtype="pdf")
+                    part.add_header(
+                        "Content-Disposition", "attachment",
+                        filename=Path(attachment_path).name,
+                    )
+                    msg.attach(part)
+
+            raw = base64.urlsafe_b64encode(msg.as_bytes()).decode()
+            service.users().messages().send(userId="me", body={"raw": raw}).execute()
+            return True
+        except Exception as e:
+            logger.error(f"Gmail send failed: {e}")
+            return False
+
     def _execute_email_action(self, approved_file: Path, content: str):
-        """Execute an approved email send via the Email MCP server."""
+        """Execute an approved email send via Gmail API."""
         to      = self._extract_frontmatter_field(content, "to")
         subject = self._extract_frontmatter_field(content, "subject")
+
+        # Resolve body from linked draft file if present
+        draft_rel = self._extract_frontmatter_field(content, "draft_file")
+        body = ""
+        if draft_rel:
+            draft_path = self.vault_path / "Drafts" / draft_rel
+            if not draft_path.exists():
+                draft_path = self.vault_path / draft_rel
+            if draft_path.exists():
+                draft_content = draft_path.read_text(encoding="utf-8")
+                parts = draft_content.split("---")
+                body = parts[2].strip() if len(parts) >= 3 else draft_content
+        if not body:
+            body = self._extract_frontmatter_field(content, "body") or subject
 
         if not to or not subject:
             logger.error(f"Missing to/subject in {approved_file.name}")
@@ -381,48 +542,88 @@ class Orchestrator:
             self._archive_approved(approved_file, "dry_run_success")
             return
 
-        # Call email MCP server via subprocess (stdio)
         logger.info(f"Sending email to {to}: {subject}")
-        self.log_action("email_send_initiated", to, "in_progress", {"subject": subject, "file": approved_file.name})
-        # Mark as executed — Email MCP handles actual delivery
-        self._archive_approved(approved_file, "email_queued")
-        logger.info(f"Email action queued for: {approved_file.name}")
+        self.log_action("email_send_initiated", to, "in_progress", {"subject": subject})
+
+        ok = self._send_via_gmail(to, subject, body)
+        result = "success" if ok else "error"
+        self.log_action("email_send", to, result, {"subject": subject, "file": approved_file.name})
+        self._archive_approved(approved_file, result)
+        logger.info(f"Email {'sent' if ok else 'FAILED'}: {to} / {subject}")
 
     def _execute_invoice_action(self, approved_file: Path, content: str):
-        """Handle an approved invoice creation request."""
+        """Handle an approved invoice creation request, then email it to the customer."""
         customer = self._extract_frontmatter_field(content, "customer")
         amount   = self._extract_frontmatter_field(content, "amount")
+        to_email = self._extract_frontmatter_field(content, "to") or \
+                   self._extract_frontmatter_field(content, "email")
 
         logger.info(f"Invoice approved: {customer} ${amount}")
         self.log_action("invoice_approved", customer, "success", {
             "amount": amount, "file": approved_file.name
         })
 
-        # Create invoice record in /Invoices/
+        # Step 1 — Create invoice record in /Invoices/
         timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-        invoice_file = self.vault_path / "Invoices" / f"INVOICE_{timestamp}_{customer.replace(' ', '_')}.md"
+        date_str  = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         (self.vault_path / "Invoices").mkdir(exist_ok=True)
+        invoice_file = self.vault_path / "Invoices" / f"INVOICE_{timestamp}_{customer.replace(' ', '_')}.md"
+        invoice_body = f"""Dear {customer},
+
+Please find your invoice for services rendered.
+
+**Invoice Details**
+- Date: {date_str}
+- Amount Due: ${amount}
+
+Payment is due within 30 days. Thank you for your business.
+
+Best regards,
+AI Employee"""
+
         invoice_file.write_text(
             f"""---
 type: invoice
 customer: {customer}
 amount: {amount}
+to: {to_email}
 created: {datetime.now(timezone.utc).isoformat()}
 status: created
 source_approval: {approved_file.name}
 ---
 
-# Invoice - {customer}
+# Invoice — {customer}
 
 **Amount:** ${amount}
-**Created:** {datetime.now(timezone.utc).strftime('%Y-%m-%d')}
-**Status:** Created - pending delivery
+**Date:** {date_str}
+**Status:** Created
 
-*Generated by AI Employee after human approval.*
+{invoice_body}
 """,
             encoding='utf-8',
         )
         logger.info(f"Invoice record created: {invoice_file.name}")
+        self.log_action("invoice_created", customer, "success", {"invoice_file": invoice_file.name})
+
+        # Step 2 — Generate PDF
+        pdf_path = self._generate_invoice_pdf(customer, amount, date_str, invoice_file)
+
+        # Step 3 — Email invoice to customer (if email address known)
+        if to_email and not self.dry_run:
+            subject = f"Invoice — {customer} — {date_str} — ${amount}"
+            ok = self._send_via_gmail(to_email, subject, invoice_body, attachment_path=pdf_path)
+            self.log_action("invoice_emailed", to_email, "success" if ok else "error", {
+                "customer": customer, "amount": amount,
+                "pdf_attached": pdf_path is not None,
+            })
+            logger.info(f"Invoice email {'sent' if ok else 'FAILED'} to {to_email}"
+                        + (f" (PDF: {pdf_path.name})" if pdf_path else " (no PDF)"))
+        elif to_email and self.dry_run:
+            logger.info(f"[DRY RUN] Would email invoice to {to_email}: ${amount}"
+                        + (f" with PDF {pdf_path.name}" if pdf_path else ""))
+        else:
+            logger.warning(f"No email address for invoice — {customer}. Record saved to /Invoices/")
+
         self._archive_approved(approved_file, "invoice_created")
 
     def _execute_linkedin_action(self, approved_file: Path, content: str):
@@ -897,6 +1098,10 @@ _Updated automatically by AI Employee v0.4 Platinum · Local Agent local-01 · [
 
             # HITL approval loop (every 5s)
             self.process_approved_actions()
+
+            # §7.3 Queue retry — re-send emails queued during Gmail outage (every 60s)
+            if tick % 12 == 0:
+                self.process_queued_emails()
 
             # Scheduled triggers (every 5s)
             self.process_scheduled_triggers()

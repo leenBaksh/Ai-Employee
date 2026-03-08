@@ -390,6 +390,136 @@ python secrets_manager.py scan ./AI_Employee_Vault
     _log("credential_rotation_reminder_created", "success", {"month": today.strftime("%Y-%m")})
 
 
+def job_monthly_audit_prompt():
+    """1st of each month — prompt owner to run a 1-hour comprehensive audit."""
+    today = datetime.now(timezone.utc)
+    if today.day != 1:
+        return
+    logger.info("▶ Monthly audit prompt")
+    if DRY_RUN:
+        logger.info("[DRY RUN] Would create monthly audit prompt")
+        return
+
+    NEEDS_ACTION.mkdir(parents=True, exist_ok=True)
+    prompt_file = NEEDS_ACTION / f"REVIEW_monthly_audit_{today.strftime('%Y%m')}.md"
+    if prompt_file.exists():
+        return
+
+    prompt_file.write_text(
+        f"""---
+type: oversight_reminder
+severity: medium
+period: monthly
+created: {today.isoformat()}
+status: pending
+---
+
+## Monthly Oversight Review ({today.strftime('%B %Y')})
+
+Ethics principle: The human remains accountable. Scheduled 1-hour review.
+
+### Checklist
+
+- [ ] Review `/Logs/` for unexpected or unusual AI actions
+- [ ] Check `/Done/` — did all completed tasks match your intentions?
+- [ ] Review `/Rejected/` — any patterns in what you rejected?
+- [ ] Audit known contacts (`Contacts/known_contacts.json`) — remove stale entries
+- [ ] Audit known payees (`Accounting/known_payees.json`) — remove inactive vendors
+- [ ] Check opt-out list (`Contacts/opt_out_human_only.json`) — still accurate?
+- [ ] Review Dashboard.md — are metrics tracking correctly?
+- [ ] Run `/weekly-business-audit` for financial summary
+- [ ] Run `/error-recovery` to surface any hidden errors
+
+### Decision Log
+
+Review any approval decisions made this month and confirm you stand behind them.
+If you spot drift (AI acting outside intended boundaries), update `Company_Handbook.md`.
+
+Move this file to /Done/ when complete.
+
+---
+*Ethics §4: Monthly 1-hour comprehensive audit — scheduled oversight is not optional.*
+""",
+        encoding="utf-8",
+    )
+    logger.info(f"Monthly audit prompt created: {prompt_file.name}")
+    _log("monthly_audit_prompt_created", "success", {"month": today.strftime("%Y-%m")})
+
+
+def job_quarterly_security_review():
+    """1st of Jan/Apr/Jul/Oct — prompt owner for full security and access review."""
+    today = datetime.now(timezone.utc)
+    if today.day != 1 or today.month not in (1, 4, 7, 10):
+        return
+    logger.info("▶ Quarterly security review prompt")
+    if DRY_RUN:
+        logger.info("[DRY RUN] Would create quarterly security review prompt")
+        return
+
+    NEEDS_ACTION.mkdir(parents=True, exist_ok=True)
+    quarter = f"Q{(today.month - 1) // 3 + 1}"
+    review_file = NEEDS_ACTION / f"REVIEW_quarterly_security_{today.strftime('%Y')}_{quarter}.md"
+    if review_file.exists():
+        return
+
+    review_file.write_text(
+        f"""---
+type: oversight_reminder
+severity: high
+period: quarterly
+quarter: {quarter}
+year: {today.year}
+created: {today.isoformat()}
+status: pending
+---
+
+## Quarterly Security & Access Review ({quarter} {today.year})
+
+Ethics principle: Full security and access review every quarter.
+
+### Access Review
+
+- [ ] Review all API credentials — who/what has access to your systems?
+- [ ] Revoke unused OAuth tokens in Google Cloud Console
+- [ ] Review Meta Business app permissions (WhatsApp)
+- [ ] Check Slack app scopes — remove unused permissions
+- [ ] Review Odoo user permissions
+- [ ] Audit `secrets/` folder — any files that shouldn't be there?
+
+### Vault Security
+
+- [ ] Check vault `.gitignore` — confirm `secrets/` and `.env` are excluded
+- [ ] Review sync history — did any credentials leak into git?
+  ```bash
+  git log --all --full-history -- secrets/ .env
+  ```
+- [ ] Run secrets scanner: `python secrets_manager.py scan ./AI_Employee_Vault`
+- [ ] Verify vault encryption (if enabled)
+
+### AI Behaviour Audit
+
+- [ ] Review the last 90 days of `/Logs/` for behaviour drift
+- [ ] Test key HITL boundaries — verify payments still require approval
+- [ ] Verify opt-out list is being respected (`Contacts/opt_out_human_only.json`)
+- [ ] Check sensitive keyword list in `permission_guard.py` — needs updating?
+
+### Third-Party Data Exposure
+
+- [ ] What data left your system via Gmail API this quarter?
+- [ ] What data was sent to Odoo?
+- [ ] Review any new MCP servers added — understand their data access
+
+Move this file to /Done/ when complete.
+
+---
+*Ethics §4: Quarterly full security and access review.*
+""",
+        encoding="utf-8",
+    )
+    logger.info(f"Quarterly security review created: {review_file.name}")
+    _log("quarterly_security_review_created", "success", {"quarter": f"{quarter} {today.year}"})
+
+
 def job_daily_whatsapp_report():
     """Daily at configured time — send vault summary to World Digital via WhatsApp."""
     logger.info("▶ Daily WhatsApp report job starting")
@@ -488,8 +618,10 @@ def main():
     if DRY_RUN:
         logger.warning("DRY RUN MODE — no external triggers")
 
-    # Security
+    # Security & Ethics oversight
     schedule.every().day.at("07:00").do(job_credential_rotation_reminder)  # fires on 1st of month
+    schedule.every().day.at("07:05").do(job_monthly_audit_prompt)           # fires on 1st of month
+    schedule.every().day.at("07:10").do(job_quarterly_security_review)      # fires quarterly
 
     # Daily jobs
     schedule.every().day.at(DAILY_BRIEFING_TIME).do(job_daily_briefing)

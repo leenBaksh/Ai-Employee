@@ -1,0 +1,4 @@
+{
+  "opt_out": [],
+  "_note": "Email addresses of contacts who requested human-only communication. Add via: from permission_guard import add_opt_out; add_opt_out('email@example.com', vault_path). AI will never auto-send to these addresses."
+}

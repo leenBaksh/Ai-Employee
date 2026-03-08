@@ -5,11 +5,11 @@
       "args": [
         "run",
         "--directory",
-        ".",
+        "/mnt/d/Hackathon-00/Ai-Employee",
         "email-mcp"
       ],
       "env": {
-        "VAULT_PATH": "./AI_Employee_Vault",
+        "VAULT_PATH": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault",
         "DRY_RUN": "false"
       }
     },
@@ -18,11 +18,11 @@
       "args": [
         "run",
         "--directory",
-        ".",
+        "/mnt/d/Hackathon-00/Ai-Employee",
         "odoo-mcp"
       ],
       "env": {
-        "VAULT_PATH": "./AI_Employee_Vault"
+        "VAULT_PATH": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault"
       }
     },
     "social": {
@@ -30,11 +30,11 @@
       "args": [
         "run",
         "--directory",
-        ".",
+        "/mnt/d/Hackathon-00/Ai-Employee",
         "social-mcp"
       ],
       "env": {
-        "VAULT_PATH": "./AI_Employee_Vault"
+        "VAULT_PATH": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault"
       }
     },
     "audit": {
@@ -42,11 +42,11 @@
       "args": [
         "run",
         "--directory",
-        ".",
+        "/mnt/d/Hackathon-00/Ai-Employee",
         "audit-mcp"
       ],
       "env": {
-        "VAULT_PATH": "./AI_Employee_Vault"
+        "VAULT_PATH": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault"
       }
     },
     "playwright": {
@@ -55,37 +55,62 @@
     },
     "calendar": {
       "command": "uv",
-      "args": ["run", "--directory", ".", "calendar-mcp"],
+      "args": [
+        "run",
+        "--directory",
+        "/mnt/d/Hackathon-00/Ai-Employee",
+        "calendar-mcp"
+      ],
       "env": {
-        "VAULT_PATH": "./AI_Employee_Vault"
+        "VAULT_PATH": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault"
       }
     },
     "slack": {
       "command": "uv",
-      "args": ["run", "--directory", ".", "slack-mcp"],
+      "args": [
+        "run",
+        "--directory",
+        "/mnt/d/Hackathon-00/Ai-Employee",
+        "slack-mcp"
+      ],
       "env": {
-        "VAULT_PATH": "./AI_Employee_Vault"
+        "VAULT_PATH": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault"
       }
     },
     "banking": {
       "command": "uv",
-      "args": ["run", "--directory", ".", "banking-mcp"],
+      "args": [
+        "run",
+        "--directory",
+        "/mnt/d/Hackathon-00/Ai-Employee",
+        "banking-mcp"
+      ],
       "env": {
-        "VAULT_PATH": "./AI_Employee_Vault"
+        "VAULT_PATH": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault"
       }
     },
     "whatsapp": {
       "command": "uv",
-      "args": ["run", "--directory", ".", "whatsapp-mcp"],
+      "args": [
+        "run",
+        "--directory",
+        "/mnt/d/Hackathon-00/Ai-Employee",
+        "whatsapp-mcp"
+      ],
       "env": {
-        "VAULT_PATH": "./AI_Employee_Vault"
+        "VAULT_PATH": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault"
       }
     },
     "gmail": {
       "command": "uv",
-      "args": ["run", "--directory", ".", "gmail-mcp"],
+      "args": [
+        "run",
+        "--directory",
+        "/mnt/d/Hackathon-00/Ai-Employee",
+        "gmail-mcp"
+      ],
       "env": {
-        "VAULT_PATH": "./AI_Employee_Vault"
+        "VAULT_PATH": "/mnt/d/Hackathon-00/Ai-Employee/AI_Employee_Vault"
       }
     },
     "context7": {

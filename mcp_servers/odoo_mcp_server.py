@@ -33,6 +33,7 @@ from dotenv import load_dotenv
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from audit_logger import write_log_entry, infer_approval
+from retry_handler import with_retry_async, classify_error, TransientError
 
 load_dotenv()
 
@@ -42,6 +43,17 @@ ODOO_USER     = os.getenv("ODOO_USER", "")
 ODOO_PASSWORD = os.getenv("ODOO_PASSWORD", "")
 VAULT_PATH    = Path(os.getenv("VAULT_PATH", "./AI_Employee_Vault")).resolve()
 LOGS_DIR      = VAULT_PATH / "Logs"
+
+# Configurable endpoints — override in .env if Odoo 19 moves to new paths
+# Odoo 19 also supports a new REST API at /api/<model> but JSON-RPC is still stable
+ODOO_AUTH_ENDPOINT = os.getenv("ODOO_AUTH_ENDPOINT", "/web/session/authenticate")
+ODOO_CALL_ENDPOINT = os.getenv("ODOO_CALL_ENDPOINT", "/web/dataset/call_kw")
+
+# Error messages that indicate a session has expired and needs re-auth
+_SESSION_EXPIRED_SIGNALS = (
+    "session expired", "session invalid", "not logged in",
+    "access denied", "odoo.http.sessionexpired",
+)
 
 
 def _log(action_type: str, target: str, result: str, details: dict = None):
@@ -87,7 +99,7 @@ class OdooClient:
             },
         }
         async with httpx.AsyncClient(timeout=30) as client:
-            resp = await client.post(f"{self.url}/web/session/authenticate", json=payload)
+            resp = await client.post(f"{self.url}{ODOO_AUTH_ENDPOINT}", json=payload)
             resp.raise_for_status()
             data = resp.json()
         if data.get("error"):
@@ -97,8 +109,9 @@ class OdooClient:
             raise RuntimeError("Odoo authentication failed — check ODOO_USER and ODOO_PASSWORD")
         return self.uid
 
+    @with_retry_async(max_attempts=3, base_delay=2, max_delay=30)
     async def call(self, model: str, method: str, args: list, kwargs: dict = None) -> any:
-        """Generic Odoo JSON-RPC call."""
+        """Generic Odoo JSON-RPC call — retries on TransientError (network/timeout)."""
         import httpx
         if self.uid is None:
             await self.authenticate()
@@ -113,15 +126,22 @@ class OdooClient:
                 "kwargs": kwargs or {},
             },
         }
-        async with httpx.AsyncClient(timeout=30) as client:
-            resp = await client.post(
-                f"{self.url}/web/dataset/call_kw",
-                json=payload,
-                headers={"Content-Type": "application/json"},
-            )
-            resp.raise_for_status()
-            data = resp.json()
+        try:
+            async with httpx.AsyncClient(timeout=30) as client:
+                resp = await client.post(
+                    f"{self.url}{ODOO_CALL_ENDPOINT}",
+                    json=payload,
+                    headers={"Content-Type": "application/json"},
+                )
+                resp.raise_for_status()
+                data = resp.json()
+        except Exception as e:
+            raise classify_error(e) from e
         if data.get("error"):
+            err_msg = str(data["error"]).lower()
+            if any(sig in err_msg for sig in _SESSION_EXPIRED_SIGNALS):
+                self.uid = None  # force re-auth on next call
+                raise TransientError(f"Odoo session expired — will re-authenticate: {data['error']}")
             raise RuntimeError(f"Odoo RPC error: {data['error']}")
         return data["result"]
 
@@ -276,7 +296,7 @@ def main():
         from mcp.server.stdio import stdio_server
         from mcp import types
     except ImportError:
-        print("ERROR: mcp package not installed. Run: uv sync")
+        sys.stderr.write("ERROR: mcp package not installed. Run: uv sync\n")
         raise SystemExit(1)
 
     server = Server("odoo-mcp")

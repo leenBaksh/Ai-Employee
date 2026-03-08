@@ -32,6 +32,7 @@ from dotenv import load_dotenv
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from audit_logger import write_log_entry, infer_approval
+from permission_guard import check as permission_check
 
 load_dotenv()
 
@@ -90,7 +91,8 @@ def _ensure_dirs():
     PENDING.mkdir(parents=True, exist_ok=True)
 
 
-def tool_draft_post(platform: str, content: str, media_url: str = "") -> dict:
+def tool_draft_post(platform: str, content: str, media_url: str = "",
+                    post_type: str = "scheduled") -> dict:
     """Save a draft post and create an approval request."""
     _ensure_dirs()
 
@@ -108,6 +110,9 @@ def tool_draft_post(platform: str, content: str, media_url: str = "") -> dict:
             "limit": limit,
         }
 
+    # §6.4 Permission check
+    perm = permission_check("social", VAULT_PATH, post_type=post_type)
+
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     safe_platform = platform.lower()
 
@@ -117,9 +122,11 @@ def tool_draft_post(platform: str, content: str, media_url: str = "") -> dict:
         f"""---
 type: social_post
 platform: {platform}
+post_type: {post_type}
 status: draft
 created: {datetime.now(timezone.utc).isoformat()}
 media_url: {media_url}
+permission_mode: {perm.mode}
 ---
 
 ## {platform} Post Draft
@@ -135,20 +142,29 @@ media_url: {media_url}
 
     # Create approval request
     approval_file = PENDING / f"SOCIAL_{platform.upper()}_{timestamp}.md"
+    approval_note = (
+        "*Scheduled broadcast post — may be approved without additional context.*"
+        if not perm.requires_approval
+        else "*Interactive post (reply/DM) — explicit approval required (Handbook §4).*"
+    )
     approval_file.write_text(
         f"""---
 type: social_post_approval
 platform: {platform}
+post_type: {post_type}
 action: post_{safe_platform}
 post_file: To_Post/{platform}/{post_file.name}
 created: {datetime.now(timezone.utc).isoformat()}
 status: pending_approval
 expires: {datetime.now(timezone.utc).replace(hour=23, minute=59).isoformat()}
+permission_mode: {perm.mode}
+permission_reason: {perm.reason}
 ---
 
 # Approval Required: {platform} Post
 
 **Platform:** {platform}
+**Type:** {post_type}
 **Post File:** `To_Post/{platform}/{post_file.name}`
 
 ## Post Content Preview
@@ -161,6 +177,7 @@ expires: {datetime.now(timezone.utc).replace(hour=23, minute=59).isoformat()}
 - **Reject:** Move this file to `/Rejected/`
 
 ---
+{approval_note}
 *Human approval required before any social media posting (Company Handbook §4).*
 """,
         encoding="utf-8",
@@ -170,6 +187,7 @@ expires: {datetime.now(timezone.utc).replace(hour=23, minute=59).isoformat()}
         "post_file": post_file.name,
         "approval_file": approval_file.name,
         "content_length": len(content),
+        "permission_mode": perm.mode,
     })
 
     return {
@@ -177,7 +195,9 @@ expires: {datetime.now(timezone.utc).replace(hour=23, minute=59).isoformat()}
         "platform": platform,
         "post_file": str(post_file.relative_to(VAULT_PATH)),
         "approval_file": approval_file.name,
-        "message": f"Draft saved. Approval required before posting to {platform}.",
+        "permission_mode": perm.mode,
+        "permission_reason": perm.reason,
+        "message": f"Draft saved. Approval required before posting to {platform}. {str(perm)}",
         "posts_today": posts_today,
         "remaining_today": limit - posts_today,
     }
@@ -259,7 +279,7 @@ def main():
         from mcp.server.stdio import stdio_server
         from mcp import types
     except ImportError:
-        print("ERROR: mcp package not installed. Run: uv sync")
+        sys.stderr.write("ERROR: mcp package not installed. Run: uv sync\n")
         raise SystemExit(1)
 
     server = Server("social-mcp")

@@ -39,11 +39,14 @@ from pathlib import Path
 from datetime import datetime, timezone
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
 from dotenv import load_dotenv
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from rate_limiter import get_limiter, RateLimitExceededError
 from audit_logger import write_log_entry, infer_approval
+from permission_guard import check as permission_check, add_known_contact
+from retry_handler import with_retry_async, classify_error
 
 load_dotenv()
 
@@ -56,9 +59,11 @@ GMAIL_CREDS  = os.getenv("GMAIL_CREDENTIALS_PATH", "./secrets/gmail_credentials.
 GMAIL_TOKEN  = os.getenv("GMAIL_TOKEN_PATH", "./secrets/gmail_token.json")
 LOGS_DIR     = VAULT_PATH / "Logs"
 DRAFTS_DIR   = VAULT_PATH / "Drafts"
+QUEUE_DIR    = VAULT_PATH / "Queue"   # §7.3 — offline queue when Gmail API is down
 
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
 DRAFTS_DIR.mkdir(parents=True, exist_ok=True)
+QUEUE_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def _log(action_type: str, target: str, result: str, details: dict = None):
@@ -75,8 +80,12 @@ def _log(action_type: str, target: str, result: str, details: dict = None):
     )
 
 
-async def _send_gmail_api(to: str, subject: str, body: str, cc: str = None) -> dict:
-    """Send an email via Gmail API (OAuth2). Returns dict with success/error."""
+@with_retry_async(max_attempts=3, base_delay=2, max_delay=30)
+async def _send_gmail_api(to: str, subject: str, body: str, cc: str = None,
+                          attachment: str = None) -> dict:
+    """Send an email via Gmail API (OAuth2) — retries on transient network errors.
+    attachment: optional path to a file (e.g. PDF invoice) to attach.
+    """
     if DRY_RUN:
         _log("email_send", to, "dry_run", {"subject": subject, "cc": cc})
         return {"success": True, "dry_run": True, "message": f"[DRY RUN] Would send to {to}: {subject}"}
@@ -106,22 +115,41 @@ async def _send_gmail_api(to: str, subject: str, body: str, cc: str = None) -> d
         full_body = f"{body}\n\n---\n*This email was drafted with AI assistance.*"
         msg.attach(MIMEText(full_body, "plain"))
 
+        if attachment:
+            attach_path = Path(attachment)
+            if attach_path.exists():
+                with open(attach_path, "rb") as f:
+                    part = MIMEApplication(f.read(), _subtype="pdf")
+                    part.add_header("Content-Disposition", "attachment", filename=attach_path.name)
+                    msg.attach(part)
+
         raw = base64.urlsafe_b64encode(msg.as_bytes()).decode()
         service.users().messages().send(userId="me", body={"raw": raw}).execute()
 
+        # §6.4 — register as known contact after successful send
+        add_known_contact(to, VAULT_PATH)
         _log("email_send", to, "success", {"subject": subject, "cc": cc})
         return {"success": True, "message": f"Email sent to {to}"}
 
     except Exception as e:
-        _log("email_send", to, "error", {"subject": subject, "error": str(e)})
-        return {"success": False, "error": str(e)}
+        # Classify before logging — lets the @with_retry_async decorator retry if transient
+        raise classify_error(e) from e
 
 
-def _save_draft(to: str, subject: str, body: str) -> dict:
+def _save_draft(to: str, subject: str, body: str, cc: str = "") -> dict:
     """Save an email draft to /Drafts/ for human review."""
+    # §6.4 Permission check — annotates the draft file accordingly
+    perm = permission_check("email", VAULT_PATH, to=to, cc=cc)
+
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     safe_subj = "".join(c if c.isalnum() or c in "-_" else "_" for c in subject)[:40]
     draft_file = DRAFTS_DIR / f"DRAFT_{timestamp}_{safe_subj}.md"
+
+    approval_note = (
+        "*Known contact — may be approved without additional review.*"
+        if not perm.requires_approval
+        else "*New contact or bulk send — explicit human approval required before sending.*"
+    )
 
     draft_file.write_text(
         f"""---
@@ -130,6 +158,8 @@ to: {to}
 subject: {subject}
 created: {datetime.now(timezone.utc).isoformat()}
 status: pending_review
+permission_mode: {perm.mode}
+permission_reason: {perm.reason}
 ---
 
 ## Draft Email
@@ -143,13 +173,67 @@ status: pending_review
 
 ---
 *AI-drafted email. Review before sending.*
+{approval_note}
 *To send: move this file to /Approved/*
 *To discard: move to /Rejected/*
 """,
         encoding='utf-8',
     )
-    _log("email_draft_saved", to, "success", {"subject": subject, "draft_file": draft_file.name})
-    return {"success": True, "draft_file": str(draft_file), "message": f"Draft saved to {draft_file.name}"}
+    _log("email_draft_saved", to, "success", {
+        "subject": subject, "draft_file": draft_file.name,
+        "permission_mode": perm.mode, "permission_reason": perm.reason,
+    })
+    return {
+        "success": True,
+        "draft_file": str(draft_file),
+        "permission_mode": perm.mode,
+        "permission_reason": perm.reason,
+        "message": f"Draft saved to {draft_file.name}. {str(perm)}",
+    }
+
+
+def _queue_email(to: str, subject: str, body: str, cc: str, error: str) -> dict:
+    """
+    §7.3 Graceful Degradation — Gmail API down.
+    Queue the email locally so it can be sent when the API is restored.
+    Writes to /Queue/EMAIL_QUEUED_*.md — orchestrator retry loop picks these up.
+    """
+    ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    queue_file = QUEUE_DIR / f"EMAIL_QUEUED_{ts}.md"
+    queue_file.write_text(
+        f"""---
+type: queued_email
+to: {to}
+subject: {subject}
+cc: {cc or ""}
+queued_at: {datetime.now(timezone.utc).isoformat()}
+queued_reason: {error}
+status: queued
+retry_count: 0
+---
+
+## Queued Email (Gmail API Unavailable)
+
+**To:** {to}
+**Subject:** {subject}
+
+{body}
+
+---
+*Queued by §7.3 graceful degradation — will be sent when Gmail API is restored.*
+*Orchestrator retry loop processes /Queue/EMAIL_QUEUED_*.md files.*
+""",
+        encoding="utf-8",
+    )
+    _log("email_queued", to, "queued", {
+        "subject": subject, "queue_file": queue_file.name, "queued_reason": error,
+    })
+    return {
+        "success": False,
+        "queued": True,
+        "queue_file": queue_file.name,
+        "message": f"Gmail API unavailable — email queued at {queue_file.name}. Will send when API is restored.",
+    }
 
 
 def _list_drafts() -> dict:
@@ -175,7 +259,7 @@ def main():
         from mcp.server.stdio import stdio_server
         from mcp import types
     except ImportError:
-        print("ERROR: mcp package not installed. Run: uv sync")
+        sys.stderr.write("ERROR: mcp package not installed. Run: uv sync\n")
         raise SystemExit(1)
 
     server = Server("email-mcp")
@@ -192,10 +276,11 @@ def main():
                 inputSchema={
                     "type": "object",
                     "properties": {
-                        "to":      {"type": "string", "description": "Recipient email address"},
-                        "subject": {"type": "string", "description": "Email subject line"},
-                        "body":    {"type": "string", "description": "Email body (plain text)"},
-                        "cc":      {"type": "string", "description": "CC email address (optional)"},
+                        "to":         {"type": "string", "description": "Recipient email address"},
+                        "subject":    {"type": "string", "description": "Email subject line"},
+                        "body":       {"type": "string", "description": "Email body (plain text)"},
+                        "cc":         {"type": "string", "description": "CC email address (optional)"},
+                        "attachment": {"type": "string", "description": "Absolute path to file to attach, e.g. /Vault/Invoices/INVOICE_*.pdf (optional)"},
                     },
                     "required": ["to", "subject", "body"],
                 },
@@ -226,12 +311,30 @@ def main():
     @server.call_tool()
     async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
         if name == "send_email":
-            result = await _send_gmail_api(
-                to=arguments["to"],
-                subject=arguments["subject"],
-                body=arguments["body"],
-                cc=arguments.get("cc"),
-            )
+            try:
+                result = await _send_gmail_api(
+                    to=arguments["to"],
+                    subject=arguments["subject"],
+                    body=arguments["body"],
+                    cc=arguments.get("cc"),
+                    attachment=arguments.get("attachment"),
+                )
+            except Exception as e:
+                from retry_handler import TransientError, SystemError as AISystemError
+                _log("email_send", arguments.get("to", "?"), "error",
+                     {"error": str(e), "error_category": getattr(e, "category", "unknown")})
+                # §7.3 — queue locally for transient/system failures; surface auth/logic immediately
+                if isinstance(e, (TransientError, AISystemError)):
+                    result = _queue_email(
+                        to=arguments.get("to", ""),
+                        subject=arguments.get("subject", ""),
+                        body=arguments.get("body", ""),
+                        cc=arguments.get("cc", ""),
+                        error=str(e),
+                    )
+                else:
+                    result = {"success": False, "error": str(e),
+                              "error_category": getattr(e, "category", "unknown")}
         elif name == "draft_email":
             result = _save_draft(
                 to=arguments["to"],
