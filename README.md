@@ -93,7 +93,7 @@ A **Platinum Tier** implementation of the Personal AI Employee hackathon — a f
 | Audit logging | `mcp_servers/audit_mcp_server.py` — structured JSON logs |
 | Ralph Wiggum loop | `.claude/hooks/stop_hook.py` + Stop Hook mechanism |
 | Architecture + Lessons docs | `ARCHITECTURE.md`, `LESSONS_LEARNED.md` |
-| All AI as Agent Skills | 17 skills total |
+| All AI as Agent Skills | 19 skills total |
 
 ### ✅ Platinum — Always-On Cloud + Local
 | Requirement | Implementation |
@@ -106,7 +106,8 @@ A **Platinum Tier** implementation of the Personal AI Employee hackathon — a f
 | Security: secrets never sync | `.gitignore` excludes .env, secrets/, credentials |
 | Health monitoring | `cloud/health_monitor.py` + `/Signals/HEALTH_*.json` |
 | Cloud VM deployment | `cloud/setup_cloud.sh` — systemd + cron |
-| All AI as Agent Skills | 20 skills total |
+| All AI as Agent Skills | 22 skills total |
+| **(Bonus) Live Web Dashboard** | Next.js (port 3000) — real-time SSE, 11 pages including Gmail, WhatsApp, Odoo, LinkedIn integrations, approve/reject buttons, HMAC-SHA256 session auth |
 
 ---
 
@@ -157,9 +158,14 @@ uv run python orchestrator.py --no-gmail --no-linkedin --no-whatsapp --no-social
 | Server | Tools | Transport |
 |--------|-------|-----------|
 | `email` | `send_email`, `draft_email`, `list_drafts` | stdio |
+| `gmail` | `gmail_get_recent`, `gmail_search`, `gmail_send_draft` | stdio |
+| `whatsapp` | `whatsapp_get_recent`, `whatsapp_send_message`, `whatsapp_get_status` | stdio |
 | `odoo` | `get_customers`, `get_invoices`, `create_invoice_draft`, `get_revenue_summary`, `get_transactions` | stdio |
 | `social` | `draft_post`, `check_limits`, `get_summary`, `list_pending` | stdio |
 | `audit` | `get_errors`, `get_activity_summary`, `search_logs`, `get_weekly_report` | stdio |
+| `banking` | `get_transactions`, `add_transaction`, `get_summary`, `get_subscription_report` | stdio |
+| `calendar` | `list_events`, `create_event`, `update_event`, `delete_event` | stdio |
+| `slack` | `list_channels`, `read_channel`, `send_message`, `add_reaction` | stdio |
 | `playwright` | 22 `browser_*` tools | HTTP port 8808 |
 | `context7` | `resolve-library-id`, `get-library-docs` | stdio |
 
@@ -167,7 +173,7 @@ Start MCP servers: Claude Code manages them automatically via `.claude/mcp.json`
 
 ---
 
-## Agent Skills (20 total)
+## Agent Skills (22 total)
 
 | Skill | Command |
 |-------|---------|
@@ -176,6 +182,8 @@ Start MCP servers: Claude Code manages them automatically via `.claude/mcp.json`
 | Create Plan | `/create-plan` |
 | Send Email | `/send-email` |
 | Reply WhatsApp | `/reply-whatsapp` |
+| Schedule Meeting | `/schedule-meeting` |
+| Send Slack | `/send-slack` |
 | Post LinkedIn | `/post-linkedin` |
 | Post Facebook | `/post-facebook` |
 | Post Instagram | `/post-instagram` |
@@ -224,9 +232,31 @@ AI_Employee_Vault/
 
 ---
 
+## Web Dashboard (Bonus)
+
+Next.js dashboard at `http://localhost:3000` — run with `cd dashboard-ui && npm run dev`.
+
+| Page | Description |
+|------|-------------|
+| Overview | Vault stats, agent health, recent activity (SSE live updates) |
+| Tasks | All `/Needs_Action/` files |
+| Approvals | One-click approve/reject for `/Pending_Approval/` |
+| Logs | Searchable JSON audit log |
+| Done | Completed task archive |
+| Health | Agent heartbeats + watcher status |
+| WhatsApp | Read messages, send direct or via approval |
+| Gmail | Read inbox, draft replies |
+| Odoo | Revenue summary, create invoice drafts |
+| LinkedIn | Queued posts, draft new posts |
+| Assistant | AI chat via OpenRouter (model-swappable via `CLAUDE_MODEL` env) |
+
+Protected by password authentication (HMAC-SHA256 session cookie, 7-day expiry).
+
+---
+
 ## Tier Declaration
 
-**Platinum** — All Bronze + Silver + Gold requirements, plus distributed Cloud+Local architecture, git-based vault sync, claim-by-move task ownership, health monitoring, cloud VM deployment scripts, and 20 Agent Skills.
+**Platinum** — All Bronze + Silver + Gold requirements, plus distributed Cloud+Local architecture, git-based vault sync, claim-by-move task ownership, health monitoring, cloud VM deployment scripts, 22 Agent Skills, 11 MCP servers, and bonus Next.js web dashboard with 11 pages.
 
 ---
 
