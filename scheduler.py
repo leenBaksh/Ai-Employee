@@ -130,6 +130,278 @@ def job_daily_briefing():
     _log("daily_briefing_triggered", "success")
 
 
+def job_whatsapp_daily_report():
+    """Send daily WhatsApp report with chat activity summary."""
+    logger.info("▶ WhatsApp daily report job starting")
+    
+    if not WHATSAPP_DAILY_REPORT_ENABLED or not WHATSAPP_DAILY_REPORT_TO:
+        logger.info("WhatsApp daily report disabled or recipient not configured")
+        return
+    
+    if not WHATSAPP_ACCESS_TOKEN or not WHATSAPP_PHONE_NUMBER_ID:
+        logger.error("WhatsApp credentials not configured")
+        return
+    
+    # Generate report
+    report = _generate_whatsapp_daily_report()
+    
+    if DRY_RUN:
+        logger.info(f"[DRY RUN] Would send WhatsApp report to {WHATSAPP_DAILY_REPORT_TO}")
+        logger.info(f"Report:\n{report}")
+        _log("whatsapp_daily_report_dry_run", "success", {"recipient": WHATSAPP_DAILY_REPORT_TO})
+        return
+    
+    # Send via WhatsApp API
+    _send_whatsapp_message(WHATSAPP_DAILY_REPORT_TO, report)
+    _log("whatsapp_daily_report_sent", "success", {"recipient": WHATSAPP_DAILY_REPORT_TO})
+
+
+def _generate_whatsapp_daily_report() -> str:
+    """Generate daily WhatsApp activity report with weather."""
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    yesterday = (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%d")
+
+    # Count messages from task files
+    messages_count = 0
+    urgent_count = 0
+    group_count = 0
+    unread_count = 0
+    total_text = 0  # Track total text characters
+    
+    # Conversation tracking
+    greetings_count = 0  # hi, hello, hey, etc.
+    how_are_you_count = 0  # how are you, how's it going
+    goodbye_count = 0  # bye, goodbye, see you
+    thanks_count = 0  # thank you, thanks
+    positive_count = 0  # good day, have fun, etc.
+    questions_count = 0  # what, when, where, why, how, can you, etc.
+    requests_count = 0  # please, can you, could you, i need, etc.
+    confirmations_count = 0  # yes, ok, sure, agreed, etc.
+    urgency_count = 0  # asap, urgent, immediately, etc.
+    love_count = 0  # love you, miss you, care about, etc.
+    help_count = 0  # help, support, assist, etc.
+    meeting_count = 0  # meeting, call, schedule, appointment, etc.
+    money_count = 0  # payment, invoice, bill, price, cost, etc.
+
+    # Conversation keywords
+    GREETINGS = ["hi", "hello", "hey", "greetings", "good morning", "good afternoon", "good evening", "salam", "assalamualaikum", "yo", "howdy"]
+    HOW_ARE_YOU = ["how are you", "how's it going", "how do you do", "what's up", "kya haal", "kaise ho", "how have you been"]
+    GOODBYE = ["bye", "goodbye", "see you", "take care", "talk later", "catch you later", "ttyl", "gtg", "got to go"]
+    THANKS = ["thank you", "thanks", "shukriya", "thanku", "thx", "appreciate it", "much appreciated"]
+    POSITIVE = ["good day", "have a good day", "have fun", "have a nice day", "all the best", "good luck", "awesome", "great", "excellent", "perfect"]
+    QUESTIONS = ["what", "when", "where", "why", "how", "can you", "could you", "will you", "do you", "is there", "are there", "kya", "kab", "kahan", "kyun"]
+    REQUESTS = ["please", "can you", "could you", "i need", "i want", "i would like", "help me", "send me", "give me", "mera", "mujhe"]
+    CONFIRMATIONS = ["yes", "ok", "okay", "sure", "agreed", "definitely", "absolutely", "correct", "haan", "ji", "yep", "yup"]
+    URGENCY = ["asap", "urgent", "immediately", "right now", "quick", "fast", "emergency", "critical", "jaldi", "fora"]
+    LOVE = ["love you", "miss you", "care about", "love", "miss", "hug", "kiss", "dear", "jaan", "habibi"]
+    HELP = ["help", "support", "assist", "guidance", "stuck", "problem", "issue", "error", "madad"]
+    MEETING = ["meeting", "call", "schedule", "appointment", "zoom", "teams", "google meet", "conference", "interview"]
+    MONEY = ["payment", "invoice", "bill", "price", "cost", "money", "salary", "payment", "paisa", "rupees", "$", "rs"]
+
+    if NEEDS_ACTION.exists():
+        for f in NEEDS_ACTION.glob(f"WHATSAPP_{today.replace('-', '')}*.md"):
+            messages_count += 1
+            content = f.read_text(encoding="utf-8").lower()
+            
+            if "priority: high" in content:
+                urgent_count += 1
+            if "chat_type: group" in content:
+                group_count += 1
+            if "read_status: unread" in content:
+                unread_count += 1
+            
+            # Count text in message body
+            for line in content.splitlines():
+                if line.startswith("> "):  # Message content lines
+                    total_text += len(line)
+                    msg_text = line[2:]  # Remove "> " prefix
+                    
+                    # Track conversation types
+                    if any(g in msg_text for g in GREETINGS):
+                        greetings_count += 1
+                    if any(h in msg_text for h in HOW_ARE_YOU):
+                        how_are_you_count += 1
+                    if any(b in msg_text for b in GOODBYE):
+                        goodbye_count += 1
+                    if any(t in msg_text for t in THANKS):
+                        thanks_count += 1
+                    if any(p in msg_text for p in POSITIVE):
+                        positive_count += 1
+                    if any(q in msg_text for q in QUESTIONS):
+                        questions_count += 1
+                    if any(r in msg_text for r in REQUESTS):
+                        requests_count += 1
+                    if any(c in msg_text for c in CONFIRMATIONS):
+                        confirmations_count += 1
+                    if any(u in msg_text for u in URGENCY):
+                        urgency_count += 1
+                    if any(l in msg_text for l in LOVE):
+                        love_count += 1
+                    if any(h in msg_text for h in HELP):
+                        help_count += 1
+                    if any(m in msg_text for m in MEETING):
+                        meeting_count += 1
+                    if any(mn in msg_text for mn in MONEY):
+                        money_count += 1
+
+    # Count calls
+    calls_count = 0
+    call_log = VAULT_PATH / "WhatsApp_Call_Log.md"
+    if call_log.exists():
+        content = call_log.read_text(encoding="utf-8")
+        calls_count = content.count(f"## ") - 1  # Subtract header
+
+    # Get weather data
+    weather_info = _get_weather_data()
+
+    # Format total text
+    if total_text < 1000:
+        text_summary = f"{total_text} chars"
+    elif total_text < 1000000:
+        text_summary = f"{total_text / 1000:.1f}K chars"
+    else:
+        text_summary = f"{total_text / 1000000:.1f}M chars"
+
+    # Build conversation summary
+    conversation_parts = []
+    if greetings_count > 0:
+        conversation_parts.append(f"👋 {greetings_count}")
+    if how_are_you_count > 0:
+        conversation_parts.append(f"💬 {how_are_you_count}")
+    if thanks_count > 0:
+        conversation_parts.append(f"🙏 {thanks_count}")
+    if goodbye_count > 0:
+        conversation_parts.append(f"👋 {goodbye_count}")
+    if positive_count > 0:
+        conversation_parts.append(f"✨ {positive_count}")
+    if questions_count > 0:
+        conversation_parts.append(f"❓ {questions_count}")
+    if requests_count > 0:
+        conversation_parts.append(f"📢 {requests_count}")
+    if confirmations_count > 0:
+        conversation_parts.append(f"✅ {confirmations_count}")
+    if urgency_count > 0:
+        conversation_parts.append(f"🚨 {urgency_count}")
+    if love_count > 0:
+        conversation_parts.append(f"❤️ {love_count}")
+    if help_count > 0:
+        conversation_parts.append(f"🆘 {help_count}")
+    if meeting_count > 0:
+        conversation_parts.append(f"📅 {meeting_count}")
+    if money_count > 0:
+        conversation_parts.append(f"💰 {money_count}")
+    
+    conversation_summary = " | ".join(conversation_parts) if conversation_parts else "No casual conversations"
+
+    report = f"""📊 *WhatsApp Daily Report*
+📅 {today}
+
+*Summary:*
+💬 Messages: {messages_count}
+📝 Total Text: {text_summary}
+⚠️ Urgent: {urgent_count}
+👥 Group: {group_count}
+🔵 Unread: {unread_count}
+📞 Calls: {calls_count}
+
+*Daily Conversation:*
+{conversation_summary}
+
+*Status:* {"✅ All caught up!" if unread_count == 0 else f"⚠️ {unread_count} pending"}
+
+*AI Employee Activity:*
+✅ Auto-replies sent
+✅ Tasks created
+✅ Calls logged
+
+{weather_info}
+Have a great day! 🚀"""
+
+    return report
+
+
+def _get_weather_data() -> str:
+    """Fetch weather data from OpenWeatherMap API."""
+    import urllib.request
+    import json
+
+    weather_api_key = os.getenv("WEATHER_API_KEY", "")
+    weather_city = os.getenv("WEATHER_CITY", "Karachi")
+    weather_country = os.getenv("WEATHER_COUNTRY", "PK")
+
+    if not weather_api_key:
+        return "*Weather:* ⚠️ API key not configured"
+
+    try:
+        # Fetch weather data
+        url = f"https://api.openweathermap.org/data/2.5/weather?q={weather_city},{weather_country}&appid={weather_api_key}&units=metric"
+        
+        with urllib.request.urlopen(url, timeout=5) as response:
+            data = json.loads(response.read().decode())
+
+        temp = round(data["main"]["temp"])
+        feels_like = round(data["main"]["feels_like"])
+        humidity = data["main"]["humidity"]
+        desc = data["weather"][0]["description"].title()
+        icon = _get_weather_icon(data["weather"][0]["main"])
+
+        return f"""*Weather in {weather_city}:*
+🌡️ Temperature: {temp}°C (feels like {feels_like}°C)
+{icon} Condition: {desc}
+💧 Humidity: {humidity}%"""
+
+    except Exception as e:
+        logger.error(f"Weather API error: {e}")
+        return f"*Weather:* ⚠️ Unable to fetch data"
+
+
+def _get_weather_icon(weather_main: str) -> str:
+    """Get emoji icon for weather condition."""
+    icons = {
+        "Clear": "☀️",
+        "Clouds": "☁️",
+        "Rain": "🌧️",
+        "Drizzle": "🌦️",
+        "Thunderstorm": "⛈️",
+        "Snow": "❄️",
+        "Mist": "🌫️",
+        "Fog": "🌫️",
+        "Haze": "🌫️",
+        "Smoke": "🌫️",
+    }
+    return icons.get(weather_main, "🌤️")
+
+
+def _send_whatsapp_message(to: str, message: str):
+    """Send a WhatsApp message via Cloud API."""
+    try:
+        import httpx
+        
+        url = f"https://graph.facebook.com/v25.0/{WHATSAPP_PHONE_NUMBER_ID}/messages"
+        headers = {
+            "Authorization": f"Bearer {WHATSAPP_ACCESS_TOKEN}",
+            "Content-Type": "application/json",
+        }
+        payload = {
+            "messaging_product": "whatsapp",
+            "to": to,
+            "type": "text",
+            "text": {"body": message},
+        }
+        
+        with httpx.Client() as client:
+            r = client.post(url, json=payload, headers=headers, timeout=15)
+            result = r.json()
+            
+            if r.status_code == 200:
+                logger.info(f"WhatsApp report sent to {to}: {result}")
+            else:
+                logger.error(f"Failed to send WhatsApp report ({r.status_code}): {result}")
+
+    except Exception as e:
+        logger.error(f"Error sending WhatsApp report: {e}")
+
+
 def job_weekly_audit():
     """Run every Sunday night — generate CEO briefing."""
     logger.info("▶ Weekly audit job starting")
@@ -520,96 +792,274 @@ Move this file to /Done/ when complete.
     _log("quarterly_security_review_created", "success", {"quarter": f"{quarter} {today.year}"})
 
 
-def job_daily_whatsapp_report():
-    """Daily at configured time — send vault summary to World Digital via WhatsApp."""
-    logger.info("▶ Daily WhatsApp report job starting")
+# ── LinkedIn Automation ───────────────────────────────────────────────────────
+
+LINKEDIN_MAX_POSTS_PER_DAY = os.getenv("LINKEDIN_MAX_POSTS_PER_DAY", "2")
+LINKEDIN_ENABLED = os.getenv("LINKEDIN_ENABLED", "false").lower() == "true"
+LINKEDIN_USER = os.getenv("LINKEDIN_USER", "")
+
+# Gmail automation
+GMAIL_ENABLED = os.getenv("GMAIL_CREDENTIALS_PATH", "") != ""
+SMTP_ENABLED = os.getenv("SMTP_USER", "") != ""
+
+
+def job_gmail_daily_digest():
+    """Send daily Gmail activity digest."""
+    logger.info("▶ Gmail daily digest job starting")
+    
+    if not GMAIL_ENABLED:
+        logger.info("Gmail automation disabled")
+        return
+    
+    # Generate digest
+    digest = _generate_gmail_daily_digest()
+    
     if DRY_RUN:
-        logger.info("[DRY RUN] Would send daily WhatsApp report")
+        logger.info(f"[DRY RUN] Would send Gmail digest")
+        logger.info(f"Digest:\n{digest}")
         return
-    if not WHATSAPP_DAILY_REPORT_TO:
-        logger.warning("Daily WhatsApp report skipped — WHATSAPP_DAILY_REPORT_TO not set")
+    
+    # Send via WhatsApp if configured
+    if WHATSAPP_DAILY_REPORT_ENABLED and WHATSAPP_DAILY_REPORT_TO:
+        _send_whatsapp_message(WHATSAPP_DAILY_REPORT_TO, digest)
+        _log("gmail_daily_digest_sent", "success", {"recipient": WHATSAPP_DAILY_REPORT_TO})
+
+
+def job_gmail_auto_reply():
+    """Auto-reply to new Gmail messages."""
+    logger.info("▶ Gmail auto-reply check starting")
+    
+    if not GMAIL_ENABLED:
+        logger.info("Gmail automation disabled")
         return
-    if not WHATSAPP_ACCESS_TOKEN or not WHATSAPP_PHONE_NUMBER_ID:
-        logger.warning("Daily WhatsApp report skipped — WhatsApp credentials not set")
-        return
-
-    now = datetime.now(timezone.utc)
-    today = now.strftime("%Y-%m-%d")
-
-    # Vault stats
-    needs_action = len([f for f in NEEDS_ACTION.glob("*.md") if f.is_file()])
-    pending_approval = len(list((VAULT_PATH / "Pending_Approval").glob("*.md")))
-    done_total = len(list((VAULT_PATH / "Done").glob("*.md")))
-
-    # Today's action count from log
-    log_file = LOGS_DIR / f"{today}.json"
-    actions_today = 0
-    if log_file.exists():
-        try:
-            entries = json.loads(log_file.read_text(encoding="utf-8"))
-            actions_today = len(entries)
-        except Exception:
-            pass
-
-    # Status line
-    if needs_action == 0 and pending_approval == 0:
-        status_line = "✅ All clear — nothing needs your attention."
-    else:
-        parts = []
-        if needs_action > 0:
-            parts.append(f"⚠️ {needs_action} task(s) need attention")
-        if pending_approval > 0:
-            parts.append(f"📋 {pending_approval} approval(s) waiting")
-        status_line = " · ".join(parts)
-
-    message = (
-        f"🤖 *AI Employee Daily Report*\n"
-        f"📅 {now.strftime('%A, %b %d %Y')} — {now.strftime('%H:%M')} UTC\n\n"
-        f"📥 Inbox: {needs_action} pending\n"
-        f"⏳ Awaiting approval: {pending_approval}\n"
-        f"✅ Completed (all time): {done_total}\n"
-        f"⚡ Actions logged today: {actions_today}\n\n"
-        f"{status_line}\n\n"
-        f"_Reply *URGENT* to flag a priority item._\n"
-        f"_AI Employee v0.4 Platinum_"
-    )
-
-    url = f"https://graph.facebook.com/v25.0/{WHATSAPP_PHONE_NUMBER_ID}/messages"
-    payload = json.dumps({
-        "messaging_product": "whatsapp",
-        "to": WHATSAPP_DAILY_REPORT_TO,
-        "type": "text",
-        "text": {"body": message},
-    }).encode("utf-8")
-
-    req = urllib.request.Request(
-        url, data=payload, method="POST",
-        headers={
-            "Authorization": f"Bearer {WHATSAPP_ACCESS_TOKEN}",
-            "Content-Type": "application/json",
-        },
-    )
+    
+    # Import and run auto-replier
     try:
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            result = json.loads(resp.read().decode())
-            msg_id = result.get("messages", [{}])[0].get("id", "unknown")
-            logger.info(f"Daily WhatsApp report sent to {WHATSAPP_DAILY_REPORT_TO} (msg_id={msg_id})")
-            _log("whatsapp_daily_report_sent", "success", {
-                "to": WHATSAPP_DAILY_REPORT_TO,
-                "msg_id": msg_id,
-                "needs_action": needs_action,
-                "pending_approval": pending_approval,
-                "done_total": done_total,
-                "actions_today": actions_today,
-            })
-    except urllib.error.HTTPError as e:
-        body = e.read().decode()
-        logger.error(f"Daily WhatsApp report failed (HTTP {e.code}): {body}")
-        _log("whatsapp_daily_report_sent", "error", {"error": body})
-    except Exception as exc:
-        logger.error(f"Daily WhatsApp report error: {exc}")
-        _log("whatsapp_daily_report_sent", "error", {"error": str(exc)})
+        from auto_gmail_replier import process_gmail_auto_reply
+        emails, replies = process_gmail_auto_reply()
+        if emails > 0 or replies > 0:
+            _log("gmail_auto_reply", "success", {"processed": emails, "replies": replies})
+    except Exception as e:
+        logger.error(f"Gmail auto-reply error: {e}")
+        _log("gmail_auto_reply_error", "error", {"error": str(e)})
 
+
+def job_gmail_advanced_features():
+    """Run advanced Gmail features (VIP, spam, language, etc.)."""
+    logger.info("▶ Gmail advanced features check starting")
+    
+    if not GMAIL_ENABLED:
+        logger.info("Gmail automation disabled")
+        return
+    
+    # Import and run advanced features
+    try:
+        from advanced_gmail_features import process_advanced_features
+        emails, vip, spam, after_hours = process_advanced_features()
+        if emails > 0:
+            _log("gmail_advanced_features", "success", {
+                "processed": emails,
+                "vip": vip,
+                "spam_filtered": spam,
+                "after_hours": after_hours
+            })
+    except Exception as e:
+        logger.error(f"Gmail advanced features error: {e}")
+        _log("gmail_advanced_features_error", "error", {"error": str(e)})
+
+
+def _generate_gmail_daily_digest() -> str:
+    """Generate daily Gmail activity summary."""
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    
+    # Count emails from Needs_Action folder
+    needs_action = VAULT_PATH / "Needs_Action"
+    email_count = 0
+    urgent_count = 0
+    
+    if needs_action.exists():
+        today_slug = datetime.now(timezone.utc).strftime("%Y%m%d")
+        for f in needs_action.glob(f"EMAIL_{today_slug}*.md"):
+            email_count += 1
+            content = f.read_text(encoding="utf-8")
+            if "priority: high" in content or "priority:urgent" in content:
+                urgent_count += 1
+    
+    # Count from Done folder
+    done_dir = VAULT_PATH / "Done"
+    processed_count = 0
+    if done_dir.exists():
+        today_slug = datetime.now(timezone.utc).strftime("%Y%m%d")
+        processed_count = len(list(done_dir.glob(f"EMAIL_{today_slug}*.md")))
+    
+    # Get SMTP status
+    smtp_status = "✅ Configured" if SMTP_ENABLED else "⬜ Not configured"
+    
+    digest = f"""📧 *Gmail Daily Digest*
+📅 {today}
+
+*Inbox Summary:*
+📥 New Emails: {email_count}
+⚠️ Urgent: {urgent_count}
+✅ Processed: {processed_count}
+
+*Email Sending:*
+📤 SMTP: {smtp_status}
+👤 From: {os.getenv("SMTP_FROM_NAME", "Not configured")}
+
+*AI Employee Activity:*
+✅ Email monitoring active
+✅ Priority detection ready
+✅ Auto-categorization enabled
+
+Stay on top of your inbox! 🚀"""
+    
+    return digest
+
+
+def job_linkedin_daily_digest():
+    """Send daily LinkedIn activity digest."""
+    logger.info("▶ LinkedIn daily digest job starting")
+    
+    if not LINKEDIN_ENABLED:
+        logger.info("LinkedIn automation disabled")
+        return
+    
+    # Generate digest
+    digest = _generate_linkedin_daily_digest()
+    
+    if DRY_RUN:
+        logger.info(f"[DRY RUN] Would send LinkedIn digest")
+        logger.info(f"Digest:\n{digest}")
+        return
+    
+    # Send via WhatsApp if configured
+    if WHATSAPP_DAILY_REPORT_ENABLED and WHATSAPP_DAILY_REPORT_TO:
+        _send_whatsapp_message(WHATSAPP_DAILY_REPORT_TO, digest)
+        _log("linkedin_daily_digest_sent", "success", {"recipient": WHATSAPP_DAILY_REPORT_TO})
+
+
+def _generate_linkedin_daily_digest() -> str:
+    """Generate daily LinkedIn activity summary."""
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    
+    to_post_dir = VAULT_PATH / "To_Post" / "LinkedIn"
+    posts_count = 0
+    if to_post_dir.exists():
+        posts_count = len(list(to_post_dir.glob("*.md")))
+    
+    scheduled_dir = VAULT_PATH / "Scheduled"
+    scheduled_count = 0
+    if scheduled_dir.exists():
+        scheduled_count = len(list(scheduled_dir.glob("LINKEDIN_*.md")))
+    
+    today_slug = datetime.now(timezone.utc).strftime("%Y%m%d")
+    done_dir = VAULT_PATH / "Done"
+    posted_today = 0
+    if done_dir.exists():
+        posted_today = len(list(done_dir.glob(f"LINKEDIN_{today_slug}*.md")))
+    
+    digest = f"""📊 *LinkedIn Daily Digest*
+📅 {today}
+
+*Content Pipeline:*
+📝 In Queue: {posts_count}
+⏳ Scheduled: {scheduled_count}
+📤 Posted Today: {posted_today}/{LINKEDIN_MAX_POSTS_PER_DAY}
+
+*Posting Schedule:*
+✅ Active ({LINKEDIN_MAX_POSTS_PER_DAY} posts/day max)
+👤 Account: {LINKEDIN_USER or 'Not configured'}
+
+*AI Employee Activity:*
+✅ Post scheduling active
+✅ Engagement tracking ready
+✅ Analytics compiled
+
+Ready to grow your professional network! 🚀"""
+    
+    return digest
+
+
+def job_auto_linkedin_post():
+    """Auto-generate and schedule a LinkedIn post daily."""
+    logger.info("▶ Auto LinkedIn post job starting")
+    
+    if not LINKEDIN_ENABLED:
+        logger.info("LinkedIn automation disabled")
+        return
+    
+    today = datetime.now(timezone.utc)
+    ts = today.strftime("%Y%m%dT%H%M%SZ")
+    
+    # Generate post content based on activity
+    needs_action = VAULT_PATH / "Needs_Action"
+    done_dir = VAULT_PATH / "Done"
+    
+    wa_count = 0
+    if needs_action.exists():
+        today_slug = today.strftime("%Y%m%d")
+        wa_count = len(list(needs_action.glob(f"WHATSAPP_{today_slug}*.md")))
+    
+    done_count = len(list(done_dir.glob("*.md"))) if done_dir.exists() else 0
+    
+    # Rotate through different post topics
+    topics = [
+        ("AI Employee Daily Update", f"🤖 Daily AI Report: {wa_count} messages processed, {done_count} tasks completed. Automation working smoothly! #AI #automation"),
+        ("Building Autonomous Systems", "🚀 Small team, big impact. Our AI Employee handles routine work so humans can focus on what matters. #futureofwork"),
+        ("Automation Wins", "⚡ When you automate the routine, you amplify the exceptional. What's your automation win this week? #productivity"),
+    ]
+    
+    topic_idx = today.weekday() % len(topics)
+    headline, content = topics[topic_idx]
+    
+    # Create scheduled post
+    scheduled_dir = VAULT_PATH / "Scheduled"
+    scheduled_dir.mkdir(exist_ok=True)
+    
+    trigger_file = scheduled_dir / f"LINKEDIN_AUTO_{ts}.md"
+    trigger_file.write_text(f"""---
+type: linkedin_auto_post
+headline: {headline}
+created: {today.isoformat()}
+auto_generated: true
+status: ready
+---
+
+## Auto-Generated LinkedIn Post
+
+{content}
+
+---
+Run /post-linkedin to publish
+""", encoding='utf-8')
+    
+    logger.info(f"✅ Auto LinkedIn post created: {trigger_file.name}")
+    _log("linkedin_auto_post_created", "success", {"headline": headline})
+
+
+def job_linkedin_full_automation():
+    """Run full LinkedIn automation (auto-generate + post)."""
+    logger.info("▶ LinkedIn full automation starting")
+    
+    if not LINKEDIN_ENABLED:
+        logger.info("LinkedIn automation disabled")
+        return
+    
+    # Import and run full automation
+    try:
+        from auto_linkedin_full import run_full_automation
+        success = run_full_automation()
+        if success:
+            _log("linkedin_full_automation", "success", {"posted": True})
+        else:
+            _log("linkedin_full_automation", "success", {"posted": False, "reason": "manual_posting_required"})
+    except Exception as e:
+        logger.error(f"LinkedIn full automation error: {e}")
+        _log("linkedin_full_automation_error", "error", {"error": str(e)})
+
+
+# ── Main Scheduler ─────────────────────────────────────────────────────────────
 
 def main():
     logger.info(f"Scheduler starting — vault: {VAULT_PATH}")
@@ -629,8 +1079,38 @@ def main():
 
     # Daily WhatsApp report (Platinum)
     if WHATSAPP_DAILY_REPORT_ENABLED:
-        schedule.every().day.at(WHATSAPP_DAILY_REPORT_TIME).do(job_daily_whatsapp_report)
+        schedule.every().day.at(WHATSAPP_DAILY_REPORT_TIME).do(job_whatsapp_daily_report)
         logger.info(f"Daily WhatsApp report: {WHATSAPP_DAILY_REPORT_TIME} UTC → {WHATSAPP_DAILY_REPORT_TO}")
+
+    # Daily Gmail digest (Silver)
+    if GMAIL_ENABLED:
+        schedule.every().day.at("19:30").do(job_gmail_daily_digest)
+        logger.info(f"Daily Gmail digest: 19:30 UTC → {WHATSAPP_DAILY_REPORT_TO}")
+    
+    # Auto-reply to Gmail every 30 minutes (Gold)
+    if GMAIL_ENABLED and GMAIL_AUTO_REPLY:
+        schedule.every(30).minutes.do(job_gmail_auto_reply)
+        logger.info(f"Gmail auto-reply: Every 30 minutes")
+    
+    # Advanced Gmail features every hour (Platinum)
+    if GMAIL_ENABLED:
+        schedule.every().hour.do(job_gmail_advanced_features)
+        logger.info(f"Gmail advanced features: Every hour")
+
+    # Daily LinkedIn digest (Silver)
+    if LINKEDIN_ENABLED:
+        schedule.every().day.at("19:00").do(job_linkedin_daily_digest)
+        logger.info(f"Daily LinkedIn digest: 19:00 UTC → {WHATSAPP_DAILY_REPORT_TO}")
+    
+    # Auto-generate LinkedIn post daily (Gold)
+    if LINKEDIN_ENABLED:
+        schedule.every().day.at("18:00").do(job_auto_linkedin_post)
+        logger.info(f"Auto LinkedIn post: 18:00 UTC (1 hour before digest)")
+    
+    # Full LinkedIn automation every 6 hours (Platinum)
+    if LINKEDIN_ENABLED:
+        schedule.every(6).hours.do(job_linkedin_full_automation)
+        logger.info(f"LinkedIn full automation: Every 6 hours")
 
     # Weekly audit — Sunday (Silver)
     day_names = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]

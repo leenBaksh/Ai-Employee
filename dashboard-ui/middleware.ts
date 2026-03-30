@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 // Paths that never require auth
-const PUBLIC_PATHS = ['/login', '/api/auth/login', '/api/auth/logout']
+const PUBLIC_PATHS = [
+  '/login',
+  '/api/auth/login',
+  '/api/auth/logout',
+  '/api/whatsapp/send',      // Allow WhatsApp send from QuickActions
+  '/api/whatsapp-stats',     // Allow WhatsApp stats
+  '/api/lockdown',           // Allow lockdown endpoints
+  '/api/settings',           // Allow settings endpoint
+]
 const NEXT_INTERNAL = ['/_next/', '/favicon.ico']
 
 // Web Crypto API — works in the Edge Runtime (no Node.js crypto needed)

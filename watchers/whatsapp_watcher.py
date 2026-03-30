@@ -89,65 +89,80 @@ class WhatsAppWatcher(BaseWatcher):
             return []
 
         messages = []
+        playwright = None
+        browser = None
 
-        with sync_playwright() as p:
-            browser = p.chromium.launch_persistent_context(
+        try:
+            playwright = sync_playwright().start()
+            browser = playwright.chromium.launch_persistent_context(
                 str(self.session_path),
                 headless=self.headless,
                 args=["--no-sandbox", "--disable-dev-shm-usage"],
             )
+            page = browser.pages[0] if browser.pages else browser.new_page()
+            page.goto("https://web.whatsapp.com", wait_until="domcontentloaded")
+
+            # Wait for chat list — if QR code appears, session expired
             try:
-                page = browser.pages[0] if browser.pages else browser.new_page()
-                page.goto("https://web.whatsapp.com", wait_until="domcontentloaded")
+                page.wait_for_selector('[data-testid="chat-list"]', timeout=20000)
+            except Exception:
+                self.logger.error("WhatsApp Web not logged in — run with --setup to scan QR code")
+                self.log_action("whatsapp_poll", "WhatsApp Web", "error",
+                                {"error": "not logged in — QR scan required"})
+                return []
 
-                # Wait for chat list — if QR code appears, session expired
+            # Find unread chats
+            unread_chats = page.query_selector_all('[data-testid="cell-frame-container"]')
+
+            for chat in unread_chats:
                 try:
-                    page.wait_for_selector('[data-testid="chat-list"]', timeout=20000)
-                except Exception:
-                    self.logger.error("WhatsApp Web not logged in — run with --setup to scan QR code")
-                    self.log_action("whatsapp_poll", "WhatsApp Web", "error",
-                                    {"error": "not logged in — QR scan required"})
-                    return []
-
-                # Find unread chats
-                unread_chats = page.query_selector_all('[data-testid="cell-frame-container"]')
-
-                for chat in unread_chats:
-                    try:
-                        # Check for unread badge
-                        badge = chat.query_selector('[data-testid="icon-unread-count"]') or \
-                                chat.query_selector('[aria-label*="unread"]')
-                        if not badge:
-                            continue
-
-                        # Get sender name
-                        name_el = chat.query_selector('[data-testid="cell-frame-title"]') or \
-                                  chat.query_selector('span[title]')
-                        sender_name = name_el.inner_text().strip() if name_el else "Unknown"
-
-                        # Get message preview
-                        preview_el = chat.query_selector('[data-testid="last-msg"]') or \
-                                     chat.query_selector('span.x1iyjqo2')
-                        text = preview_el.inner_text().strip()[:200] if preview_el else "(no preview)"
-
-                        # Dedup key
-                        dedup_key = f"{sender_name}:{text[:50]}"
-                        if dedup_key in self._seen_messages:
-                            continue
-
-                        messages.append({
-                            "sender_name": sender_name,
-                            "text": text,
-                            "dedup_key": dedup_key,
-                            "timestamp": datetime.now(timezone.utc).isoformat(),
-                        })
-
-                    except Exception as e:
-                        self.logger.warning(f"Error reading chat element: {e}")
+                    # Check for unread badge
+                    badge = chat.query_selector('[data-testid="icon-unread-count"]') or \
+                            chat.query_selector('[aria-label*="unread"]')
+                    if not badge:
                         continue
 
-            finally:
-                browser.close()
+                    # Get sender name
+                    name_el = chat.query_selector('[data-testid="cell-frame-title"]') or \
+                              chat.query_selector('span[title]')
+                    sender_name = name_el.inner_text().strip() if name_el else "Unknown"
+
+                    # Get message preview
+                    preview_el = chat.query_selector('[data-testid="last-msg"]') or \
+                                 chat.query_selector('span.x1iyjqo2')
+                    text = preview_el.inner_text().strip()[:200] if preview_el else "(no preview)"
+
+                    # Dedup key
+                    dedup_key = f"{sender_name}:{text[:50]}"
+                    if dedup_key in self._seen_messages:
+                        continue
+
+                    messages.append({
+                        "sender_name": sender_name,
+                        "text": text,
+                        "dedup_key": dedup_key,
+                        "timestamp": datetime.now(timezone.utc).isoformat(),
+                    })
+
+                except Exception as e:
+                    self.logger.warning(f"Error reading chat element: {e}")
+                    continue
+
+        except Exception as e:
+            self.logger.error(f"WhatsApp poll error: {e}")
+            self.log_action("whatsapp_poll", "WhatsApp Web", "error", {"error": str(e)})
+        finally:
+            # Clean up explicitly
+            try:
+                if browser:
+                    browser.close()
+            except Exception:
+                pass
+            try:
+                if playwright:
+                    playwright.stop()
+            except Exception:
+                pass
 
         self.logger.info(f"WhatsApp poll complete — {len(messages)} new message(s)")
         return messages
@@ -239,8 +254,11 @@ def _run_setup(vault_path: str):
     print("Once logged in, press Enter here to save the session.\n")
     print(f"Session will be saved to: {session_path}\n")
 
-    with sync_playwright() as p:
-        browser = p.chromium.launch_persistent_context(
+    playwright = None
+    browser = None
+    try:
+        playwright = sync_playwright().start()
+        browser = playwright.chromium.launch_persistent_context(
             str(session_path),
             headless=False,
         )
@@ -248,7 +266,17 @@ def _run_setup(vault_path: str):
         page.goto("https://web.whatsapp.com")
         print("Browser opened. Scan the QR code on your phone...")
         input("\nPress Enter after you are logged in to save the session: ")
-        browser.close()
+    finally:
+        try:
+            if browser:
+                browser.close()
+        except Exception:
+            pass
+        try:
+            if playwright:
+                playwright.stop()
+        except Exception:
+            pass
 
     print("\nSession saved! Run the watcher normally with:")
     print("  python -m watchers.whatsapp_watcher\n")

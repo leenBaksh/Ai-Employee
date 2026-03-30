@@ -38,6 +38,7 @@ file-watcher     = "watchers.filesystem_watcher:main"
 gmail-watcher    = "watchers.gmail_watcher:main"
 linkedin-watcher   = "watchers.linkedin_watcher:main"
 whatsapp-watcher   = "watchers.whatsapp_watcher:main"
+whatsapp-webhook   = "watchers.whatsapp_webhook_server:main"
 social-watcher   = "watchers.social_watcher:main"
 scheduler        = "scheduler:main"
 email-mcp        = "mcp_servers.email_mcp_server:main"
@@ -55,6 +56,8 @@ health-monitor   = "cloud.health_monitor:run"
 dashboard        = "dashboard_server:main"
 # Error recovery §7.4
 watchdog-service = "process_watchdog:main"
+# WhatsApp setup
+whatsapp-setup   = "scripts.whatsapp_setup:main"
 
 [build-system]
 requires = ["hatchling"]

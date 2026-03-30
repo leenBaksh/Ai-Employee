@@ -1,6 +1,6 @@
 # AI Employee Dashboard
 ---
-last_updated: 2026-03-08 15:32 UTC
+last_updated: 2026-03-30 23:14 UTC
 status: active
 version: 0.4.0
 tier: Platinum
@@ -31,8 +31,8 @@ written_by: local-01
 
 | Channel | Status |
 |---------|--------|
-| Emails (Needs Action) | 📧 6 unread |
-| WhatsApp (all time) | ✅ Clear |
+| Emails (Needs Action) | 📧 93 unread |
+| WhatsApp (all time) | 💬 6 messages (Cloud API (webhook)) |
 | Drafts awaiting review | 1 |
 | Pending Approval | ✅ Clear |
 
@@ -42,21 +42,24 @@ written_by: local-01
 
 | Component | Status | Last Check |
 |-----------|--------|------------|
-| Filesystem Watcher | Running | 2026-03-08 15:32 UTC |
-| Scheduler | Running | 2026-03-08 15:32 UTC |
-| Local Agent (local-01) | Online | 2026-03-08 15:31 UTC |
+| Filesystem Watcher | Running | 2026-03-30 23:14 UTC |
+| Gmail Watcher | Running | 2026-03-30 23:14 UTC |
+| Linkedin Watcher | Running | 2026-03-30 23:14 UTC |
+| Social Watcher | Running | 2026-03-30 23:14 UTC |
+| Scheduler | Running | 2026-03-30 23:14 UTC |
+| Local Agent (local-01) | Online | 2026-03-30 23:14 UTC |
 | Cloud Agent (cloud-01) | Not deployed | — |
-| Daily WhatsApp Report | ⬜ Disabled | 08:00 UTC → — |
+| Daily WhatsApp Report | ✅ Enabled | 20:00 UTC → +923103871019 |
 
 ---
 
 ## Inbox Summary
 
-- **Needs Action:** ⚠️ 8 pending
-- **Emails:** 📧 6 unread
+- **Needs Action:** ⚠️ 140 pending
+- **Emails:** 📧 93 unread
 - **Pending Approval:** ✅ Clear
-- **Scheduled Triggers:** 10
-- **Done (all time):** 137
+- **Scheduled Triggers:** 49
+- **Done (all time):** 202
 
 ---
 
@@ -87,9 +90,12 @@ _Check `/Logs/` for detailed action history._
 
 | Metric | Value |
 |--------|-------|
-| Messages received (all time) | 0 |
-| Auto-reply | ⬜ Disabled |
-| Daily report | ⬜ Disabled |
+| Mode | Cloud API (webhook) |
+| Webhook Server | Running |
+| Messages in Needs_Action | 6 |
+| Messages processed (all time) | 0 |
+| Auto-reply | ✅ Enabled |
+| Daily report | ✅ 20:00 UTC → +923103871019 |
 
 ---
 

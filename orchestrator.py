@@ -214,12 +214,45 @@ class Orchestrator:
             self._start_process("scheduler", "scheduler")
 
     def _start_whatsapp_watcher(self):
-        """Start the WhatsApp Web Playwright watcher (Silver Tier)."""
-        # Playwright-based — no Meta Cloud API token required.
-        # Session is persisted at secrets/whatsapp_session/ after first --setup run.
+        """
+        Start WhatsApp integration (dual-mode support).
+        
+        Mode 1: Meta Cloud API Webhook Server (recommended for production)
+                - Starts Flask server on port 8089 to receive webhooks from Meta
+                - Requires WHATSAPP_VERIFY_TOKEN, WHATSAPP_ACCESS_TOKEN, WHATSAPP_PHONE_NUMBER_ID
+        
+        Mode 2: WhatsApp Web Playwright Automation (fallback/testing)
+                - Uses browser automation to poll WhatsApp Web
+                - Requires valid session in secrets/whatsapp_session/
+        
+        Priority: If Cloud API credentials are configured, start webhook server.
+                  Otherwise, fall back to WhatsApp Web automation.
+        """
+        verify_token = os.getenv("WHATSAPP_VERIFY_TOKEN", "")
+        access_token = os.getenv("WHATSAPP_ACCESS_TOKEN", "")
+        phone_number_id = os.getenv("WHATSAPP_PHONE_NUMBER_ID", "")
+        
+        cloud_configured = bool(verify_token and access_token and phone_number_id)
+        
+        if cloud_configured:
+            # Mode 1: Start Cloud API webhook server
+            self._start_whatsapp_webhook_server()
+        else:
+            # Mode 2: Fall back to WhatsApp Web automation
+            self._start_whatsapp_web_watcher()
+    
+    def _start_whatsapp_webhook_server(self):
+        """Start the WhatsApp Cloud API webhook server (recommended)."""
+        self._start_process("whatsapp_webhook", "watchers.whatsapp_webhook_server")
+        logger.info("Started WhatsApp webhook server (Cloud API mode)")
+    
+    def _start_whatsapp_web_watcher(self):
+        """Start the WhatsApp Web Playwright watcher (fallback mode)."""
         session_path = os.getenv("WHATSAPP_SESSION_PATH", "./secrets/whatsapp_session")
         self._start_process("whatsapp_watcher", "watchers.whatsapp_watcher",
                             extra_args=["--session", session_path])
+        logger.warning("WhatsApp Cloud API not configured — using WhatsApp Web automation")
+        logger.warning("  → For production setup, configure WHATSAPP_* credentials in .env")
 
     def _start_social_watcher(self):
         """Start the Social Media watcher for all platforms (Gold Tier)."""
@@ -243,6 +276,7 @@ class Orchestrator:
                     "gmail_watcher":      "watchers.gmail_watcher",
                     "linkedin_watcher":   "watchers.linkedin_watcher",
                     "whatsapp_watcher":   "watchers.whatsapp_watcher",
+                    "whatsapp_webhook":   "watchers.whatsapp_webhook_server",
                     "scheduler":          "scheduler",
                 }
                 if name in module_map:
@@ -250,7 +284,9 @@ class Orchestrator:
                 elif name == "social_watcher":
                     self._start_social_watcher()
                 elif name == "whatsapp_watcher":
-                    self._start_whatsapp_watcher()
+                    self._start_whatsapp_web_watcher()
+                elif name == "whatsapp_webhook":
+                    self._start_whatsapp_webhook_server()
 
     # ── §7.3 Queue Retry Loop ─────────────────────────────────────────────────
 
@@ -921,6 +957,31 @@ Navigate to: {platform_url}
                     wa_processed = len(json.loads(wa_file.read_text(encoding="utf-8")))
                 except Exception:
                     pass
+            
+            # Count messages in Needs_Action
+            today_slug = datetime.now(timezone.utc).strftime("%Y%m%d")
+            wa_received = len(list(self.needs_action.glob(f"WHATSAPP_{today_slug}*.md"))) if self.needs_action.exists() else 0
+            
+            # Determine which WhatsApp mode is active
+            verify_token = os.getenv("WHATSAPP_VERIFY_TOKEN", "")
+            access_token = os.getenv("WHATSAPP_ACCESS_TOKEN", "")
+            phone_number_id = os.getenv("WHATSAPP_PHONE_NUMBER_ID", "")
+            cloud_configured = bool(verify_token and access_token and phone_number_id)
+            wa_mode = "Cloud API (webhook)" if cloud_configured else "WhatsApp Web (automation)"
+            
+            # Check webhook server status
+            wa_webhook_status = "Not running"
+            if cloud_configured:
+                import urllib.request
+                import urllib.error
+                webhook_port = int(os.getenv("WHATSAPP_WEBHOOK_PORT", "8089"))
+                try:
+                    with urllib.request.urlopen(f"http://localhost:{webhook_port}/health", timeout=2) as r:
+                        if r.status == 200:
+                            wa_webhook_status = "Running"
+                except Exception:
+                    wa_webhook_status = "Not reachable"
+            
             wa_auto_reply = os.getenv("WHATSAPP_AUTO_REPLY", "false").lower() == "true"
             wa_daily_report = os.getenv("WHATSAPP_DAILY_REPORT_ENABLED", "false").lower() == "true"
             wa_report_time = os.getenv("WHATSAPP_DAILY_REPORT_TIME", "08:00")
@@ -960,7 +1021,7 @@ Navigate to: {platform_url}
             inbox_status = "✅ Clear" if na_count == 0 else f"⚠️ {na_count} pending"
             approval_status = "✅ Clear" if pa_count == 0 else f"📋 {pa_count} waiting"
             email_status = "✅ Clear" if email_count == 0 else f"📧 {email_count} unread"
-            wa_status = "✅ Clear" if wa_processed == 0 else f"💬 {wa_processed} received"
+            wa_status = f"💬 {wa_received} messages ({wa_mode})"
 
             dashboard = self.vault_path / "Dashboard.md"
             dashboard_tmp = self.vault_path / "Dashboard.md.tmp"
@@ -1050,7 +1111,10 @@ _Check `/Logs/` for detailed action history._
 
 | Metric | Value |
 |--------|-------|
-| Messages received (all time) | {wa_processed} |
+| Mode | {wa_mode} |
+| Webhook Server | {wa_webhook_status} |
+| Messages in Needs_Action | {wa_received} |
+| Messages processed (all time) | {wa_processed} |
 | Auto-reply | {"✅ Enabled" if wa_auto_reply else "⬜ Disabled"} |
 | Daily report | {"✅ " + wa_report_time + " UTC → " + wa_report_to if wa_daily_report else "⬜ Disabled"} |
 

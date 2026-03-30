@@ -2,77 +2,72 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useDashboardContext } from '@/context/DashboardContext'
 
 interface NavItem {
   href: string
   label: string
   icon: string
-  badgeKey?: 'needs_action' | 'pending_approval'
 }
 
-const NAV: NavItem[] = [
-  { href: '/',           label: 'Overview',   icon: '⚡' },
-  { href: '/tasks',      label: 'Tasks',       icon: '📥', badgeKey: 'needs_action' },
-  { href: '/approvals',  label: 'Approvals',   icon: '⏱',  badgeKey: 'pending_approval' },
-  { href: '/logs',       label: 'Logs',        icon: '📋' },
-  { href: '/done',       label: 'Done',        icon: '✅' },
-  { href: '/health',     label: 'Health',      icon: '💚' },
-  { href: '/assistant',  label: 'Assistant',   icon: '🤖' },
-  { href: '/whatsapp',   label: 'WhatsApp',    icon: '💬' },
-  { href: '/gmail',      label: 'Gmail',       icon: '✉️' },
-  { href: '/odoo',       label: 'Odoo',        icon: '🏢' },
-  { href: '/linkedin',   label: 'LinkedIn',    icon: '💼' },
+const navItems: NavItem[] = [
+  { href: '/dashboard', label: 'Overview', icon: '📊' },
+  { href: '/dashboard/whatsapp', label: 'WhatsApp', icon: '📱' },
+  { href: '/dashboard/gmail', label: 'Gmail', icon: '📧' },
+  { href: '/dashboard/linkedin', label: 'LinkedIn', icon: '💼' },
+  { href: '/dashboard/tasks', label: 'Tasks', icon: '📋' },
+  { href: '/dashboard/approvals', label: 'Approvals', icon: '🔐' },
+  { href: '/dashboard/done', label: 'Done', icon: '✅' },
+  { href: '/dashboard/logs', label: 'Logs', icon: '📝' },
+  { href: '/dashboard/health', label: 'Health', icon: '🏥' },
+  { href: '/dashboard/automation', label: 'Automation', icon: '⚡' },
+  { href: '/dashboard/settings', label: 'Settings', icon: '⚙️' },
 ]
 
 export default function Sidebar() {
   const pathname = usePathname()
-  const { data } = useDashboardContext()
-
-  const badge = (key: 'needs_action' | 'pending_approval') =>
-    (data?.stats?.[key] ?? 0) > 0 ? data!.stats[key] : null
 
   return (
-    <aside className="w-48 bg-slate-950 border-r border-slate-800 flex-shrink-0 flex flex-col">
-      <nav className="flex-1 py-3 space-y-0.5">
-        {NAV.map(item => {
-          const isActive = pathname === item.href
-          const count = item.badgeKey ? badge(item.badgeKey) : null
+    <aside className="fixed left-0 top-0 h-screen w-64 bg-slate-900 border-r border-slate-800 overflow-y-auto custom-scrollbar">
+      {/* Logo */}
+      <div className="p-6 border-b border-slate-800 flex-shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-xl font-bold text-white">
+            AI
+          </div>
+          <div>
+            <h1 className="font-bold text-slate-100 whitespace-nowrap">AI Employee</h1>
+            <p className="text-xs text-slate-400">Platinum</p>
+          </div>
+        </div>
+      </div>
 
+      {/* Navigation */}
+      <nav className="p-4 space-y-2 flex-shrink-0">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center justify-between mx-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                ${isActive
-                  ? 'bg-cyan-950/50 text-cyan-300 border-l-2 border-cyan-500 pl-2.5'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60 border-l-2 border-transparent'
-                }`}
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                isActive
+                  ? 'bg-cyan-950/50 text-cyan-400 border border-cyan-800/30'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+              }`}
             >
-              <span className="flex items-center gap-2.5">
-                <span className="text-base leading-none">{item.icon}</span>
-                {item.label}
-              </span>
-
-              {count !== null && (
-                <span
-                  className={`text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center
-                    ${isActive
-                      ? 'bg-cyan-800 text-cyan-200'
-                      : 'bg-slate-800 text-slate-400'
-                    }`}
-                >
-                  {count}
-                </span>
-              )}
+              <span className="text-lg">{item.icon}</span>
+              <span className="text-sm font-medium whitespace-nowrap">{item.label}</span>
             </Link>
           )
         })}
       </nav>
 
-      {/* Footer */}
-      <div className="p-3 border-t border-slate-800">
-        <div className="text-slate-600 text-xs text-center">AI Employee v0.4</div>
+      {/* Status */}
+      <div className="p-4 border-t border-slate-800 bg-slate-900 flex-shrink-0 mt-4">
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+          <span className="text-xs text-slate-300 whitespace-nowrap">System Online</span>
+        </div>
       </div>
     </aside>
   )

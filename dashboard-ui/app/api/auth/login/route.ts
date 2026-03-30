@@ -1,35 +1,34 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createHmac } from 'crypto'
+import { NextResponse } from 'next/server'
 
-function computeToken(): string {
-  const secret = process.env.SESSION_SECRET ?? 'fallback-secret'
-  const password = process.env.DASHBOARD_PASSWORD ?? 'changeme'
-  return createHmac('sha256', secret).update(password).digest('hex')
-}
-
-export async function POST(request: NextRequest) {
-  let body: { password?: string }
+export async function POST(request: Request) {
   try {
-    body = await request.json()
+    const { password } = await request.json()
+    const correctPassword = process.env.DASHBOARD_PASSWORD || 'changeme'
+
+    if (password === correctPassword) {
+      // Create session cookie
+      const sessionSecret = process.env.SESSION_SECRET || 'fallback-secret'
+      const encoder = new TextEncoder()
+      const keyData = encoder.encode(sessionSecret)
+      const msgData = encoder.encode(password)
+      
+      const key = await crypto.subtle.importKey('raw', keyData, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
+      const sig = await crypto.subtle.sign('HMAC', key, msgData)
+      const sessionToken = Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('')
+
+      const response = NextResponse.json({ success: true })
+      response.cookies.set('ai_session', sessionToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+        path: '/',
+      })
+      return response
+    } else {
+      return NextResponse.json({ error: 'Invalid password' }, { status: 401 })
+    }
   } catch {
-    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+    return NextResponse.json({ error: 'Authentication failed' }, { status: 500 })
   }
-
-  const { password } = body
-  const expected = process.env.DASHBOARD_PASSWORD ?? 'changeme'
-
-  if (!password || password !== expected) {
-    return NextResponse.json({ error: 'Incorrect password' }, { status: 401 })
-  }
-
-  const token = computeToken()
-  const response = NextResponse.json({ ok: true })
-  response.cookies.set('ai_session', token, {
-    httpOnly: true,
-    sameSite: 'lax',
-    path: '/',
-    // 7-day session
-    maxAge: 60 * 60 * 24 * 7,
-  })
-  return response
 }

@@ -2,30 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  html {
-    @apply bg-slate-950;
-  }
-
-  body {
-    @apply bg-slate-950 text-white;
-    font-family: 'Segoe UI', system-ui, sans-serif;
-  }
-
-  /* Thin custom scrollbar */
-  ::-webkit-scrollbar        { width: 4px; height: 4px; }
-  ::-webkit-scrollbar-track  { @apply bg-slate-900; }
-  ::-webkit-scrollbar-thumb  { @apply bg-cyan-800 rounded-sm; }
-  ::-webkit-scrollbar-thumb:hover { @apply bg-cyan-700; }
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 2, 6, 23;
+  --background-end-rgb: 2, 6, 23;
 }
 
-@layer utilities {
-  .animate-fade-in {
-    animation: fadeIn 0.2s ease-in-out;
-  }
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to   { opacity: 1; transform: translateY(0);   }
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.5);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(71, 85, 105, 0.8);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 1);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

@@ -112,21 +112,36 @@ def get_service_connections() -> list:
     Derive connection status for Gmail, WhatsApp, LinkedIn, and Odoo
     by inspecting the last N log entries for each service.
     Returns a list of connection dicts suitable for the dashboard.
+    
+    Only shows errors from the last hour to avoid stale error display.
     """
-    # Scan today's + yesterday's log for recent entries
+    # Scan ONLY recent logs (last hour) to avoid stale errors
     logs_dir = VAULT_PATH / "Logs"
     entries: list[dict] = []
-    for delta in (0, 1):
-        day = (datetime.now(timezone.utc) - timedelta(days=delta)).strftime("%Y-%m-%d")
-        log_file = logs_dir / f"{day}.json"
-        if log_file.exists():
-            try:
-                entries.extend(json.loads(log_file.read_text(encoding="utf-8")))
-            except Exception:
-                pass
+    
+    # Get current time and 1 hour ago
+    now_utc = datetime.now(timezone.utc)
+    one_hour_ago = now_utc - timedelta(hours=1)
+    
+    # Read today's log only
+    today = now_utc.strftime("%Y-%m-%d")
+    log_file = logs_dir / f"{today}.json"
+    if log_file.exists():
+        try:
+            all_entries = json.loads(log_file.read_text(encoding="utf-8"))
+            # Filter to only last hour
+            for e in all_entries:
+                try:
+                    ts = datetime.fromisoformat(e.get("timestamp", "").replace("Z", "+00:00"))
+                    if ts > one_hour_ago:
+                        entries.append(e)
+                except:
+                    pass
+        except Exception:
+            pass
 
-    # Keep only the most recent 500 entries to bound scan time
-    entries = entries[-500:]
+    # Keep only the most recent 100 entries
+    entries = entries[-100:]
 
     # Service definitions: action_type prefixes to match + token/credential files to probe
     services = [
@@ -498,6 +513,112 @@ def api_whatsapp_send():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
+# ── Lockdown Mode endpoints ───────────────────────────────────────────────────
+
+LOCKDOWN_FILE = VAULT_PATH / ".lockdown_mode.json"
+
+@app.route("/api/lockdown/enable", methods=["POST"])
+def api_lockdown_enable():
+    """Enable lockdown mode — block all incoming messages."""
+    body = request.json or {}
+    reason = body.get("reason", "Manual activation via dashboard")
+    
+    lockdown_data = {
+        "enabled": True,
+        "enabled_at": datetime.now(timezone.utc).isoformat(),
+        "reason": reason,
+    }
+    
+    try:
+        LOCKDOWN_FILE.write_text(json.dumps(lockdown_data, indent=2), encoding="utf-8")
+        _append_log("lockdown_enabled", "dashboard", "success", actor="dashboard")
+        return jsonify({"success": True, "message": "Lockdown mode enabled"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/lockdown/disable", methods=["POST"])
+def api_lockdown_disable():
+    """Disable lockdown mode — resume normal message processing."""
+    try:
+        if LOCKDOWN_FILE.exists():
+            LOCKDOWN_FILE.unlink()
+        _append_log("lockdown_disabled", "dashboard", "success", actor="dashboard")
+        return jsonify({"success": True, "message": "Lockdown mode disabled"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/lockdown/status")
+def api_lockdown_status():
+    """Get current lockdown mode status."""
+    is_locked_down = LOCKDOWN_FILE.exists()
+    reason = ""
+    enabled_at = ""
+    
+    if is_locked_down:
+        try:
+            data = json.loads(LOCKDOWN_FILE.read_text(encoding="utf-8"))
+            reason = data.get("reason", "")
+            enabled_at = data.get("enabled_at", "")
+        except Exception:
+            pass
+    
+    return jsonify({
+        "enabled": is_locked_down,
+        "reason": reason,
+        "enabled_at": enabled_at,
+    })
+
+
+# ── Settings endpoint ─────────────────────────────────────────────────────────
+
+@app.route("/api/settings")
+def api_settings():
+    """Get AI Employee configuration settings."""
+    # WhatsApp settings
+    whatsapp_verify_token = os.getenv("WHATSAPP_VERIFY_TOKEN", "")
+    whatsapp_access_token = os.getenv("WHATSAPP_ACCESS_TOKEN", "")
+    whatsapp_phone_id = os.getenv("WHATSAPP_PHONE_NUMBER_ID", "")
+    whatsapp_webhook_port = os.getenv("WHATSAPP_WEBHOOK_PORT", "8089")
+    whatsapp_auto_reply = os.getenv("WHATSAPP_AUTO_REPLY", "false").lower() == "true"
+    whatsapp_daily_report = os.getenv("WHATSAPP_DAILY_REPORT_ENABLED", "false").lower() == "true"
+    whatsapp_daily_report_time = os.getenv("WHATSAPP_DAILY_REPORT_TIME", "20:00")
+    whatsapp_daily_report_to = os.getenv("WHATSAPP_DAILY_REPORT_TO", "")
+    cloud_configured = bool(whatsapp_verify_token and whatsapp_access_token and whatsapp_phone_id)
+    
+    # System settings
+    dry_run = os.getenv("DRY_RUN", "false").lower() == "true"
+    tier = os.getenv("AI_EMPLOYEE_TIER", "Platinum")
+    agent_id = os.getenv("AGENT_ID", "local-01")
+    dashboard_port = os.getenv("DASHBOARD_PORT", "8888")
+    vault_path = os.getenv("VAULT_PATH", "./AI_Employee_Vault")
+    
+    # Check lockdown status
+    is_locked_down = LOCKDOWN_FILE.exists()
+    
+    return jsonify({
+        "whatsapp": {
+            "cloud_configured": cloud_configured,
+            "webhook_port": whatsapp_webhook_port,
+            "auto_reply_enabled": whatsapp_auto_reply,
+            "daily_report_enabled": whatsapp_daily_report,
+            "daily_report_time": whatsapp_daily_report_time,
+            "daily_report_recipient": whatsapp_daily_report_to,
+        },
+        "system": {
+            "dry_run": dry_run,
+            "tier": tier,
+            "agent_id": agent_id,
+            "dashboard_port": dashboard_port,
+            "vault_path": vault_path,
+            "lockdown_active": is_locked_down,
+        },
+    })
+
+
+# ── Gmail endpoints ────────────────────────────────────────────────────────────
 
 @app.route("/api/gmail/messages")
 def api_gmail_messages():
